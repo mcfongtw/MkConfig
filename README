@@ -1,0 +1,13 @@
+Overview
+--------
+MkConfig is a python based,  general purposed configuration generator. All of the implementation should follow
+PEP-8 standard.
+
+Library Dependency
+------------------
+1. Jinja2
+
+Supported Configuration
+-----------------------
+Here are types of configuration supported :
+1. <Subject to Add>
