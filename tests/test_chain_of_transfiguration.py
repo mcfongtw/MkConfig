@@ -27,7 +27,7 @@ class TestTransfigurationSpell(unittest.TestCase):
     def tearDown(self):
         print('Unit Test [{}] Stop'.format(self.id()))
 
-    def test_transfiguration(self):
+    def test_unit_transfiguration(self):
         one = TransfigurationSpell('Harry Potter')
         two = TransfigurationSpell('Ron Weasley')
         three = TransfigurationSpell('Hermione Granger')
@@ -38,7 +38,7 @@ class TestTransfigurationSpell(unittest.TestCase):
         self.assertEqual(one.get_next(), two)
         self.assertEqual(two.get_next(), three)
 
-    def test_chain(self):
+    def test_functional_chain(self):
         one = TransfigurationSpell('Harry Potter')
         two = TransfigurationSpell('Ron Weasley')
         three = TransfigurationSpell('Hermione Granger')
