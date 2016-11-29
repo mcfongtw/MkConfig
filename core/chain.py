@@ -1,6 +1,8 @@
-import abc
+from abc import ABCMeta, abstractmethod
 
 class Transfiguration(object):
+    __metaclass__ = ABCMeta
+
     def __init__(self):
         self._next = None
 
@@ -10,7 +12,7 @@ class Transfiguration(object):
         if self._next:
             self._next.perform()
 
-    @abc.abstractmethod
+    @abstractmethod
     def transfigure(self):
         pass
 
