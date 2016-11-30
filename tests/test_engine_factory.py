@@ -1,6 +1,6 @@
 from core.engine import TemplateEngine, TemplateEngineEnum
 from core.factory import TemplateEngineFactory
-from core.jinja2engine import Jinja2Engine
+from core.jinja2 import Jinja2Engine
 import unittest
 
 class TestEngine1(TemplateEngine):
