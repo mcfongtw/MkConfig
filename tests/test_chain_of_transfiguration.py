@@ -15,9 +15,6 @@ class TransfigurationSpell(Transfiguration):
         print('[{}] is performing Transfiguration'.format(self._name))
         TransfigurationSpell.static_spell_counter +=1
 
-        if self._next:
-            print('{} is next'.format(self._next._name))
-
 
 class TestTransfigurationSpell(unittest.TestCase):
 
@@ -27,26 +24,21 @@ class TestTransfigurationSpell(unittest.TestCase):
     def tearDown(self):
         print('Unit Test [{}] Stop'.format(self.id()))
 
-    def test_unit_transfiguration(self):
-        one = TransfigurationSpell('Harry Potter')
-        two = TransfigurationSpell('Ron Weasley')
-        three = TransfigurationSpell('Hermione Granger')
-
-        one.set_next(two)
-        two.set_next(three)
-
-        self.assertEqual(one.get_next(), two)
-        self.assertEqual(two.get_next(), three)
-
     def test_functional_chain(self):
         one = TransfigurationSpell('Harry Potter')
         two = TransfigurationSpell('Ron Weasley')
         three = TransfigurationSpell('Hermione Granger')
 
-        one.set_next(two)
-        two.set_next(three)
+        chain = ChainOfTransfiguration()
+        chain.add(one)
+        chain.add(two)
+        chain.add(three)
 
-        chain = ChainOfTransfiguration(one)
+        self.assertEqual(one, chain.get(0))
+        self.assertEqual(two, chain.get(1))
+        self.assertEqual(three, chain.get(2))
+        self.assertEqual(3, chain.size())
+
         chain.execute()
 
         self.assertEqual(TransfigurationSpell.static_spell_counter, 3)
