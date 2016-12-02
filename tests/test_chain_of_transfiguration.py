@@ -1,6 +1,7 @@
-from core.chain import Transfiguration
+from core.chain import Transfiguration, DependentTransfiguration
 from core.chain import ChainOfTransfiguration
 import unittest
+from core.error import IllegalStateException
 
 
 class TransfigurationSpell(Transfiguration):
@@ -11,9 +12,26 @@ class TransfigurationSpell(Transfiguration):
         super().__init__()
         self._name = identity
 
-    def transfigure(self):
+    def perform(self, context):
         print('[{}] is performing Transfiguration'.format(self._name))
         TransfigurationSpell.static_spell_counter +=1
+
+
+class AdditiveDependentTransfiguration(DependentTransfiguration):
+
+    _number = 0
+
+    def __init__(self, number):
+        super().__init__()
+        self._number = number
+
+    def perform(self, context):
+        if 'answer' in context :
+            context['answer'] += self._number
+        else :
+            raise IllegalStateException("Context['answer'] does not exist!")
+
+        return context
 
 
 class TestTransfigurationSpell(unittest.TestCase):
@@ -42,6 +60,22 @@ class TestTransfigurationSpell(unittest.TestCase):
         chain.execute()
 
         self.assertEqual(TransfigurationSpell.static_spell_counter, 3)
+
+    def test_functional_chain_piping(self):
+        one = AdditiveDependentTransfiguration(1)
+        two = AdditiveDependentTransfiguration(2)
+        three = AdditiveDependentTransfiguration(3)
+
+        chain = ChainOfTransfiguration()
+        chain.add(one)
+        chain.add(two)
+        chain.add(three)
+
+        context = {'answer' : 0}
+        chain.execute(context)
+
+        self.assertEqual(6, context['answer'])
+
 
 if __name__ == '__main__':
     unittest.main()

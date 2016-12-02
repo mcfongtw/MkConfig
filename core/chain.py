@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+
 class Transfiguration(object):
     __metaclass__ = ABCMeta
 
@@ -7,13 +8,24 @@ class Transfiguration(object):
         pass
 
     @abstractmethod
-    def transfigure(self):
+    def perform(self, context):
         pass
+
+
+class DependentTransfiguration(Transfiguration):
+
+    def __init__(self):
+        super().__init__()
+
+    def perform(self, context):
+        return context;
 
 
 class ChainOfTransfiguration(object):
 
     _chain = []
+
+    _context = {}
 
     def __init__(self):
         pass
@@ -27,8 +39,9 @@ class ChainOfTransfiguration(object):
     def size(self):
         return len(self._chain)
 
-    def execute(self):
+    def execute(self, context = None):
         for transfiguration in self._chain :
-            transfiguration.transfigure()
+            print(context)
+            transfiguration.perform(context)
 
 

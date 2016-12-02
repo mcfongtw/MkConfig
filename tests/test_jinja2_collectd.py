@@ -1,37 +1,47 @@
-import yaml
-from conf.collectd import JmxTransifgurationChain
+from conf.collectd import JmxTransifgurationChain, YamlReadTransfiguration
 from unittest import TestCase
+from core.factory import TemplateEngineFactory
+from core.jinja2 import Jinja2Engine
+
 
 class TestCollectdJmxTransfiguration(TestCase):
 
-    def test_integration_collectd_jmx_trans(self):
-        context1 = {
-            'progName' : 'TestJava',
-            'hostName' : 'localhost',
-            'hostPort' : '12345',
-            'progVer' : '3.4561'
+    def setUp(self):
+        print('Unit Test [{}] Start'.format(self.id()))
+
+    def tearDown(self):
+        print('Unit Test [{}] Stop'.format(self.id()))
+
+    def test_functional_YamlReadTransfiguration(self):
+        context = {
+            'test_input'  : 'test.basics.properties.yaml'
         }
+        TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
+        reader = YamlReadTransfiguration('test_input')
+        reader.perform(context)
 
-        raw = open('cassandra_mbean.yaml').read()
-        mbeans = []
-        for raw_doc in raw.split('---'):
-            try:
-                mbeans.append(yaml.load(raw_doc))
-            except SyntaxError:
-                mbeans.append(raw_doc)
+        self.assertEqual(context['test1'], 123)
+        self.assertEqual(context['test2'], 'abc')
 
-        context1['mbeans'] = mbeans
-
-        context2 = {
-            'cfs' : ['ap', 'apClient', 'event', 'alarm', 'indexEvent', 'indexTimeUUID', 'indexUTF8', 'statsAP', 'apConfig', 'wlanConfig'],
-            'requests' : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage'],
-            'internals' : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage'],
-            'drops' : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ, REQUEST_RESPONSE'],
-            'compaction_task_types' : ['CompletedTasks', 'PendingTasks']
-
+    def test_functional_YamlReadTransfiguration_FileNotFound(self):
+        context = {
+            'test_input'  : 'test.basics.properties.yaml1'
         }
+        TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
+        reader = YamlReadTransfiguration('test_input')
+
+        with self.assertRaises(IOError):
+            reader.perform(context)
+
+    def test_integration_collectd_jmx_trans_chain(self):
+        #init context
+        context =  {
+            '_collectd_jmx_yaml_props_file' : 'cassandra.properties.yaml',
+            '_collectd_jmx_yaml_mbeans_file' : 'cassandra_mbean.yaml',
+            '_collectd_jmx_input' : 'collectd_jmx.template',
+            '_collectd_jmx_output' : 'collectd_jmx.conf'
+        }
         chain = JmxTransifgurationChain()
-        chain.prepare(context1, context2, 'collectd_jmx.template', 'collectd_jmx.conf')
-        chain.execute()
+        chain.execute(context)
