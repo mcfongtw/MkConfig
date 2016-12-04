@@ -1,4 +1,35 @@
 import os
+from logging.config import dictConfig
+import logging
+
+logging_config = dict(
+    version = 1,
+    formatters =
+    {
+        'default':
+            {
+                'format' : '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            }
+    },
+    handlers =
+    {
+        'default':
+            {
+                'class': 'logging.StreamHandler',
+                'formatter': 'default',
+                'level': logging.INFO
+            }
+    },
+    root =
+    {
+        'handlers': ['default'],
+        'level': logging.INFO,
+        'propagate': True
+    },
+)
+
+dictConfig(logging_config)
+###########################################
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -54,3 +85,4 @@ class Configurations(object):
     @staticmethod
     def getTempFile(fname):
         return os.path.join(Configurations.getTempDir(), fname)
+

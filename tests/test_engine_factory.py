@@ -2,6 +2,12 @@ from core.engine import TemplateEngine, TemplateEngineEnum
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
 import unittest
+import logging
+import env
+
+
+logger = logging.getLogger(__name__)
+
 
 class TestEngine1(TemplateEngine):
 
@@ -36,6 +42,12 @@ class TestEngine2(TemplateEngine):
 
 
 class TestTemplateEngineFactory(unittest.TestCase):
+
+    def setUp(self):
+        logger.info('Unit Test [{}] Start'.format(self.id()))
+
+    def tearDown(self):
+        logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_unit_template_engine_enum(self):
         self.assertEqual('TestEngine1', TemplateEngineEnum.valueOf('TestEngine1'))

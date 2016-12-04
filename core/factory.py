@@ -1,15 +1,23 @@
+import logging
+import env
+
+logger = logging.getLogger(__name__)
+
 
 class TemplateEngineFactory(object):
     _factories = {}
 
     @staticmethod
-    def addFactory(id, shapeFactory):
-        TemplateEngineFactory._factories[id] = shapeFactory
+    def addFactory(entity, shapeFactory):
+        logger.info('Add Factory {}'.format(entity))
+        TemplateEngineFactory._factories[entity] = shapeFactory
 
 
     # A Template Method:
     @staticmethod
-    def createEngine(id):
-        if id not in TemplateEngineFactory._factories:
-            TemplateEngineFactory._factories[id] = eval(id + '.Factory()')
-        return TemplateEngineFactory._factories[id].create()
+    def createEngine(entity):
+        if entity not in TemplateEngineFactory._factories:
+            TemplateEngineFactory._factories[entity] = eval(entity + '.Factory()')
+
+        logger.debug('Invoke {}.Factory()'.format(entity))
+        return TemplateEngineFactory._factories[entity].create()

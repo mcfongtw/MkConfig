@@ -1,19 +1,21 @@
 from jinja2 import Environment, FileSystemLoader
-
-from env import Configurations
 from core.engine import TemplateEngine
+import logging
+from env import Configurations
+import env
+
+logger = logging.getLogger(__name__)
 
 
 class Jinja2Engine(TemplateEngine):
 
     _engine = None;
 
-
     def __init__(self):
         super().__init__()
 
     def init(self, initLoader=None):
-        print('Jinja2.init()')
+        logger.debug('Jinja2.init()')
         if initLoader :
             jinjaLoader = initLoader
         else:
@@ -24,10 +26,7 @@ class Jinja2Engine(TemplateEngine):
             trim_blocks=False)
 
     def apply(self, context, templateName, outputFile, isInMemory=False):
-        super().apply()
-
-        print('Jinja2.generate()')
-
+        logger.debug('Jinja2.generate()')
 
         if isInMemory :
             result = self._engine.get_template(templateName).render(context)
@@ -36,7 +35,6 @@ class Jinja2Engine(TemplateEngine):
             result = self._engine.get_template(templateName).render(context)
             with open(Configurations.getTemplateFile(outputFile), 'w') as file:
                 file.write(result)
-
 
     class Factory(object):
         @staticmethod

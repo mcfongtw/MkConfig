@@ -3,35 +3,20 @@ from jinja2 import DictLoader, Environment
 import unittest
 import yaml
 from collections import OrderedDict
+import logging
+import env
+
+
+logger = logging.getLogger(__name__)
+
 
 class TestJinja2Engine(unittest.TestCase):
 
     def setUp(self):
-        super(TestJinja2Engine, self).setUp()
+        logger.info('Unit Test [{}] Start'.format(self.id()))
 
-    def assertEqualLongString(self, a, b):
-        NOT, POINT = '-', '*'
-        if a != b:
-            print
-            a
-            o = ''
-            for i, e in enumerate(a):
-                try:
-                    if e != b[i]:
-                        o += POINT
-                    else:
-                        o += NOT
-                except IndexError:
-                    o += '*'
-
-            o += NOT * (len(a) - len(o))
-            if len(b) > len(a):
-                o += POINT * (len(b) - len(a))
-
-            print(o)
-            print(b)
-
-            raise AssertionError('(see string comparison above)')
+    def tearDown(self):
+        logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_unit_basic_template(self):
         context = {'name' : 'John'}
@@ -71,9 +56,8 @@ class TestJinja2Engine(unittest.TestCase):
                 attributeList.append(ordered_attribute)
             mbean['attributes'] = attributeList
 
-
         context={'mbeans' : mbeans}
-        print(context)
+        logger.info('Context modified : '.format(str(context)))
 
         templateContent = """
         {% for mbean in mbeans %}

@@ -2,6 +2,11 @@ from conf.collectd import JmxTransifgurationChain, YamlReadTransfiguration
 from unittest import TestCase
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
+import logging
+import env
+
+
+logger = logging.getLogger(__name__)
 
 
 class TestCollectdJmxTransfiguration(TestCase):
@@ -14,7 +19,7 @@ class TestCollectdJmxTransfiguration(TestCase):
 
     def test_functional_YamlReadTransfiguration(self):
         context = {
-            'test_input'  : 'test.basics.properties.yaml'
+            'test_input' : 'test.basics.properties.yaml'
         }
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -26,7 +31,7 @@ class TestCollectdJmxTransfiguration(TestCase):
 
     def test_functional_YamlReadTransfiguration_FileNotFound(self):
         context = {
-            'test_input'  : 'test.basics.properties.yaml1'
+            'test_input' : 'test.basics.properties.yaml1'
         }
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 

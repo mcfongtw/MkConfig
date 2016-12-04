@@ -1,4 +1,8 @@
 from abc import ABCMeta, abstractmethod
+import logging
+import env
+
+logger = logging.getLogger(__name__)
 
 
 class Transfiguration(object):
@@ -18,6 +22,8 @@ class DependentTransfiguration(Transfiguration):
         super().__init__()
 
     def perform(self, context):
+        super().perform(context)
+        logger.debug('Transfiguration performed w/ Context : [{}]'.format(context))
         return context;
 
 
@@ -31,6 +37,7 @@ class ChainOfTransfiguration(object):
         pass
 
     def add(self, transfiguration):
+        logger.info('Adding transfiguration : [{}]'.format(transfiguration.__class__))
         self._chain.append(transfiguration)
 
     def get(self, index):
@@ -41,7 +48,6 @@ class ChainOfTransfiguration(object):
 
     def execute(self, context = None):
         for transfiguration in self._chain :
-            print(context)
             transfiguration.perform(context)
 
 

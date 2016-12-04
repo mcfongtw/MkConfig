@@ -10,13 +10,6 @@ class TemplateEngine(object):
     def __str__(self):
         return 'Abstract Engine class with file path {0}'.format(self._inputTemplatePath)
 
-    @abstractmethod
-    def init(self):
-        pass
-
-    @abstractmethod
-    def apply(self):
-        pass
 
 
 class TemplateEngineEnum(object) :

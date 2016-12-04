@@ -4,11 +4,18 @@ from core.jinja2 import Jinja2Engine
 from env import Configurations
 from core.chain import ChainOfTransfiguration
 import yaml
+import logging
+import env
+
+
+logger = logging.getLogger(__name__)
 
 
 class JmxTransfiguration(DependentTransfiguration):
 
     _engine = None
+    _input = None
+    _output = None
 
     def __init__(self):
         super().__init__()
@@ -43,6 +50,7 @@ class YamlReadTransfiguration(DependentTransfiguration):
 
             for key, value in yaml_content.items():
                 context[key] = value
+
 
 class JmxTransReadPropertiesFromYaml(YamlReadTransfiguration):
     def __init__(self, keyName = '_collectd_jmx_yaml_props_file'):

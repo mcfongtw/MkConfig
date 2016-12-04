@@ -2,6 +2,11 @@ from core.chain import Transfiguration, DependentTransfiguration
 from core.chain import ChainOfTransfiguration
 import unittest
 from core.error import IllegalStateException
+import logging
+import env
+
+
+logger = logging.getLogger(__name__)
 
 
 class TransfigurationSpell(Transfiguration):
@@ -13,7 +18,7 @@ class TransfigurationSpell(Transfiguration):
         self._name = identity
 
     def perform(self, context):
-        print('[{}] is performing Transfiguration'.format(self._name))
+        logger.info('[{}] is performing Transfiguration'.format(self._name))
         TransfigurationSpell.static_spell_counter +=1
 
 
@@ -37,10 +42,10 @@ class AdditiveDependentTransfiguration(DependentTransfiguration):
 class TestTransfigurationSpell(unittest.TestCase):
 
     def setUp(self):
-        print('Unit Test [{}] Start'.format(self.id()))
+        logger.info('Unit Test [{}] Start'.format(self.id()))
 
     def tearDown(self):
-        print('Unit Test [{}] Stop'.format(self.id()))
+        logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_functional_chain(self):
         one = TransfigurationSpell('Harry Potter')
