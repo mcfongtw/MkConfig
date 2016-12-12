@@ -13,6 +13,7 @@ class Transfiguration(object):
 
     @abstractmethod
     def perform(self, context):
+        logger.info('Transfiguration performing :[{}]'.format(self.__class__.__name__))
         pass
 
 

@@ -63,6 +63,8 @@ class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
         super().__init__(keyName)
 
     def perform(self, context):
+        #FIXME: resolve this inheritance issue
+        logger.info('Transfiguration performing :[{}]'.format(self.__class__.__name__))
         file_path = context[self._key_file_path]
         mbeans = []
 
