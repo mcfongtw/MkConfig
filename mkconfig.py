@@ -5,16 +5,16 @@ from conf.collectd import JmxTransifgurationChain
 import logging
 import env
 import argparse
+import sys
 
 logger = logging.getLogger(__name__)
 
-def do_main(args) :
-    arg_props = args['props'];
-    arg_mbeans = args['mbeans']
-    arg_template = args['template']
-    arg_output = args['output']
 
-    logger.info('Mkconfig will execute based on [{}]'.format(args))
+def do_main(arg_props, arg_mbeans, arg_template, arg_output) :
+    logger.info('Mkconfig will execute based on properties : [{}]'.format(arg_props))
+    logger.info('Mkconfig will execute based on mbeans : [{}]'.format(arg_mbeans))
+    logger.info('Mkconfig will execute based on template : [{}]'.format(arg_template))
+    logger.info('Mkconfig will execute based on output : [{}]'.format(arg_output))
 
     context = {
         '_collectd_jmx_yaml_props_file': arg_props,
@@ -26,6 +26,8 @@ def do_main(args) :
     chain.execute(context)
 
 
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Make Configuration Automatically')
     parser.add_argument('-p', '--props', metavar='props', type=str, help='Input properties in yaml')
@@ -34,4 +36,15 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', metavar='output', type=str, help='output files')
 
     args = vars(parser.parse_args())
-    do_main(args);
+
+    arg_props = args['props'];
+    arg_mbeans = args['mbeans']
+    arg_template = args['template']
+    arg_output = args['output']
+
+    if arg_props is None or arg_mbeans is None or arg_template is None or arg_output is None:
+        parser.print_help();
+
+    do_main(arg_props, arg_mbeans, arg_template, arg_output)
+
+    sys.exit(0)

@@ -42,7 +42,7 @@ class YamlReadTransfiguration(DependentTransfiguration):
             file = open(file_path, 'r')
         except IOError as e:
             errno, strerror = e.args
-            print("I/O error({0}): {1}".format(errno, strerror))
+            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, file_path, strerror))
             raise
         else:
             yaml_content = yaml.load(file)
@@ -73,7 +73,7 @@ class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
 
         except IOError as e:
             errno, strerror = e.args
-            print("I/O error({0}): {1}".format(errno, strerror))
+            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, file_path, strerror))
             raise
         else:
             raw_content = file.read()
