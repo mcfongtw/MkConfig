@@ -1,4 +1,5 @@
 from conf.collectd import JmxTransifgurationChain
+from conf.factory import ConfigTemplateFactory
 import logging
 import env
 from cement.core.foundation import CementApp
@@ -22,17 +23,19 @@ class CliController(CementBaseController):
                 dict( action='store', metavar='File', help='Input to mbeans.yaml', required=True)),
             #TODO: Make this arg optional and provide a factory method to retrieve this with alias
             (['-t', '--template'],
-                dict(action='store', metavar='STR', help='Type of configuration template', required=True, default="collectd_jmx.template")),
+                dict(action='store', metavar='STR', help='Type of configuration template', default="collectd_jmx.template")),
             (['-o', '--output'],
                 dict(action='store', metavar='File', help='Path to output file', required=True)),
         ]
 
     @expose(hide=True, help="Generate configuration", aliases=['run'])
     def default(self):
+        config_template_file = ConfigTemplateFactory.get_config_tempalte(self.app.pargs.template)
+
         context = {
             '_collectd_jmx_yaml_props_file': self.app.pargs.props,
             '_collectd_jmx_yaml_mbeans_file': self.app.pargs.mbeans,
-            '_collectd_jmx_input': self.app.pargs.template,
+            '_collectd_jmx_input': config_template_file,
             '_collectd_jmx_output': self.app.pargs.output
         }
         chain = JmxTransifgurationChain()

@@ -2,11 +2,29 @@ from conf.collectd import JmxTransifgurationChain, YamlReadTransfiguration
 from unittest import TestCase
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
+from conf.factory import ConfigTemplateFactory
 import logging
 import env
 
 
 logger = logging.getLogger(__name__)
+
+class TestConfigTemplateFactory(TestCase):
+
+    def setUp(self):
+        print('Unit Test [{}] Start'.format(self.id()))
+
+    def tearDown(self):
+        print('Unit Test [{}] Stop'.format(self.id()))
+
+    def test_default_config_template_factory(self):
+        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte(None))
+        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte('rubbish'))
+
+    def test_collectd_jmx_config_template_factory(self):
+        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte('collectd_jmx'))
+
+
 
 
 class TestCollectdJmxTransfiguration(TestCase):

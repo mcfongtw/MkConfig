@@ -20,6 +20,12 @@ class TestMkConfigApp(test.CementTestCase):
         app.run()
         app.close()
 
+    def test_normal_with_default_template(self):
+        app3 = self.make_app(argv=['-pcassandra.properties.yaml', '-mcassandra_mbean.yaml', '-otest.output'])
+        app3.setup()
+        app3.run()
+        app3.close()
+
     def test_file_not_found_1(self):
         app1 = self.make_app(argv=['-pnot_exist.yaml', '-o1', '-t1', '-m1'])
         app1.setup()
