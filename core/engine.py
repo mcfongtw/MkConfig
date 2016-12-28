@@ -2,6 +2,9 @@ from abc import ABCMeta, abstractmethod
 
 
 class TemplateEngine(object):
+    """
+    An abstract class of TemplateEngine
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
@@ -13,7 +16,9 @@ class TemplateEngine(object):
 
 
 class TemplateEngineEnum(object) :
-
+    """
+    A enumeration-like class that retrieves a TemplateEngine given name
+    """
     @staticmethod
     def getAllShapes():
         classes = TemplateEngine.__subclasses__()

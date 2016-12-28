@@ -8,7 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 class Jinja2Engine(TemplateEngine):
-
+    """
+    A concret TemplateEngine implementation based on Jinja2 framework.
+    """
     _engine = None;
 
     def __init__(self):
@@ -37,5 +39,8 @@ class Jinja2Engine(TemplateEngine):
                 file.write(result)
 
     class Factory(object):
+        """
+        Inner Factory class to fulfill the binding from TemplateEngineFactory
+        """
         @staticmethod
         def create(): return Jinja2Engine()

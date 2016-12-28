@@ -5,12 +5,15 @@ logger = logging.getLogger(__name__)
 
 
 class TemplateEngineFactory(object):
+    """
+    A factory method implementation that returns a TemplateEngine, given a name
+    """
     _factories = {}
 
     @staticmethod
-    def addFactory(entity, shapeFactory):
+    def addFactory(entity, factory):
         logger.info('Add Factory {}'.format(entity))
-        TemplateEngineFactory._factories[entity] = shapeFactory
+        TemplateEngineFactory._factories[entity] = factory
 
 
     # A Template Method:

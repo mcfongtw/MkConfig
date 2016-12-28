@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 class PySTEngine(TemplateEngine):
+    """
+    A concret TemplateEngine implementation based on plain old Python String Template
+    """
     _engine = None;
     _template = None
 
@@ -31,5 +34,8 @@ class PySTEngine(TemplateEngine):
                 file.write(result)
 
     class Factory(object):
+        """
+        Inner Factory class to fulfill the binding from TemplateEngineFactory
+        """
         @staticmethod
         def create(): return PySTEngine()

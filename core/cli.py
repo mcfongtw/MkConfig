@@ -11,7 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 class CliController(CementBaseController):
+    """
+    A Controller class to add arguments and linking commands with functions
+    """
     class Meta:
+        """
+        Meta class that defines arguments.
+        """
         label = "base"
         description = "Make Configuration"
 
@@ -44,8 +50,13 @@ class CliController(CementBaseController):
 
 # define the application class
 class MkConfigApp(CementApp):
-
+    """
+    An application class that define a life scope of MkConfig
+    """
     class Meta(object):
+        """
+        A Meta class that defines hook
+        """
         # define any hook functions here
         def pre_setup_hook(self):
             logger.debug("pre_setup hook")

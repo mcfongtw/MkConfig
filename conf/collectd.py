@@ -10,9 +10,12 @@ import env
 
 logger = logging.getLogger(__name__)
 
+#TODO: rename class name to something that makes more sense.
 
 class JmxTransfiguration(DependentTransfiguration):
-
+    """
+    A ContextAwareTransfiguration that transform with respect to collectd-jmx template
+    """
     _engine = None
     _input = None
     _output = None
@@ -28,7 +31,9 @@ class JmxTransfiguration(DependentTransfiguration):
 
 
 class YamlReadTransfiguration(DependentTransfiguration):
-
+    """
+    A ContextAwareTransfiguration that reads data from yaml file path from context and persists result back in context
+    """
     _key_file_path = None
 
     def __init__(self, keyName):
@@ -53,12 +58,17 @@ class YamlReadTransfiguration(DependentTransfiguration):
 
 
 class JmxTransReadPropertiesFromYaml(YamlReadTransfiguration):
+    """
+    A YamlReadTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
+    """
     def __init__(self, keyName = '_collectd_jmx_yaml_props_file'):
         super().__init__(keyName)
 
 
 class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
-
+    """
+    A YamlReadTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
+    """
     def __init__(self, keyName = '_collectd_jmx_yaml_mbeans_file'):
         super().__init__(keyName)
 
@@ -87,7 +97,9 @@ class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
 
 
 class JmxTransTemplateToStub(JmxTransfiguration):
-
+    """
+    The first phase of  JmxTransfiguration to transform from input yaml files to (half-product) configuration stub
+    """
     def __init__(self):
         super().__init__()
 
@@ -101,7 +113,9 @@ class JmxTransTemplateToStub(JmxTransfiguration):
 
 
 class JmxTransStubToConfiguration(JmxTransfiguration):
-
+    """
+    The second phase of JmxTransfiguration to transform from the stub file to file Collectd-Jmx configuration.
+    """
     def __init__(self):
         super().__init__()
 

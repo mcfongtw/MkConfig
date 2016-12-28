@@ -42,7 +42,9 @@ OUTPUT_DIR_NAME="output/"
 TEMP_DIR_NAME="/tmp"
 
 class Configurations(object):
-
+    """
+    A class that defines all type of configurations or global (env) settings.
+    """
     def __init__(self):
         pass
 
