@@ -9,6 +9,7 @@ class Transfiguration(object):
     """
     A change in form of configuration
     """
+
     __metaclass__ = ABCMeta
 
     def __init__(self):
@@ -20,11 +21,11 @@ class Transfiguration(object):
         pass
 
 
-#TODO: rename to ContextAwareTransfiguration
-class DependentTransfiguration(Transfiguration):
+class ContextAwareTransfiguration(Transfiguration):
     """
     A type of Trasnfiguration that scripts depends on context
     """
+
     def __init__(self):
         super().__init__()
 
@@ -39,6 +40,7 @@ class ChainOfTransfiguration(object):
     A chain of responsibility implementation that channel through a series of transifgurations. One may depend
     on previous step with respect to Context
     """
+
     _chain = []
 
     _context = {}

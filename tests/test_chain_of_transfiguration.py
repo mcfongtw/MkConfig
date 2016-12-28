@@ -1,4 +1,4 @@
-from core.chain import Transfiguration, DependentTransfiguration
+from core.chain import Transfiguration, ContextAwareTransfiguration
 from core.chain import ChainOfTransfiguration
 import unittest
 from core.error import IllegalStateException
@@ -22,7 +22,7 @@ class TransfigurationSpell(Transfiguration):
         TransfigurationSpell.static_spell_counter +=1
 
 
-class AdditiveDependentTransfiguration(DependentTransfiguration):
+class AdditiveContextAwareTransfiguration(ContextAwareTransfiguration):
 
     _number = 0
 
@@ -67,9 +67,9 @@ class TestTransfigurationSpell(unittest.TestCase):
         self.assertEqual(TransfigurationSpell.static_spell_counter, 3)
 
     def test_functional_chain_piping(self):
-        one = AdditiveDependentTransfiguration(1)
-        two = AdditiveDependentTransfiguration(2)
-        three = AdditiveDependentTransfiguration(3)
+        one = AdditiveContextAwareTransfiguration(1)
+        two = AdditiveContextAwareTransfiguration(2)
+        three = AdditiveContextAwareTransfiguration(3)
 
         chain = ChainOfTransfiguration()
         chain.add(one)

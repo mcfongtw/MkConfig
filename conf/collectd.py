@@ -1,4 +1,4 @@
-from core.chain import DependentTransfiguration
+from core.chain import ContextAwareTransfiguration
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
 from env import Configurations
@@ -10,9 +10,8 @@ import env
 
 logger = logging.getLogger(__name__)
 
-#TODO: rename class name to something that makes more sense.
 
-class JmxTransfiguration(DependentTransfiguration):
+class CollectdJmxTransfiguration(ContextAwareTransfiguration):
     """
     A ContextAwareTransfiguration that transform with respect to collectd-jmx template
     """
@@ -30,7 +29,7 @@ class JmxTransfiguration(DependentTransfiguration):
         self._engine.apply(context, self._input, self._output)
 
 
-class YamlReadTransfiguration(DependentTransfiguration):
+class YamlToContextTransfiguration(ContextAwareTransfiguration):
     """
     A ContextAwareTransfiguration that reads data from yaml file path from context and persists result back in context
     """
@@ -57,18 +56,20 @@ class YamlReadTransfiguration(DependentTransfiguration):
                 context[key] = value
 
 
-class JmxTransReadPropertiesFromYaml(YamlReadTransfiguration):
+class CollectdJmxPropertiesToContextTransfiguration(YamlToContextTransfiguration):
     """
-    A YamlReadTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
+    A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
     """
+
     def __init__(self, keyName = '_collectd_jmx_yaml_props_file'):
         super().__init__(keyName)
 
 
-class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
+class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
     """
-    A YamlReadTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
+    A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
     """
+
     def __init__(self, keyName = '_collectd_jmx_yaml_mbeans_file'):
         super().__init__(keyName)
 
@@ -96,10 +97,11 @@ class JmxTransReadMbeansFromYaml(YamlReadTransfiguration):
             context['mbeans'] = mbeans
 
 
-class JmxTransTemplateToStub(JmxTransfiguration):
+class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
     """
-    The first phase of  JmxTransfiguration to transform from input yaml files to (half-product) configuration stub
+    The first phase of  CollectdJmxTransfiguration to transform from input yaml files to (half-product) configuration stub
     """
+
     def __init__(self):
         super().__init__()
 
@@ -112,10 +114,11 @@ class JmxTransTemplateToStub(JmxTransfiguration):
         super().perform(context)
 
 
-class JmxTransStubToConfiguration(JmxTransfiguration):
+class CollectdJmxTransStubToConfiguration(CollectdJmxTransfiguration):
     """
-    The second phase of JmxTransfiguration to transform from the stub file to file Collectd-Jmx configuration.
+    The second phase of CollectdJmxTransfiguration to transform from the stub file to file Collectd-Jmx configuration.
     """
+
     def __init__(self):
         super().__init__()
 
@@ -129,16 +132,19 @@ class JmxTransStubToConfiguration(JmxTransfiguration):
         super().perform(context)
 
 
-class JmxTransifgurationChain(ChainOfTransfiguration):
+class CollectdJmxTransifgurationChain(ChainOfTransfiguration):
+    """
+    A chain of transfiguration that transform input to a complete collectd jmx configuration
+    """
 
     def __init__(self):
         super().__init__()
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
-        self._step1 = JmxTransReadPropertiesFromYaml()
-        self._step2 = JmxTransReadMbeansFromYaml()
-        self._step3 = JmxTransTemplateToStub()
-        self._step4 = JmxTransStubToConfiguration()
+        self._step1 = CollectdJmxPropertiesToContextTransfiguration()
+        self._step2 = CollectdJmxMbeansToContextTransfiguration()
+        self._step3 = CollectdJmxTransTemplateToStub()
+        self._step4 = CollectdJmxTransStubToConfiguration()
 
         self.add(self._step1)
         self.add(self._step2)

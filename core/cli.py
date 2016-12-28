@@ -1,4 +1,4 @@
-from conf.collectd import JmxTransifgurationChain
+from conf.collectd import CollectdJmxTransifgurationChain
 from conf.factory import ConfigTemplateFactory
 import logging
 import env
@@ -44,7 +44,7 @@ class CliController(CementBaseController):
             '_collectd_jmx_input': config_template_file,
             '_collectd_jmx_output': self.app.pargs.output
         }
-        chain = JmxTransifgurationChain()
+        chain = CollectdJmxTransifgurationChain()
         chain.execute(context)
 
 
