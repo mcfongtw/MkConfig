@@ -41,6 +41,8 @@ OUTPUT_DIR_NAME="output/"
 
 TEMP_DIR_NAME="/tmp"
 
+logger = logging.getLogger(__name__)
+
 class Configurations(object):
     """
     A class that defines all type of configurations or global (env) settings.
@@ -74,7 +76,12 @@ class Configurations(object):
 
     @staticmethod
     def getOutputDir():
-        return os.path.join(Configurations.getProjectRootDir(), OUTPUT_DIR_NAME)
+        directory = os.path.join(Configurations.getProjectRootDir(), OUTPUT_DIR_NAME)
+        if not os.path.exists(directory):
+            logger.warn('Directory %s not exist, CREATE!', directory)
+            os.makedirs(directory)
+
+        return directory
 
     @staticmethod
     def getOutputFile(fname):

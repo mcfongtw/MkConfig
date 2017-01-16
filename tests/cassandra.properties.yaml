@@ -1,9 +1,0 @@
-'progName' : 'TestJava'
-'hostName' : 'localhost'
-'hostPort' : '12345'
-'progVer' : '3.4561'
-'cfs' : ['ap', 'apClient', 'event', 'alarm', 'indexEvent', 'indexTimeUUID', 'indexUTF8', 'statsAP', 'apConfig','wlanConfig']
-'requests' : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage']
-'internals' : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage']
-'drops' : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ, REQUEST_RESPONSE']
-'compaction_task_types' : ['CompletedTasks', 'PendingTasks']

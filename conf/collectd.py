@@ -3,13 +3,37 @@ from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
 from env import Configurations
 from core.chain import ChainOfTransfiguration
+from os import listdir
+from os.path import isfile, join
 import yaml
 import logging
 import env
+import os.path
 
 
 logger = logging.getLogger(__name__)
 
+
+class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
+
+    def perform(self, context):
+        appName = context['_collectd_jmx_app_prefix']
+
+        appPropertiesYamlFileName = context['_collectd_jmx_app_conf_dir'] + appName + '.properties.yaml'
+        PrepareAppConfTransfiguration.validate_file_exist(appPropertiesYamlFileName)
+        context['_collectd_jmx_yaml_props_file'] = appPropertiesYamlFileName
+        logger.info('Register the yaml file for app [{0}] at [{1}]'.format(appName, appPropertiesYamlFileName))
+
+        appMbeansYamlFileName = context['_collectd_jmx_app_conf_dir'] + appName + '.mbeans.yaml'
+        PrepareAppConfTransfiguration.validate_file_exist(appMbeansYamlFileName)
+        context['_collectd_jmx_yaml_mbeans_file'] = appMbeansYamlFileName
+        logger.info('Register the mbean file for app [{0}] at [{1}]'.format(appName, appMbeansYamlFileName))
+
+
+    @staticmethod
+    def validate_file_exist(file_path):
+        if not os.path.isfile(file_path):
+            raise IOError('File [{0}] not found !'.format(file_path))
 
 class CollectdJmxTransfiguration(ContextAwareTransfiguration):
     """
@@ -116,39 +140,142 @@ class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
 
 class CollectdJmxTransStubToConfiguration(CollectdJmxTransfiguration):
     """
-    The second phase of CollectdJmxTransfiguration to transform from the stub file to file Collectd-Jmx configuration.
+    The second phase of CollectdJmxTransfiguration to transform from the stub file to a partial configuration for a specific appliation
     """
 
     def __init__(self):
         super().__init__()
 
     def perform(self, context):
-        input = context['_collectd_jmx_input']
-        intermediate_template = '_' + input + '.tmp'
-        output = context['_collectd_jmx_output']
+        intermediate_template = '_' + context['_collectd_jmx_input'] + '.tmp'
+
+        output_filename = context['_collectd_jmx_app_prefix'] + '.output.partial'
 
         self._input = intermediate_template
-        self._output = Configurations.getOutputFile(output)
+        self._output = Configurations.getOutputFile(output_filename)
         super().perform(context)
 
 
-class CollectdJmxTransifgurationChain(ChainOfTransfiguration):
+class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
     """
-    A chain of transfiguration that transform input to a complete collectd jmx configuration
+    An (inner) chain of transfiguration that transform input to a partial collectd jmx configuration
     """
 
     def __init__(self):
         super().__init__()
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
+        self._step0 = PrepareAppConfTransfiguration()
         self._step1 = CollectdJmxPropertiesToContextTransfiguration()
         self._step2 = CollectdJmxMbeansToContextTransfiguration()
         self._step3 = CollectdJmxTransTemplateToStub()
         self._step4 = CollectdJmxTransStubToConfiguration()
 
+        self.add(self._step0)
         self.add(self._step1)
         self.add(self._step2)
         self.add(self._step3)
         self.add(self._step4)
+
+
+class SplitAppConfTransfiguration(ContextAwareTransfiguration):
+
+    def perform(self, context):
+        listOfAppNames = context['_collectd_jmx_app_prefix_list'].split()
+
+        #distinguish between string object and list
+        if isinstance(listOfAppNames, str):
+            logger.info('Processing ONE app [%s]' %listOfAppNames)
+            self.generateAppPartialConfiguration(context, listOfAppNames)
+        else :
+            logger.info('Processing list of apps [%s]' % listOfAppNames)
+            for appName in listOfAppNames:
+                self.generateAppPartialConfiguration(context, appName)
+
+    def generateAppPartialConfiguration(self, context, appName):
+        logger.info('Spliting the partial configuraiton for [%s]' % appName)
+
+        context['_collectd_jmx_app_prefix'] = appName
+        inner_chain = CollectdJmxPartialTransifgurationChain()
+        inner_chain.execute(context)
+
+
+class CollectdJmxConsolidatePartialConfigurations(ContextAwareTransfiguration):
+    """
+    The final phase of CollectdJmxTransfiguration to consolidated a complete Collectd-Jmx configuration.
+    """
+    def __init__(self):
+        super().__init__()
+
+    def perform(self, context):
+
+        header = """
+LoadPlugin java
+
+<Plugin "java">
+    JVMARG "-verbose:jni"
+    JVMArg "-Djava.class.path=/usr/share/collectd/java/collectd-api.jar:/usr/share/collectd/java/generic-jmx.jar"
+
+    LoadPlugin "org.collectd.java.GenericJMX"
+        """
+
+        footer = """
+
+
+</Plugin>
+        """
+
+        content = ""
+        content = content + header
+
+        #Retreive list of partial files under output/
+        partial_files = [Configurations.getOutputFile(f) for f in listdir(Configurations.getOutputDir()) if isfile(join(Configurations.getOutputDir(), f))]
+
+        for partial_file_path in partial_files:
+            if partial_file_path.endswith('.partial'):
+                try:
+                    file = open(partial_file_path, "r")
+                except IOError as e:
+                    errno, strerror = e.args
+                    logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, partial_file_path, strerror))
+                    raise
+                else:
+                    partial_content = file.read()
+                    content = content + partial_content
+                    file.close()
+                    logger.info("Read partial content fromm [%s]" % partial_file_path)
+
+
+        content = content +footer
+
+        output_filename = Configurations.getOutputFile(context['_collectd_jmx_output'])
+
+        try:
+            file = open(output_filename, "w")
+        except IOError as e:
+            errno, strerror = e.args
+            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, output_filename, strerror))
+            raise
+        else:
+            file.write(content)
+            file.close()
+            logger.info("Write whole content to [%s]" % output_filename)
+
+
+class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
+    """
+    An (outer) chain of transfiguration that consolidate all partial pieces to a complete collectd jmx configuration
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self._step0 = SplitAppConfTransfiguration()
+        self._step1 = CollectdJmxConsolidatePartialConfigurations()
+
+        self.add(self._step0)
+        self.add(self._step1)
+
+
 
 

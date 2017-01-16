@@ -1,4 +1,4 @@
-from conf.collectd import CollectdJmxTransifgurationChain, YamlToContextTransfiguration
+from conf.collectd import CollectdJmxPartialTransifgurationChain, YamlToContextTransfiguration
 from unittest import TestCase
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
@@ -61,10 +61,10 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_integration_collectd_jmx_trans_chain(self):
         #init context
         context =  {
-            '_collectd_jmx_yaml_props_file' : 'cassandra.properties.yaml',
-            '_collectd_jmx_yaml_mbeans_file' : 'cassandra_mbean.yaml',
+            '_collectd_jmx_app_conf_dir' : '../examples/',
+            '_collectd_jmx_app_prefix': 'cassandra',
             '_collectd_jmx_input' : 'collectd_jmx.template',
-            '_collectd_jmx_output' : 'collectd_jmx.conf'
+            '_collectd_jmx_output' : 'test.output',
         }
-        chain = CollectdJmxTransifgurationChain()
+        chain = CollectdJmxPartialTransifgurationChain()
         chain.execute(context)

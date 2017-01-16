@@ -15,29 +15,45 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_normal_start_and_stop(self):
-        app = self.make_app(argv=['-pcassandra.properties.yaml', '-mcassandra_mbean.yaml', '-tcollectd_jmx.template', '-otest.output'])
+        app = self.make_app(argv=['-tcollectd_jmx', '-otest.output', '-scassandra', '-d../examples/'])
         app.setup()
         app.run()
+
+        self.assertEqual(app.pargs.app_conf_dir, '../examples/')
+        self.assertEqual(app.pargs.template, 'collectd_jmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra')
+
         app.close()
 
     def test_normal_with_default_template(self):
-        app3 = self.make_app(argv=['-pcassandra.properties.yaml', '-mcassandra_mbean.yaml', '-otest.output'])
+        app3 = self.make_app(argv=['-scassandra', '-otest.output', '-d../examples/'])
         app3.setup()
         app3.run()
+
+        self.assertEqual(app3.pargs.app_conf_dir, '../examples/')
+        self.assertEqual(app3.pargs.template, 'collectd_jmx')
+        self.assertEqual(app3.pargs.output, 'test.output')
+        self.assertEqual(app3.pargs.apps_list, 'cassandra')
+
         app3.close()
 
+    def test_normal_start_and_stop_with_apps_list(self):
+        app = self.make_app(argv=['-tcollectd_jmx.template', '-otest.output', '-scassandra jenkins', '-d../examples/'])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
+
+        app.close()
+
+
     def test_file_not_found_1(self):
-        app1 = self.make_app(argv=['-pnot_exist.yaml', '-o1', '-t1', '-m1'])
+        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown'])
         app1.setup()
         with self.assertRaises(IOError):
             app1.run()
         app1.close()
-
-    def test_file_not_found_2(self):
-        app2 = self.make_app(argv=['-mnot_exist.yaml', '-p1', '-t1', '-o1'])
-        app2.setup()
-        with self.assertRaises(IOError):
-            app2.run()
-        app2.close()
 
 

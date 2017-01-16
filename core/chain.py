@@ -46,11 +46,13 @@ class ChainOfTransfiguration(object):
     _context = {}
 
     def __init__(self):
-        pass
+        self._chain = []
+        self._context = {}
 
     def add(self, transfiguration):
-        logger.info('Adding transfiguration : [{}]'.format(transfiguration.__class__))
         self._chain.append(transfiguration)
+        logger.info(
+            'Adding transfiguration : [{}] -> [{}] elements'.format(transfiguration.__class__, len(self._chain)))
 
     def get(self, index):
         return self._chain[index]
