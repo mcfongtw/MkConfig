@@ -2,7 +2,7 @@ name : Jenkins_Memory
 objectName: java.lang:type=Memory
 InstancePrefix : Memory
 required: true
-values:
+attributes:
  - Attribute : HeapMemoryUsage
    InstancePrefix : Heap_Memory_Usage_
    Type : gauge
@@ -16,7 +16,7 @@ name : Jenkins_Memory_EdenSpace
 objectName: java.lang:type=MemoryPool,name=Eden Space
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : EdenSpace_Usage_
    Type : gauge
@@ -26,7 +26,7 @@ name : Jenkins_Memory_SurvivorSpace
 objectName: java.lang:type=MemoryPool,name=Survivor Space
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : SurvivorSpace_Usage_
    Type : gauge
@@ -36,7 +36,7 @@ name : Jenkins_Memory_TenuredGen
 objectName: java.lang:type=MemoryPool,name=Tenured Gen
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : TenuredGen_Usage_
    Type : gauge
@@ -46,7 +46,7 @@ name : Jenkins_Nio_DirectMemory
 objectName: java.nio:type=BufferPool,name=direct
 InstancePrefix : Nio
 required: false
-values:
+attributes:
  - Attribute : MemoryUsed
    InstancePrefix : DirectMemory_Used
    Type : gauge
@@ -58,7 +58,7 @@ name : Jenkins_Nio_MappedMemory
 objectName: java.nio:type=BufferPool,name=mapped
 InstancePrefix : Nio
 required: false
-values:
+attributes:
  - Attribute : MemoryUsed
    InstancePrefix : MappedMemory_Used
    Type : gauge
@@ -70,7 +70,7 @@ name : Jenkins_Threading
 objectName: java.lang:type=Threading
 InstancePrefix : Threading
 required: true
-values:
+attributes:
  - Attribute : ThreadCount
    InstancePrefix : Count
    Type : counter
@@ -82,7 +82,7 @@ name : Jenkins_GC_Serial_Copy
 objectName: java.lang:type=GarbageCollector,name=Copy
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : SerialCopy_Count
    Type : counter
@@ -94,7 +94,7 @@ name : Jenkins_GC_MarkSweepCompact
 objectName: java.lang:type=GarbageCollector,name=MarkSweepCompact
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : MarkSweepCompact_Count
    Type : counter
@@ -106,7 +106,7 @@ name : Jenkins_GC_ParNew
 objectName: java.lang:type=GarbageCollector,name=ParNew
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : ParNew_Count
    Type : counter
@@ -118,7 +118,7 @@ name : Jenkins_GC_ConcurrentMarkSweep
 objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : CMS_Count
    Type : counter
@@ -130,7 +130,7 @@ name : Jenkins_System
 objectName: java.lang:type=OperatingSystem
 InstancePrefix : System
 required: true
-values:
+attributes:
  - Attribute : MaxFileDescriptorCount
    InstancePrefix : Max_FD
    Type : gauge
