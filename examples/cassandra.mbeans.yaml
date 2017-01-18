@@ -2,7 +2,7 @@ name : Cassandra_Memory
 objectName: java.lang:type=Memory
 InstancePrefix : Memory
 required: true
-values:
+attributes:
  - Attribute : HeapMemoryUsage
    InstancePrefix : Heap_Memory_Usage_
    Type : gauge
@@ -16,7 +16,7 @@ name : Cassandra_Memory_EdenSpace
 objectName: java.lang:type=MemoryPool,name=Eden Space
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : EdenSpace_Usage_
    Type : gauge
@@ -26,7 +26,7 @@ name : Cassandra_Memory_SurvivorSpace
 objectName: java.lang:type=MemoryPool,name=Survivor Space
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : SurvivorSpace_Usage_
    Type : gauge
@@ -36,7 +36,7 @@ name : Cassandra_Memory_TenuredGen
 objectName: java.lang:type=MemoryPool,name=Tenured Gen 
 InstancePrefix : Memory
 required: false
-values:
+attributes:
  - Attribute : Usage
    InstancePrefix : TenuredGen_Usage_
    Type : gauge
@@ -46,7 +46,7 @@ name : Cassandra_Nio_DirectMemory
 objectName: java.nio:type=BufferPool,name=direct
 InstancePrefix : Nio
 required: false
-values:
+attributes:
  - Attribute : MemoryUsed
    InstancePrefix : DirectMemory_Used
    Type : gauge
@@ -58,7 +58,7 @@ name : Cassandra_Nio_MappedMemory
 objectName: java.nio:type=BufferPool,name=mapped
 InstancePrefix : Nio
 required: false
-values:
+attributes:
  - Attribute : MemoryUsed
    InstancePrefix : MappedMemory_Used
    Type : gauge
@@ -70,7 +70,7 @@ name : Cassandra_Threading
 objectName: java.lang:type=Threading
 InstancePrefix : Threading
 required: true
-values:
+attributes:
  - Attribute : ThreadCount
    InstancePrefix : Count
    Type : counter
@@ -82,7 +82,7 @@ name : Cassandra_GC_ParNew
 objectName: java.lang:type=GarbageCollector,name=ParNew
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : ParNew_Count
    Type : counter
@@ -94,7 +94,7 @@ name : Cassandra_GC_ConcurrentMarkSweep
 objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
 InstancePrefix : GC
 required: false
-values:
+attributes:
  - Attribute : CollectionCount
    InstancePrefix : CMS_Count
    Type : counter
@@ -106,7 +106,7 @@ name : Cassandra_System
 objectName: java.lang:type=OperatingSystem
 InstancePrefix : System
 required: true
-values:
+attributes:
  - Attribute : MaxFileDescriptorCount
    InstancePrefix : Max_FD
    Type : gauge
@@ -118,7 +118,7 @@ name : Cassandra_Perf_Overall_Stats
 objectName: org.apache.cassandra.db:type=StorageProxy
 InstancePrefix : Perf
 required: true
-values:
+attributes:
  - Attribute : RecentReadLatencyMicros
    InstancePrefix : Recent_Read_Latency_Micros
  - Attribute : ReadOperations
@@ -132,7 +132,7 @@ name : Cassandra_TPStats_Compaction
 objectName: org.apache.cassandra.db:type=CompactionManager
 InstancePrefix : TPStats_Stage_Compaction
 required: true
-values:
+attributes:
  - Attribute : CompletedTasks
    InstancePrefix : Completed_Tasks
    Type : counter
@@ -144,7 +144,7 @@ name : Cassandra_StorageService
 objectName: org.apache.cassandra.db:type=StorageService
 InstancePrefix : StorageService
 required: false
-values:
+attributes:
  - Attribute : ExceptionCount
    InstancePrefix : Exception_Count
    Type : counter
@@ -154,7 +154,7 @@ objectName: org.apache.cassandra.request:type={{ item }}
 InstancePrefix : TPStats_Stage_{{ item }}
 required: true
 collection : requests
-values: 
+attributes: 
  - Attribute : CompletedTasks
    InstancePrefix : Completed_Tasks
    Type : counter
@@ -170,7 +170,7 @@ objectName: org.apache.cassandra.internal:type={{ item }}
 InstancePrefix : TPStats_Stage_{{ item }}
 required: true
 collection : internals
-values: 
+attributes: 
  - Attribute : CompletedTasks
    InstancePrefix : Completed_Tasks
    Type : counter
@@ -186,7 +186,7 @@ objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace }},
 InstancePrefix : CF_{{ keyspace }}_{{ item }}
 required: true
 collection : cfs
-values:
+attributes:
  - Attribute : RecentReadLatencyMicros
    InstancePrefix : Recent_Read_Latency_Micros
  - Attribute : RecentWriteLatencyMicros
@@ -207,7 +207,7 @@ objectName: org.apache.cassandra.metrics:type=DroppedMessage,scope={{ item }},na
 InstancePrefix : TPStats_Dropped_{{ item }}
 required: true
 collection : drops
-values:
+attributes:
  - Attribute : Count
    InstancePrefix : Count
    Type : counter
@@ -216,7 +216,7 @@ name : Cassandra_Perf_Client_Read_Stats
 objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Read,name=Latency
 InstancePrefix : Perf
 required: false
-values:
+attributes:
  - Attribute : Mean
    InstancePrefix : Client_Read_Latency_Mean
  - Attribute : MeanRate
@@ -228,7 +228,7 @@ name : Cassandra_Perf_Client_Write_Stats
 objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Write,name=Latency
 InstancePrefix : Perf
 required: false
-values:
+attributes:
  - Attribute : Mean
    InstancePrefix : Client_Write_Latency_Mean
  - Attribute : MeanRate
