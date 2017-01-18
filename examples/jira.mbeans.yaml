@@ -1,0 +1,139 @@
+name : Jira_Memory
+objectName: java.lang:type=Memory
+InstancePrefix : Memory
+required: true
+attributes:
+ - Attribute : HeapMemoryUsage
+   InstancePrefix : Heap_Memory_Usage_
+   Type : gauge
+   Table : true
+ - Attribute : NonHeapMemoryUsage
+   InstancePrefix : Non_Heap_Memory_Usage_
+   Type : gauge
+   Table : true
+---
+name : Jira_Memory_EdenSpace
+objectName: java.lang:type=MemoryPool,name=Eden Space
+InstancePrefix : Memory
+required: false
+attributes:
+ - Attribute : Usage
+   InstancePrefix : EdenSpace_Usage_
+   Type : gauge
+   Table : true   
+---
+name : Jira_Memory_SurvivorSpace
+objectName: java.lang:type=MemoryPool,name=Survivor Space
+InstancePrefix : Memory
+required: false
+attributes:
+ - Attribute : Usage
+   InstancePrefix : SurvivorSpace_Usage_
+   Type : gauge
+   Table : true   
+---
+name : Jira_Memory_TenuredGen
+objectName: java.lang:type=MemoryPool,name=Tenured Gen
+InstancePrefix : Memory
+required: false
+attributes:
+ - Attribute : Usage
+   InstancePrefix : TenuredGen_Usage_
+   Type : gauge
+   Table : true   
+---
+name : Jira_Nio_DirectMemory
+objectName: java.nio:type=BufferPool,name=direct
+InstancePrefix : Nio
+required: false
+attributes:
+ - Attribute : MemoryUsed
+   InstancePrefix : DirectMemory_Used
+   Type : gauge
+ - Attribute : TotalCapacity
+   InstancePrefix : DirectMemory_Max
+   Type : gauge
+---
+name : Jira_Nio_MappedMemory
+objectName: java.nio:type=BufferPool,name=mapped
+InstancePrefix : Nio
+required: false
+attributes:
+ - Attribute : MemoryUsed
+   InstancePrefix : MappedMemory_Used
+   Type : gauge
+ - Attribute : TotalCapacity
+   InstancePrefix : MappedMemory_Max
+   Type : gauge
+---
+name : Jira_Threading
+objectName: java.lang:type=Threading
+InstancePrefix : Threading
+required: true
+attributes:
+ - Attribute : ThreadCount
+   InstancePrefix : Count
+   Type : counter
+ - Attribute : PeakThreadCount
+   InstancePrefix : Peak_Count
+   Type : counter
+---
+name : Jira_GC_Serial_Copy
+objectName: java.lang:type=GarbageCollector,name=Copy
+InstancePrefix : GC
+required: false
+attributes:
+ - Attribute : CollectionCount
+   InstancePrefix : SerialCopy_Count
+   Type : counter
+ - Attribute : CollectionTime
+   InstancePrefix : SerialCopy_Time
+   Type : counter
+---
+name : Jira_GC_MarkSweepCompact
+objectName: java.lang:type=GarbageCollector,name=MarkSweepCompact
+InstancePrefix : GC
+required: false
+attributes:
+ - Attribute : CollectionCount
+   InstancePrefix : MarkSweepCompact_Count
+   Type : counter
+ - Attribute : CollectionTime
+   InstancePrefix : MarkSweepCompact_Time
+   Type : counter
+---
+name : Jira_GC_ParNew
+objectName: java.lang:type=GarbageCollector,name=ParNew
+InstancePrefix : GC
+required: false
+attributes:
+ - Attribute : CollectionCount
+   InstancePrefix : ParNew_Count
+   Type : counter
+ - Attribute : CollectionTime
+   InstancePrefix : ParNew_Time
+   Type : counter
+---
+name : Jira_GC_ConcurrentMarkSweep
+objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
+InstancePrefix : GC
+required: false
+attributes:
+ - Attribute : CollectionCount
+   InstancePrefix : CMS_Count
+   Type : counter
+ - Attribute : CollectionTime
+   InstancePrefix : CMS_Time
+   Type : counter
+---
+name : Jira_System
+objectName: java.lang:type=OperatingSystem
+InstancePrefix : System
+required: true
+attributes:
+ - Attribute : MaxFileDescriptorCount
+   InstancePrefix : Max_FD
+   Type : gauge
+ - Attribute : OpenFileDescriptorCount
+   InstancePrefix : Open_FD
+   Type : gauge

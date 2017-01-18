@@ -48,6 +48,16 @@ class TestMkConfigApp(test.CementTestCase):
 
         app.close()
 
+    def test_normal_start_and_stop_with_all_exampl_apps(self):
+        app = self.make_app(argv=['-tcollectd_jmx.template', '-otest.output', '-scassandra jenkins jira', '-d../examples/'])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
+
+        app.close()
+
 
     def test_file_not_found_1(self):
         app1 = self.make_app(argv=['-o1', '-t1', '-sunknown'])
