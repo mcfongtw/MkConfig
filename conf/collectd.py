@@ -1,6 +1,7 @@
 from core.chain import ContextAwareTransfiguration
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
+from conf.context import *
 from env import Configurations
 from core.chain import ChainOfTransfiguration
 from os import listdir
@@ -13,20 +14,21 @@ import os.path
 
 logger = logging.getLogger(__name__)
 
+#TODO: Move all common transifiguration classes to chain.py
 
 class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
 
     def perform(self, context):
-        appName = context['_collectd_jmx_app_prefix']
+        appName = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX]
 
-        appPropertiesYamlFileName = context['_collectd_jmx_app_conf_dir'] + appName + '.properties.yaml'
+        appPropertiesYamlFileName = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + appName + '.properties.yaml'
         PrepareAppConfTransfiguration.validate_file_exist(appPropertiesYamlFileName)
-        context['_collectd_jmx_yaml_props_file'] = appPropertiesYamlFileName
+        context[CTX_KEY_COLLECTD_JMX_YAML_PROPS_FILE] = appPropertiesYamlFileName
         logger.info('Register the yaml file for app [{0}] at [{1}]'.format(appName, appPropertiesYamlFileName))
 
-        appMbeansYamlFileName = context['_collectd_jmx_app_conf_dir'] + appName + '.mbeans.yaml'
+        appMbeansYamlFileName = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + appName + '.mbeans.yaml'
         PrepareAppConfTransfiguration.validate_file_exist(appMbeansYamlFileName)
-        context['_collectd_jmx_yaml_mbeans_file'] = appMbeansYamlFileName
+        context[CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE] = appMbeansYamlFileName
         logger.info('Register the mbean file for app [{0}] at [{1}]'.format(appName, appMbeansYamlFileName))
 
 
@@ -35,6 +37,9 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         if not os.path.isfile(file_path):
             raise IOError('File [{0}] not found !'.format(file_path))
 
+#TODO: Create a InMemoryTemplateTransfiguration
+
+#TODO: Rename to FileTemplateTransfiguration
 class CollectdJmxTransfiguration(ContextAwareTransfiguration):
     """
     A ContextAwareTransfiguration that transform with respect to collectd-jmx template
@@ -52,7 +57,7 @@ class CollectdJmxTransfiguration(ContextAwareTransfiguration):
         super().perform(context)
         self._engine.apply(context, self._input, self._output)
 
-
+#TODO: Separate FileReaderToContextTransfiguration, and make YamlFileReaderToContextTransfiguration to inherit from
 class YamlToContextTransfiguration(ContextAwareTransfiguration):
     """
     A ContextAwareTransfiguration that reads data from yaml file path from context and persists result back in context
@@ -85,7 +90,7 @@ class CollectdJmxPropertiesToContextTransfiguration(YamlToContextTransfiguration
     A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
     """
 
-    def __init__(self, keyName = '_collectd_jmx_yaml_props_file'):
+    def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_YAML_PROPS_FILE):
         super().__init__(keyName)
 
 
@@ -94,7 +99,7 @@ class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
     A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
     """
 
-    def __init__(self, keyName = '_collectd_jmx_yaml_mbeans_file'):
+    def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE):
         super().__init__(keyName)
 
     def perform(self, context):
@@ -118,7 +123,7 @@ class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
                 except SyntaxError:
                     mbeans.append(block)
 
-            context['mbeans'] = mbeans
+            context[CTX_KEY_COLLECTD_JMX_MBEANS_SET] = mbeans
 
 
 class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
@@ -130,7 +135,7 @@ class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
         super().__init__()
 
     def perform(self, context):
-        input = context['_collectd_jmx_input']
+        input = context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE]
         intermediate_template = '_' + input + '.tmp'
 
         self._input = input
@@ -147,9 +152,9 @@ class CollectdJmxTransStubToConfiguration(CollectdJmxTransfiguration):
         super().__init__()
 
     def perform(self, context):
-        intermediate_template = '_' + context['_collectd_jmx_input'] + '.tmp'
+        intermediate_template = '_' + context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE] + '.tmp'
 
-        output_filename = context['_collectd_jmx_app_prefix'] + '.output.partial'
+        output_filename = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] + '.output.partial'
 
         self._input = intermediate_template
         self._output = Configurations.getOutputFile(output_filename)
@@ -181,8 +186,9 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
 class SplitAppConfTransfiguration(ContextAwareTransfiguration):
 
     def perform(self, context):
-        listOfAppNames = context['_collectd_jmx_app_prefix_list'].split()
+        listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
+        #FIXME: The distinguishment might not be necessary, as above always return a list of 0 or 1 element
         #distinguish between string object and list
         if isinstance(listOfAppNames, str):
             logger.info('Processing ONE app [%s]' %listOfAppNames)
@@ -195,7 +201,7 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
     def generateAppPartialConfiguration(self, context, appName):
         logger.info('Spliting the partial configuraiton for [%s]' % appName)
 
-        context['_collectd_jmx_app_prefix'] = appName
+        context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] = appName
         inner_chain = CollectdJmxPartialTransifgurationChain()
         inner_chain.execute(context)
 
@@ -248,7 +254,7 @@ LoadPlugin java
 
         content = content +footer
 
-        output_filename = Configurations.getOutputFile(context['_collectd_jmx_output'])
+        output_filename = Configurations.getOutputFile(context[CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT])
 
         try:
             file = open(output_filename, "w")

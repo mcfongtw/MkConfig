@@ -1,4 +1,5 @@
 from conf.collectd import CollectdJmxTransfigurationChain
+from conf.context import *
 from conf.factory import ConfigTemplateFactory
 import logging
 import env
@@ -38,10 +39,10 @@ class CliController(CementBaseController):
         config_template_file = ConfigTemplateFactory.get_config_tempalte(self.app.pargs.template)
 
         context = {
-            '_collectd_jmx_app_conf_dir': self.app.pargs.app_conf_dir,
-            '_collectd_jmx_input': config_template_file,
-            '_collectd_jmx_output': self.app.pargs.output,
-            '_collectd_jmx_app_prefix_list': self.app.pargs.apps_list,
+            CTX_KEY_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
+            CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE: config_template_file,
+            CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
+            CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
         }
         chain = CollectdJmxTransfigurationChain()
         chain.execute(context)
