@@ -137,3 +137,66 @@ attributes:
  - Attribute : OpenFileDescriptorCount
    InstancePrefix : Open_FD
    Type : gauge
+---
+name : Jira_Catalina_38080_Requests
+objectName: Catalina:type=GlobalRequestProcessor,name=\"http-nio-38080\"
+InstancePrefix : Catalina_38080_Req_Stats
+required: true
+attributes:
+ - Attribute : requestCount
+   InstancePrefix : RequestCount
+   Type : counter
+ - Attribute : errorCount
+   InstancePrefix : errorCount
+   Type : counter
+---
+name : Jira_Catalina_38080_ThreadPool
+objectName: Catalina:type=ThreadPool,name=\"http-nio-38080\"
+InstancePrefix : Catalina_38080_TP_Stats
+required: true
+attributes:
+ - Attribute : currentThreadCount
+   InstancePrefix : Active_Num
+   Type : gauge
+ - Attribute : currentThreadsBusy
+   InstancePrefix : Busy_Num
+   Type : gauge
+ - Attribute : maxThreads
+   InstancePrefix : Max_Num
+   Type : gauge
+ - Attribute : minSpareThreads
+   InstancePrefix : Min_Num
+   Type : gauge
+---
+name : Jira_DataSource
+objectName: com.atlassian.jira:name=BasicDataSource,connectionpool=connections
+InstancePrefix : DataSource_Stats
+required: true
+attributes:
+ - Attribute : BorrowedCount
+   InstancePrefix : Borrowed_Count
+   Type : counter
+ - Attribute : CreatedCount
+   InstancePrefix : Created_Count
+   Type : counter
+ - Attribute : DestroyedCount
+   InstancePrefix : Destroyed_Count
+   Type : counter
+ - Attribute : NumActive
+   InstancePrefix : Num_Active
+   Type : gauge
+ - Attribute : NumIdle
+   InstancePrefix : Num_Idle
+   Type : gauge
+ - Attribute : NumWaiters
+   InstancePrefix : Num_Waiters
+   Type : gauge
+ - Attribute : MeanActiveTimeMillis
+   InstancePrefix : Mean_Active_Time_Millis
+   Type : gauge
+ - Attribute : MeanBorrowWaitTimeMillis
+   InstancePrefix : Mean_Borrow_Wait_Time_Millis
+   Type : gauge
+ - Attribute : MeanIdleTimeMillis
+   InstancePrefix : Mean_Idle_Time_Millis
+   Type : gauge
