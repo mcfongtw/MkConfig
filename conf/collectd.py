@@ -233,9 +233,15 @@ LoadPlugin java
 
         content = ""
         content = content + header
+        partial_files = []
 
-        #Retreive list of partial files under output/
-        partial_files = [Configurations.getOutputFile(f) for f in listdir(Configurations.getOutputDir()) if isfile(join(Configurations.getOutputDir(), f))]
+        listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
+
+        # Retreive list of partial files based on user selected apps under output/
+        for appName in listOfAppNames :
+            file_name = appName + ".output.partial"
+            partial_files.append(Configurations.getOutputFile(file_name))
+
 
         for partial_file_path in partial_files:
             if partial_file_path.endswith('.partial'):
