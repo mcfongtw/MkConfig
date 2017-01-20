@@ -4,12 +4,13 @@ from core.jinja2 import Jinja2Engine
 from conf.context import *
 from env import Configurations
 from core.chain import ChainOfTransfiguration
+from conf.utils import Utils
 from os import listdir
 from os.path import isfile, join
+import os.path
 import yaml
 import logging
 import env
-import os.path
 
 
 logger = logging.getLogger(__name__)
@@ -119,12 +120,21 @@ class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
             raw_content = file.read()
             for block in raw_content.split('---'):
                 try:
-                    mbeans.append(yaml.load(block))
+                    mbean = yaml.load(block)
+                    self.patch_mbean_table_value(mbean)
+                    mbeans.append(mbean)
                 except SyntaxError:
                     mbeans.append(block)
 
             context[CTX_KEY_COLLECTD_JMX_MBEANS_SET] = mbeans
 
+    def patch_mbean_table_value(self, mbean):
+        for attribute in mbean['attributes']:
+            if 'Table' in attribute:
+                value = attribute['Table']
+                attribute['Table'] = Utils.boolean_to_lowercase_literal(value)
+
+        logger.debug(mbean)
 
 class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
     """
