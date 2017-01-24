@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.cli &#8212; MkConfig 0.1-alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1-alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MkConfig 0.1-alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core.cli</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">conf.collectd</span> <span class="k">import</span> <span class="n">CollectdJmxTransfigurationChain</span>
+<span class="kn">from</span> <span class="nn">conf.context</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">conf.factory</span> <span class="k">import</span> <span class="n">ConfigTemplateFactory</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">env</span>
+<span class="kn">from</span> <span class="nn">cement.core.foundation</span> <span class="k">import</span> <span class="n">CementApp</span>
+<span class="kn">from</span> <span class="nn">cement.core.controller</span> <span class="k">import</span> <span class="n">CementBaseController</span><span class="p">,</span> <span class="n">expose</span>
+<span class="kn">from</span> <span class="nn">cement.utils.misc</span> <span class="k">import</span> <span class="n">init_defaults</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CliController"><a class="viewcode-back" href="../../code.html#core.cli.CliController">[docs]</a><span class="k">class</span> <span class="nc">CliController</span><span class="p">(</span><span class="n">CementBaseController</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Controller class to add arguments and linking commands with functions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CliController.Meta"><a class="viewcode-back" href="../../code.html#core.cli.CliController.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Meta class that defines arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;base&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Make Configuration&quot;</span>
+
+        <span class="c1"># add arguments to the parser</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">([</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--apps_list&#39;</span><span class="p">],</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;STR&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;List of apps name&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+            <span class="p">([</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--app_conf_dir&#39;</span><span class="p">],</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;STR&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Directory for app configuration&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">)),</span>
+            <span class="c1">#TODO: Make this arg optional and provide a factory method to retrieve this with alias</span>
+            <span class="p">([</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="s1">&#39;--template&#39;</span><span class="p">],</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;STR&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Type of configuration template&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;collectd_jmx&quot;</span><span class="p">)),</span>
+            <span class="p">([</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">],</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path to output file&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="p">]</span></div>
+
+    <span class="nd">@expose</span><span class="p">(</span><span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Generate configuration&quot;</span><span class="p">,</span> <span class="n">aliases</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="CliController.default"><a class="viewcode-back" href="../../code.html#core.cli.CliController.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config_template_file</span> <span class="o">=</span> <span class="n">ConfigTemplateFactory</span><span class="o">.</span><span class="n">get_config_tempalte</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">CTX_KEY_COLLECTD_JMX_APP_CONF_DIR</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">app_conf_dir</span><span class="p">,</span>
+            <span class="n">CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE</span><span class="p">:</span> <span class="n">config_template_file</span><span class="p">,</span>
+            <span class="n">CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+            <span class="n">CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">apps_list</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">CollectdJmxTransfigurationChain</span><span class="p">()</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># define the application class</span>
+<div class="viewcode-block" id="MkConfigApp"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp">[docs]</a><span class="k">class</span> <span class="nc">MkConfigApp</span><span class="p">(</span><span class="n">CementApp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An application class that define a life scope of MkConfig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MkConfigApp.Meta"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A Meta class that defines hook</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># define any hook functions here</span>
+<div class="viewcode-block" id="MkConfigApp.Meta.pre_setup_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.pre_setup_hook">[docs]</a>        <span class="k">def</span> <span class="nf">pre_setup_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pre_setup hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.post_setup_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.post_setup_hook">[docs]</a>        <span class="k">def</span> <span class="nf">post_setup_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;post_setup hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.pre_run_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.pre_run_hook">[docs]</a>        <span class="k">def</span> <span class="nf">pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pre_run hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.post_run_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.post_run_hook">[docs]</a>        <span class="k">def</span> <span class="nf">post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;post_run hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.pre_argument_parsing_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.pre_argument_parsing_hook">[docs]</a>        <span class="k">def</span> <span class="nf">pre_argument_parsing_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pre_argument_parsing hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.pre_render_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.pre_render_hook">[docs]</a>        <span class="k">def</span> <span class="nf">pre_render_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pre_render hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.post_render_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.post_render_hook">[docs]</a>        <span class="k">def</span> <span class="nf">post_render_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;post_render hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.pre_close_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.pre_close_hook">[docs]</a>        <span class="k">def</span> <span class="nf">pre_close_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pre_close hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.post_close_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.post_close_hook">[docs]</a>        <span class="k">def</span> <span class="nf">post_close_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;post_close hook&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.Meta.post_argument_parsing_hook"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.Meta.post_argument_parsing_hook">[docs]</a>        <span class="k">def</span> <span class="nf">post_argument_parsing_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;post_argument_parsing hook&quot;</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received option: apps_list =&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">apps_list</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received option: app_conf_dir =&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">app_conf_dir</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received option: template =&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received option: output =&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pargs</span><span class="o">.</span><span class="n">output</span><span class="p">)</span></div>
+
+
+        <span class="c1">#application settings</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;mkconfig&#39;</span>
+        <span class="n">base_controller</span> <span class="o">=</span> <span class="n">CliController</span>
+
+        <span class="c1"># define our default configuration options</span>
+        <span class="n">config_defaults</span> <span class="o">=</span> <span class="n">init_defaults</span><span class="p">(</span><span class="s1">&#39;mkconfig&#39;</span><span class="p">)</span>
+        <span class="n">config_defaults</span><span class="p">[</span><span class="s1">&#39;mkconfig&#39;</span><span class="p">][</span><span class="s1">&#39;debug&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">extensions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">hooks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;pre_setup&#39;</span><span class="p">,</span> <span class="n">pre_setup_hook</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;post_setup&#39;</span><span class="p">,</span> <span class="n">post_setup_hook</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="s1">&#39;pre_run&#39;</span><span class="p">,</span> <span class="n">pre_run_hook</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;post_run&#39;</span><span class="p">,</span> <span class="n">post_run_hook</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="s1">&#39;pre_argument_parsing&#39;</span><span class="p">,</span> <span class="n">pre_argument_parsing_hook</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;post_argument_parsing&#39;</span><span class="p">,</span> <span class="n">post_argument_parsing_hook</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="s1">&#39;pre_render&#39;</span><span class="p">,</span> <span class="n">pre_render_hook</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;post_render&#39;</span><span class="p">,</span> <span class="n">post_render_hook</span><span class="p">),</span>
+
+            <span class="p">(</span><span class="s1">&#39;pre_close&#39;</span><span class="p">,</span> <span class="n">pre_close_hook</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;post_close&#39;</span><span class="p">,</span> <span class="n">post_close_hook</span><span class="p">),</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="MkConfigApp.go"><a class="viewcode-back" href="../../code.html#core.cli.MkConfigApp.go">[docs]</a>    <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+            <span class="c1"># log stuff</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;About to run my mkconfig application!&quot;</span><span class="p">)</span>
+
+            <span class="c1"># run the application</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Make Config Complete!!&quot;</span><span class="p">);</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Caught exception [</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span><span class="p">;</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MkConfig 0.1-alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Michael Fong.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
