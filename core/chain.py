@@ -1,38 +1,7 @@
-from abc import ABCMeta, abstractmethod
 import logging
 import env
 
 logger = logging.getLogger(__name__)
-
-
-class Transfiguration(object):
-    """
-    A change in form of configuration
-    """
-
-    __metaclass__ = ABCMeta
-
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def perform(self, context):
-        logger.info('Transfiguration performing :[{}]'.format(self.__class__.__name__))
-        pass
-
-
-class ContextAwareTransfiguration(Transfiguration):
-    """
-    A type of Trasnfiguration that scripts depends on context
-    """
-
-    def __init__(self):
-        super().__init__()
-
-    def perform(self, context):
-        super().perform(context)
-        logger.debug('Transfiguration performed w/ Context : [{}]'.format(context))
-        return context;
 
 
 class ChainOfTransfiguration(object):
@@ -51,8 +20,7 @@ class ChainOfTransfiguration(object):
 
     def add(self, transfiguration):
         self._chain.append(transfiguration)
-        logger.info(
-            'Adding transfiguration : [{}] -> [{}] elements'.format(transfiguration.__class__, len(self._chain)))
+        logger.debug('Add transfiguration : [{}] to chain'.format(transfiguration.__class__))
 
     def get(self, index):
         return self._chain[index]
@@ -62,6 +30,7 @@ class ChainOfTransfiguration(object):
 
     def execute(self, context = None):
         for transfiguration in self._chain :
+            logger.info("Performing Transfiguration [{}]".format(transfiguration.__class__))
             transfiguration.perform(context)
 
 

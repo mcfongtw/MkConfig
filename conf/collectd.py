@@ -1,7 +1,7 @@
-from core.chain import ContextAwareTransfiguration
+from core.transfig import ContextAwareTransfiguration, Jinja2FileTemplateTransfiguration, YamlFileReaderToContextTransfiguration
+from conf.context import *
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
-from conf.context import *
 from env import Configurations
 from core.chain import ChainOfTransfiguration
 from conf.utils import Utils
@@ -15,9 +15,11 @@ import env
 
 logger = logging.getLogger(__name__)
 
-#TODO: Move all common transifiguration classes to chain.py
 
 class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
+    """
+    A context-enabled Transifguration that prepares the associated configuration file path for given a app name
+    """
 
     def perform(self, context):
         appName = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX]
@@ -32,61 +34,18 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         context[CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE] = appMbeansYamlFileName
         logger.info('Register the mbean file for app [{0}] at [{1}]'.format(appName, appMbeansYamlFileName))
 
+        logger.debug("======================================================================")
+        logger.debug('PrepareAppConf Transifiguration w/ appName [{}]'.format(appName))
+        logger.debug("======================================================================")
+
 
     @staticmethod
     def validate_file_exist(file_path):
         if not os.path.isfile(file_path):
             raise IOError('File [{0}] not found !'.format(file_path))
 
-#TODO: Create a InMemoryTemplateTransfiguration
 
-#TODO: Rename to FileTemplateTransfiguration
-class CollectdJmxTransfiguration(ContextAwareTransfiguration):
-    """
-    A ContextAwareTransfiguration that transform with respect to collectd-jmx template
-    """
-    _engine = None
-    _input = None
-    _output = None
-
-    def __init__(self):
-        super().__init__()
-        self._engine = TemplateEngineFactory.createEngine(Jinja2Engine.__name__)
-        self._engine.init()
-
-    def perform(self, context):
-        super().perform(context)
-        self._engine.apply(context, self._input, self._output)
-
-#TODO: Separate FileReaderToContextTransfiguration, and make YamlFileReaderToContextTransfiguration to inherit from
-class YamlToContextTransfiguration(ContextAwareTransfiguration):
-    """
-    A ContextAwareTransfiguration that reads data from yaml file path from context and persists result back in context
-    """
-    _key_file_path = None
-
-    def __init__(self, keyName):
-        super().__init__()
-        self._key_file_path = keyName
-
-    def perform(self, context):
-        super().perform(context)
-        file_path = context[self._key_file_path]
-        try:
-            file = open(file_path, 'r')
-        except IOError as e:
-            errno, strerror = e.args
-            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, file_path, strerror))
-            raise
-        else:
-            yaml_content = yaml.load(file)
-            file.close()
-
-            for key, value in yaml_content.items():
-                context[key] = value
-
-
-class CollectdJmxPropertiesToContextTransfiguration(YamlToContextTransfiguration):
+class CollectdJmxPropertiesToContextTransfiguration(YamlFileReaderToContextTransfiguration):
     """
     A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
     """
@@ -95,7 +54,7 @@ class CollectdJmxPropertiesToContextTransfiguration(YamlToContextTransfiguration
         super().__init__(keyName)
 
 
-class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
+class CollectdJmxMbeansToContextTransfiguration(YamlFileReaderToContextTransfiguration):
     """
     A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
     """
@@ -103,30 +62,18 @@ class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
     def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE):
         super().__init__(keyName)
 
-    def perform(self, context):
-        #FIXME: resolve this inheritance issue
-        logger.info('Transfiguration performing :[{}]'.format(self.__class__.__name__))
-        file_path = context[self._key_file_path]
+    def read_content(self, context):
         mbeans = []
+        raw_content = self._file.read()
+        for block in raw_content.split('---'):
+            try:
+                mbean = yaml.load(block)
+                self.patch_mbean_table_value(mbean)
+                mbeans.append(mbean)
+            except SyntaxError:
+                mbeans.append(block)
 
-        try:
-            file = open(file_path, 'r')
-
-        except IOError as e:
-            errno, strerror = e.args
-            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, file_path, strerror))
-            raise
-        else:
-            raw_content = file.read()
-            for block in raw_content.split('---'):
-                try:
-                    mbean = yaml.load(block)
-                    self.patch_mbean_table_value(mbean)
-                    mbeans.append(mbean)
-                except SyntaxError:
-                    mbeans.append(block)
-
-            context[CTX_KEY_COLLECTD_JMX_MBEANS_SET] = mbeans
+        context[CTX_KEY_COLLECTD_JMX_MBEANS_SET] = mbeans
 
     def patch_mbean_table_value(self, mbean):
         for attribute in mbean['attributes']:
@@ -136,9 +83,10 @@ class CollectdJmxMbeansToContextTransfiguration(YamlToContextTransfiguration):
 
         logger.debug(mbean)
 
-class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
+
+class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
     """
-    The first phase of  CollectdJmxTransfiguration to transform from input yaml files to (half-product) configuration stub
+    The first phase of  CollectdJmxTransfiguration to transform from input yaml files to stub configuration file (half-product)
     """
 
     def __init__(self):
@@ -152,8 +100,14 @@ class CollectdJmxTransTemplateToStub(CollectdJmxTransfiguration):
         self._output = Configurations.getTemplateFile(intermediate_template)
         super().perform(context)
 
+        logger.debug("======================================================================")
+        logger.debug('CollectdJmx Transifig Template->Stub @ [{}]'.format(self._output))
+        logger.debug("======================================================================")
 
-class CollectdJmxTransStubToConfiguration(CollectdJmxTransfiguration):
+
+
+
+class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
     """
     The second phase of CollectdJmxTransfiguration to transform from the stub file to a partial configuration for a specific appliation
     """
@@ -170,6 +124,10 @@ class CollectdJmxTransStubToConfiguration(CollectdJmxTransfiguration):
         self._output = Configurations.getOutputFile(output_filename)
         super().perform(context)
 
+        logger.debug("======================================================================")
+        logger.debug('CollectdJmx Transifig Stub->Output @ [{}]'.format(self._output))
+        logger.debug("======================================================================")
+
 
 class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
     """
@@ -183,7 +141,7 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         self._step0 = PrepareAppConfTransfiguration()
         self._step1 = CollectdJmxPropertiesToContextTransfiguration()
         self._step2 = CollectdJmxMbeansToContextTransfiguration()
-        self._step3 = CollectdJmxTransTemplateToStub()
+        self._step3 = CollectdJmxTransTemplateToStubJinja2()
         self._step4 = CollectdJmxTransStubToConfiguration()
 
         self.add(self._step0)
@@ -192,9 +150,13 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         self.add(self._step3)
         self.add(self._step4)
 
+        logger.info("PARTIAL CollectdJmx Transfiguration Chain COMPLETE")
+
 
 class SplitAppConfTransfiguration(ContextAwareTransfiguration):
-
+    """
+    A outer chain that controls the whole process of performing config generation for each applicaiton and merge the partial results into a final output
+    """
     def perform(self, context):
         listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
@@ -207,6 +169,10 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
             logger.info('Processing list of apps [%s]' % listOfAppNames)
             for appName in listOfAppNames:
                 self.generateAppPartialConfiguration(context, appName)
+
+        logger.debug("======================================================================")
+        logger.debug('Split app configuration w/ app list [{}]'.format(listOfAppNames))
+        logger.debug("======================================================================")
 
     def generateAppPartialConfiguration(self, context, appName):
         logger.info('Spliting the partial configuraiton for [%s]' % appName)
@@ -283,6 +249,10 @@ LoadPlugin java
             file.close()
             logger.info("Write whole content to [%s]" % output_filename)
 
+            logger.debug("======================================================================")
+            logger.debug('CollectdJmx merge all partial output @ [{}]'.format(output_filename))
+            logger.debug("======================================================================")
+
 
 class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
     """
@@ -297,6 +267,8 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
 
         self.add(self._step0)
         self.add(self._step1)
+
+        logger.info("CollectdJmx Transfiguration Chain COMPLETE")
 
 
 

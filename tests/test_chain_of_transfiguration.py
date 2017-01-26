@@ -1,4 +1,4 @@
-from core.chain import Transfiguration, ContextAwareTransfiguration
+from core.transfig import Transfiguration, ContextAwareTransfiguration
 from core.chain import ChainOfTransfiguration
 import unittest
 from core.error import IllegalStateException

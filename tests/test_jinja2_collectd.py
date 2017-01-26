@@ -1,4 +1,4 @@
-from conf.collectd import CollectdJmxPartialTransifgurationChain, YamlToContextTransfiguration
+from conf.collectd import CollectdJmxPartialTransifgurationChain, YamlFileReaderToContextTransfiguration
 from unittest import TestCase
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
@@ -41,7 +41,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         }
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
-        reader = YamlToContextTransfiguration('test_input')
+        reader = YamlFileReaderToContextTransfiguration('test_input')
         reader.perform(context)
 
         self.assertEqual(context['test1'], 123)
@@ -53,7 +53,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         }
         TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
 
-        reader = YamlToContextTransfiguration('test_input')
+        reader = YamlFileReaderToContextTransfiguration('test_input')
 
         with self.assertRaises(IOError):
             reader.perform(context)
