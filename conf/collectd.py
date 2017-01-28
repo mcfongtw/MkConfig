@@ -24,15 +24,10 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
     def perform(self, context):
         appName = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX]
 
-        appPropertiesYamlFileName = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + appName + '.properties.yaml'
-        PrepareAppConfTransfiguration.validate_file_exist(appPropertiesYamlFileName)
-        context[CTX_KEY_COLLECTD_JMX_YAML_PROPS_FILE] = appPropertiesYamlFileName
-        logger.info('Register the yaml file for app [{0}] at [{1}]'.format(appName, appPropertiesYamlFileName))
-
-        appMbeansYamlFileName = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + appName + '.mbeans.yaml'
-        PrepareAppConfTransfiguration.validate_file_exist(appMbeansYamlFileName)
-        context[CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE] = appMbeansYamlFileName
-        logger.info('Register the mbean file for app [{0}] at [{1}]'.format(appName, appMbeansYamlFileName))
+        appConfYamlFile = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + "collectd.jmx." + appName + '.conf.yaml'
+        PrepareAppConfTransfiguration.validate_file_exist(appConfYamlFile)
+        context[CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE] = appConfYamlFile
+        logger.info('Set the conf file for app [{0}] at [{1}]'.format(appName, appConfYamlFile))
 
         logger.debug("======================================================================")
         logger.debug('PrepareAppConf Transifiguration w/ appName [{}]'.format(appName))
@@ -45,35 +40,25 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
             raise IOError('File [{0}] not found !'.format(file_path))
 
 
-class CollectdJmxPropertiesToContextTransfiguration(YamlFileReaderToContextTransfiguration):
+class CollectdJmxConfToContextTransfiguration(YamlFileReaderToContextTransfiguration):
     """
-    A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_props_file
-    """
-
-    def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_YAML_PROPS_FILE):
-        super().__init__(keyName)
-
-
-class CollectdJmxMbeansToContextTransfiguration(YamlFileReaderToContextTransfiguration):
-    """
-    A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_yaml_mbeans_file
+    A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_conf_yaml_file
     """
 
-    def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_YAML_MBEANS_FILE):
+    def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE):
         super().__init__(keyName)
 
     def read_content(self, context):
-        mbeans = []
-        raw_content = self._file.read()
-        for block in raw_content.split('---'):
-            try:
-                mbean = yaml.load(block)
-                self.patch_mbean_table_value(mbean)
-                mbeans.append(mbean)
-            except SyntaxError:
-                mbeans.append(block)
+        yaml_content = yaml.load(self._file)
 
-        context[CTX_KEY_COLLECTD_JMX_MBEANS_SET] = mbeans
+        for key, value in yaml_content.items():
+            context[key] = value
+
+        for idx, mbean in enumerate(context['mbeans']):
+            self.patch_mbean_table_value(mbean)
+            #mbean is updated
+            context['mbeans'][idx] = mbean
+
 
     def patch_mbean_table_value(self, mbean):
         for attribute in mbean['attributes']:
@@ -139,16 +124,14 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         self._step0 = PrepareAppConfTransfiguration()
-        self._step1 = CollectdJmxPropertiesToContextTransfiguration()
-        self._step2 = CollectdJmxMbeansToContextTransfiguration()
-        self._step3 = CollectdJmxTransTemplateToStubJinja2()
-        self._step4 = CollectdJmxTransStubToConfiguration()
+        self._step1 = CollectdJmxConfToContextTransfiguration()
+        self._step2 = CollectdJmxTransTemplateToStubJinja2()
+        self._step3 = CollectdJmxTransStubToConfiguration()
 
         self.add(self._step0)
         self.add(self._step1)
         self.add(self._step2)
         self.add(self._step3)
-        self.add(self._step4)
 
         logger.info("PARTIAL CollectdJmx Transfiguration Chain COMPLETE")
 
@@ -207,8 +190,7 @@ LoadPlugin java
 </Plugin>
         """
 
-        content = ""
-        content = content + header
+        content = header
         partial_files = []
 
         listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
@@ -229,12 +211,12 @@ LoadPlugin java
                     raise
                 else:
                     partial_content = file.read()
-                    content = content + partial_content
+                    content += partial_content
                     file.close()
                     logger.info("Read partial content fromm [%s]" % partial_file_path)
 
 
-        content = content +footer
+        content += footer
 
         output_filename = Configurations.getOutputFile(context[CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT])
 
@@ -247,7 +229,7 @@ LoadPlugin java
         else:
             file.write(content)
             file.close()
-            logger.info("Write whole content to [%s]" % output_filename)
+            logger.info("Final collectd jmx configuration output @ [%s]" % output_filename)
 
             logger.debug("======================================================================")
             logger.debug('CollectdJmx merge all partial output @ [{}]'.format(output_filename))
