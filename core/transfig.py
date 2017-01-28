@@ -55,7 +55,7 @@ class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
 
     def __init__(self):
         super().__init__()
-        self._engine = TemplateEngineFactory.createEngine(Jinja2Engine.__name__)
+        self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
         self._engine.init()
 
     def perform(self, context):
@@ -78,7 +78,7 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
 
     def __init__(self):
         super().__init__()
-        self._engine = TemplateEngineFactory.createEngine(Jinja2Engine.__name__)
+        self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
         self._engine.init()
 
     def perform(self, context):

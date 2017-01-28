@@ -39,7 +39,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context = {
             'test_input' : 'test.basics.properties.yaml'
         }
-        TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         reader = YamlFileReaderToContextTransfiguration('test_input')
         reader.perform(context)
@@ -51,7 +51,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context = {
             'test_input' : 'test.basics.properties.yaml1'
         }
-        TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         reader = YamlFileReaderToContextTransfiguration('test_input')
 

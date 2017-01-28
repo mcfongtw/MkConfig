@@ -136,7 +136,7 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
 
     def __init__(self):
         super().__init__()
-        TemplateEngineFactory.addFactory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         self._step0 = PrepareAppConfTransfiguration()
         self._step1 = CollectdJmxPropertiesToContextTransfiguration()

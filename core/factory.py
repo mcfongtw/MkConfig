@@ -11,14 +11,19 @@ class TemplateEngineFactory(object):
     _factories = {}
 
     @staticmethod
-    def addFactory(entity, factory):
+    def add_factory(entity, factory):
         logger.info('Add Factory {}'.format(entity))
         TemplateEngineFactory._factories[entity] = factory
+
+    @staticmethod
+    def clear_all():
+        logger.info('Clear all factories')
+        TemplateEngineFactory._factories={}
 
 
     # A Template Method:
     @staticmethod
-    def createEngine(entity):
+    def create_engine(entity):
         if entity not in TemplateEngineFactory._factories:
             TemplateEngineFactory._factories[entity] = eval(entity + '.Factory()')
 
