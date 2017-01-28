@@ -1,6 +1,7 @@
 from core.engine import TemplateEngine, TemplateEngineEnum
 from core.factory import TemplateEngineFactory
 from core.jinja2 import Jinja2Engine
+from core.stringtemplate import PySTEngine
 import unittest
 import logging
 import env
@@ -50,10 +51,10 @@ class TestTemplateEngineFactory(unittest.TestCase):
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_unit_template_engine_enum(self):
-        TemplateEngineFactory.clear_all()
         self.assertEqual('TestEngine1', TemplateEngineEnum.valueOf('TestEngine1'))
         self.assertEqual('TestEngine2', TemplateEngineEnum.valueOf(TestEngine2.__name__))
-        expectd = ['Jinja2Engine', 'TestEngine1', 'TestEngine2']
+        self.assertEqual('PySTEngine', TemplateEngineEnum.valueOf(PySTEngine.__name__))
+        expectd = ['Jinja2Engine', 'TestEngine1', 'TestEngine2', 'PySTEngine']
         actual = TemplateEngineEnum.getAllShapes()
         self.assertEqual(len(expectd), len(actual))
         self.assertEqual(sorted(expectd), sorted(actual))
