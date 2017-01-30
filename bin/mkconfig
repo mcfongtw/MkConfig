@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 
-from core.cli import MkConfigApp
+from mkconfig.core.cli import MkConfigApp
 
 
 if __name__ == '__main__':
