@@ -1,9 +1,9 @@
-from core.transfig import Transfiguration, ContextAwareTransfiguration
-from core.chain import ChainOfTransfiguration
+from mkconfig.core.transfig import Transfiguration, ContextAwareTransfiguration
+from mkconfig.core.chain import ChainOfTransfiguration
 import unittest
-from core.error import IllegalStateException
+from mkconfig.core.error import IllegalStateException
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
-from core.cli import MkConfigApp
+from mkconfig.core.cli import MkConfigApp
 import logging
-import env
+import mkconfig.env
 from cement.utils import test
 
 logger = logging.getLogger(__name__)
@@ -60,7 +60,7 @@ class TestMkConfigApp(test.CementTestCase):
 
 
     def test_file_not_found_1(self):
-        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown'])
+        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown', '-d1'])
         app1.setup()
         with self.assertRaises(IOError):
             app1.run()

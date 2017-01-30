@@ -1,10 +1,10 @@
-from core.engine import TemplateEngine, TemplateEngineEnum
-from core.factory import TemplateEngineFactory
-from core.jinja2 import Jinja2Engine
-from core.stringtemplate import PySTEngine
+from mkconfig.core.engine import TemplateEngine, TemplateEngineEnum
+from mkconfig.core.factory import TemplateEngineFactory
+from mkconfig.core.jinja2 import Jinja2Engine
+from mkconfig.core.stringtemplate import PySTEngine
 import unittest
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

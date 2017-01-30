@@ -1,8 +1,8 @@
-from conf.collectd import CollectdJmxTransfigurationChain
-from conf.context import *
-from conf.factory import ConfigTemplateFactory
+from mkconfig.conf.collectd import CollectdJmxTransfigurationChain
+from mkconfig.conf.context import *
+from mkconfig.conf.factory import ConfigTemplateFactory
 import logging
-import env
+import mkconfig.env
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 from cement.utils.misc import init_defaults
@@ -26,8 +26,8 @@ class CliController(CementBaseController):
             (['-s', '--apps_list'],
                 dict(action='store', metavar='STR', help='List of apps name', required=True)),
             (['-d', '--app_conf_dir'],
-                dict(action='store', metavar='STR', help='Directory for app configuration', default="./")),
-            #TODO: Make this arg optional and provide a factory method to retrieve this with alias
+                dict(action='store', metavar='STR', help='Directory for app configuration',
+                     default="./", required=True)),
             (['-t', '--template'],
                 dict(action='store', metavar='STR', help='Type of configuration template', default="collectd_jmx")),
             (['-o', '--output'],

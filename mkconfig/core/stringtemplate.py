@@ -1,8 +1,8 @@
-from core.engine import TemplateEngine
-from env import Configurations
+from mkconfig.core.engine import TemplateEngine
+from mkconfig.env import Configurations
 from string import Template
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

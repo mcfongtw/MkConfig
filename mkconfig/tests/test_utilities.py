@@ -1,7 +1,7 @@
-from conf.utils import Utils
+from mkconfig.conf.utils import Utils
 import unittest
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

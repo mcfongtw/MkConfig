@@ -1,16 +1,17 @@
-from core.transfig import ContextAwareTransfiguration, Jinja2FileTemplateTransfiguration, YamlFileReaderToContextTransfiguration
-from conf.context import *
-from core.factory import TemplateEngineFactory
-from core.jinja2 import Jinja2Engine
-from env import Configurations
-from core.chain import ChainOfTransfiguration
-from conf.utils import Utils
+from mkconfig.core.transfig import ContextAwareTransfiguration, Jinja2FileTemplateTransfiguration, \
+    YamlFileReaderToContextTransfiguration
+from mkconfig.conf.context import *
+from mkconfig.core.factory import TemplateEngineFactory
+from mkconfig.core.jinja2 import Jinja2Engine
+from mkconfig.env import Configurations
+from mkconfig.core.chain import ChainOfTransfiguration
+from mkconfig.conf.utils import Utils
 from os import listdir
 from os.path import isfile, join
 import os.path
 import yaml
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

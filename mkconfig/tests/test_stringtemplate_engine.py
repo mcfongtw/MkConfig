@@ -1,7 +1,7 @@
-from core.stringtemplate import PySTEngine
+from mkconfig.core.stringtemplate import PySTEngine
 import unittest
 import logging
-import env
+import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

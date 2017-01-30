@@ -1,8 +1,8 @@
 from jinja2 import Environment, FileSystemLoader
-from core.engine import TemplateEngine
+from mkconfig.core.engine import TemplateEngine
 import logging
-from env import Configurations
-import env
+from mkconfig.env import Configurations
+import mkconfig.env
 
 logger = logging.getLogger(__name__)
 
