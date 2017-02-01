@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
+from jinja2 import FileSystemLoader
 import yaml
 import logging
 import mkconfig.env
@@ -53,10 +54,10 @@ class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
     _input = None
     _output = None
 
-    def __init__(self):
+    def __init__(self, searchPath):
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
-        self._engine.init()
+        self._engine.init(FileSystemLoader(searchPath))
 
     def perform(self, context):
         super().perform(context)
@@ -76,10 +77,10 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     _input = None
     _output = None
 
-    def __init__(self):
+    def __init__(self, searchPath):
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
-        self._engine.init()
+        self._engine.init(FileSystemLoader(searchPath))
 
     def perform(self, context):
         super().perform(context)

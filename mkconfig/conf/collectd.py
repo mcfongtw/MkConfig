@@ -76,18 +76,19 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(Configurations.getTemplateDir())
 
     def perform(self, context):
         input = context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE]
         intermediate_template = '_' + input + '.tmp'
 
         self._input = input
-        self._output = Configurations.getTemplateFile(intermediate_template)
+        self._output = Configurations.getTempFile(intermediate_template)
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('CollectdJmx Transifig Template->Stub @ [{}]'.format(self._output))
+        logger.debug('CollectdJmx Transifig Template[{0}]->Stub @ [{1}]'.format(self._input,
+                                                                                self._output))
         logger.debug("======================================================================")
 
 
@@ -99,7 +100,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(Configurations.getTempDir())
 
     def perform(self, context):
         intermediate_template = '_' + context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE] + '.tmp'

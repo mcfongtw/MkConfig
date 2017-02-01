@@ -2,6 +2,7 @@ from mkconfig.core.engine import TemplateEngine, TemplateEngineEnum
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from mkconfig.core.stringtemplate import PySTEngine
+from mkconfig.env import Configurations
 import unittest
 import logging
 import mkconfig.env
@@ -72,4 +73,4 @@ class TestTemplateEngineFactory(unittest.TestCase):
     def test_unit_template_engine_factory_for_jinja2_engine(self):
         TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
         test_engine = TemplateEngineFactory.create_engine('Jinja2Engine')
-        test_engine.init()
+        test_engine.init(Configurations.getTemplateDir())

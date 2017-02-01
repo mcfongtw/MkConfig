@@ -1,5 +1,5 @@
-from jinja2 import Environment, FileSystemLoader
 from mkconfig.core.engine import TemplateEngine
+from jinja2 import Environment
 import logging
 from mkconfig.env import Configurations
 import mkconfig.env
@@ -16,15 +16,12 @@ class Jinja2Engine(TemplateEngine):
     def __init__(self):
         super().__init__()
 
-    def init(self, initLoader=None):
+    def init(self, initLoader):
         logger.debug('Jinja2.init()')
-        if initLoader :
-            jinjaLoader = initLoader
-        else:
-            jinjaLoader = FileSystemLoader(Configurations.getTemplateDir())
+
         self._engine = Environment(
             autoescape=False,
-            loader=jinjaLoader,
+            loader=initLoader,
             trim_blocks=False)
 
     def apply(self, context, templateName, outputFile, isInMemory=False):
