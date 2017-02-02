@@ -1,15 +1,17 @@
 progName : 'Cassandra'
-hostName : 'localhost'
+hostAddr : 'localhost'
 hostPort : '7199'
+fqdn : 'my.host.cc'
+progPrefix : "CASSANDRA_"
 progVer : '3.9+'
 cfs : ['Standard1', 'Super1']
 keyspace : 'Keyspace1'
 requests : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage']
 internals : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage']
-drops : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ, REQUEST_RESPONSE']
+drops : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ', 'REQUEST_RESPONSE']
 compaction_task_types : ['CompletedTasks', 'PendingTasks']
 mbeans:
-- name : Cassandra_Memory
+- name : Memory
   objectName: java.lang:type=Memory
   InstancePrefix : Memory
   required: true
@@ -22,7 +24,7 @@ mbeans:
      InstancePrefix : Non_Heap_Memory_Usage_
      Type : gauge
      Table : true
-- name : Cassandra_Memory_EdenSpace
+- name : Memory_EdenSpace
   objectName: java.lang:type=MemoryPool,name=Eden Space
   InstancePrefix : Memory
   required: false
@@ -31,7 +33,7 @@ mbeans:
      InstancePrefix : EdenSpace_Usage_
      Type : gauge
      Table : true
-- name : Cassandra_Memory_SurvivorSpace
+- name : Memory_SurvivorSpace
   objectName: java.lang:type=MemoryPool,name=Survivor Space
   InstancePrefix : Memory
   required: false
@@ -40,7 +42,7 @@ mbeans:
      InstancePrefix : SurvivorSpace_Usage_
      Type : gauge
      Table : true
-- name : Cassandra_Memory_TenuredGen
+- name : Memory_TenuredGen
   objectName: java.lang:type=MemoryPool,name=Tenured Gen
   InstancePrefix : Memory
   required: false
@@ -49,7 +51,7 @@ mbeans:
      InstancePrefix : TenuredGen_Usage_
      Type : gauge
      Table : true
-- name : Cassandra_Nio_DirectMemory
+- name : Nio_DirectMemory
   objectName: java.nio:type=BufferPool,name=direct
   InstancePrefix : Nio
   required: false
@@ -60,7 +62,7 @@ mbeans:
    - Attribute : TotalCapacity
      InstancePrefix : DirectMemory_Max
      Type : gauge
-- name : Cassandra_Nio_MappedMemory
+- name : Nio_MappedMemory
   objectName: java.nio:type=BufferPool,name=mapped
   InstancePrefix : Nio
   required: false
@@ -71,7 +73,7 @@ mbeans:
    - Attribute : TotalCapacity
      InstancePrefix : MappedMemory_Max
      Type : gauge
-- name : Cassandra_Threading
+- name : Threading
   objectName: java.lang:type=Threading
   InstancePrefix : Threading
   required: true
@@ -82,7 +84,7 @@ mbeans:
    - Attribute : PeakThreadCount
      InstancePrefix : Peak_Count
      Type : counter
-- name : Cassandra_GC_ParNew
+- name : GC_ParNew
   objectName: java.lang:type=GarbageCollector,name=ParNew
   InstancePrefix : GC
   required: false
@@ -93,7 +95,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : ParNew_Time
      Type : counter
-- name : Cassandra_GC_ConcurrentMarkSweep
+- name : GC_ConcurrentMarkSweep
   objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
   InstancePrefix : GC
   required: false
@@ -104,7 +106,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : CMS_Time
      Type : counter
-- name : Cassandra_System
+- name : System
   objectName: java.lang:type=OperatingSystem
   InstancePrefix : System
   required: true
@@ -115,7 +117,7 @@ mbeans:
    - Attribute : OpenFileDescriptorCount
      InstancePrefix : Open_FD
      Type : gauge
-- name : Cassandra_Perf_Overall_Stats
+- name : Perf_Overall_Stats
   objectName: org.apache.cassandra.db:type=StorageProxy
   InstancePrefix : Perf
   required: true
@@ -128,7 +130,7 @@ mbeans:
      InstancePrefix : Recent_Write_Latency_Micros
    - Attribute : WriteOperations
      InstancePrefix : Write_Operation
-- name : Cassandra_TPStats_Compaction
+- name : TPStats_Compaction
   objectName: org.apache.cassandra.db:type=CompactionManager
   InstancePrefix : TPStats_Stage_Compaction
   required: true
@@ -139,7 +141,7 @@ mbeans:
    - Attribute : PendingTasks
      InstancePrefix : Pending_Tasks
      Type : counter
-- name : Cassandra_StorageService
+- name : StorageService
   objectName: org.apache.cassandra.db:type=StorageService
   InstancePrefix : StorageService
   required: false
@@ -147,7 +149,7 @@ mbeans:
    - Attribute : ExceptionCount
      InstancePrefix : Exception_Count
      Type : counter
-- name: Cassandra_TPStats_{{ item }}
+- name: TPStats_{{ item }}
   objectName: org.apache.cassandra.request:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   required: true
@@ -162,7 +164,7 @@ mbeans:
    - Attribute : TotalBlockedTasks
      InstancePrefix : Total_Blocked_Tasks
      Type : counter
-- name: Cassandra_TPStats_{{ item }}
+- name: TPStats_{{ item }}
   objectName: org.apache.cassandra.internal:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   required: true
@@ -177,7 +179,7 @@ mbeans:
    - Attribute : TotalBlockedTasks
      InstancePrefix : Total_Blocked_Tasks
      Type : counter
-- name: Cassandra_CF_{{ keyspace }}_{{ item }}
+- name: CF_{{ keyspace }}_{{ item }}
   objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace }},columnfamily={{ item }}
   InstancePrefix : CF_{{ keyspace }}_{{ item }}
   required: true
@@ -197,7 +199,7 @@ mbeans:
      InstancePrefix : Pending_Tasks
    - Attribute : TotalDiskSpaceUsed
      InstancePrefix : Total_Disk_Space_Used
-- name: Cassandra_TPStats_Dropped_{{ item }}
+- name: TPStats_Dropped_{{ item }}
   objectName: org.apache.cassandra.metrics:type=DroppedMessage,scope={{ item }},name=Dropped
   InstancePrefix : TPStats_Dropped_{{ item }}
   required: true
@@ -206,7 +208,7 @@ mbeans:
    - Attribute : Count
      InstancePrefix : Count
      Type : counter
-- name : Cassandra_Perf_Client_Read_Stats
+- name : Perf_Client_Read_Stats
   objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Read,name=Latency
   InstancePrefix : Perf
   required: false
@@ -217,7 +219,7 @@ mbeans:
      InstancePrefix : Client_Read_Latency_MeanRate
    - Attribute : StdDev
      InstancePrefix : Client_Read_Latency_StdDev
-- name : Cassandra_Perf_Client_Write_Stats
+- name : Perf_Client_Write_Stats
   objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Write,name=Latency
   InstancePrefix : Perf
   required: false

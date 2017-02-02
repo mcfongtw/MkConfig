@@ -1,9 +1,11 @@
 progName : 'Jira'
-hostName : 'localhost'
+hostAddr : 'localhost'
 hostPort : '38888'
+fqdn : 'my.host.cc'
+progPrefix : "JIRA_"
 progVer : '7.2'
 mbeans:
-- name : Jira_Memory
+- name : Memory
   objectName: java.lang:type=Memory
   InstancePrefix : Memory
   required: true
@@ -16,7 +18,7 @@ mbeans:
      InstancePrefix : Non_Heap_Memory_Usage_
      Type : gauge
      Table : true
-- name : Jira_Memory_EdenSpace
+- name : Memory_EdenSpace
   objectName: java.lang:type=MemoryPool,name=Eden Space
   InstancePrefix : Memory
   required: false
@@ -25,7 +27,7 @@ mbeans:
      InstancePrefix : EdenSpace_Usage_
      Type : gauge
      Table : true
-- name : Jira_Memory_SurvivorSpace
+- name : Memory_SurvivorSpace
   objectName: java.lang:type=MemoryPool,name=Survivor Space
   InstancePrefix : Memory
   required: false
@@ -34,7 +36,7 @@ mbeans:
      InstancePrefix : SurvivorSpace_Usage_
      Type : gauge
      Table : true
-- name : Jira_Memory_TenuredGen
+- name : Memory_TenuredGen
   objectName: java.lang:type=MemoryPool,name=Tenured Gen
   InstancePrefix : Memory
   required: false
@@ -43,7 +45,7 @@ mbeans:
      InstancePrefix : TenuredGen_Usage_
      Type : gauge
      Table : true
-- name : Jira_Nio_DirectMemory
+- name : Nio_DirectMemory
   objectName: java.nio:type=BufferPool,name=direct
   InstancePrefix : Nio
   required: false
@@ -54,7 +56,7 @@ mbeans:
    - Attribute : TotalCapacity
      InstancePrefix : DirectMemory_Max
      Type : gauge
-- name : Jira_Nio_MappedMemory
+- name : Nio_MappedMemory
   objectName: java.nio:type=BufferPool,name=mapped
   InstancePrefix : Nio
   required: false
@@ -65,7 +67,7 @@ mbeans:
    - Attribute : TotalCapacity
      InstancePrefix : MappedMemory_Max
      Type : gauge
-- name : Jira_Threading
+- name : Threading
   objectName: java.lang:type=Threading
   InstancePrefix : Threading
   required: true
@@ -76,7 +78,7 @@ mbeans:
    - Attribute : PeakThreadCount
      InstancePrefix : Peak_Count
      Type : counter
-- name : Jira_GC_Serial_Copy
+- name : GC_Serial_Copy
   objectName: java.lang:type=GarbageCollector,name=Copy
   InstancePrefix : GC
   required: false
@@ -87,7 +89,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : SerialCopy_Time
      Type : counter
-- name : Jira_GC_MarkSweepCompact
+- name : GC_MarkSweepCompact
   objectName: java.lang:type=GarbageCollector,name=MarkSweepCompact
   InstancePrefix : GC
   required: false
@@ -98,7 +100,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : MarkSweepCompact_Time
      Type : counter
-- name : Jira_GC_ParNew
+- name : GC_ParNew
   objectName: java.lang:type=GarbageCollector,name=ParNew
   InstancePrefix : GC
   required: false
@@ -109,7 +111,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : ParNew_Time
      Type : counter
-- name : Jira_GC_ConcurrentMarkSweep
+- name : GC_ConcurrentMarkSweep
   objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
   InstancePrefix : GC
   required: false
@@ -120,7 +122,7 @@ mbeans:
    - Attribute : CollectionTime
      InstancePrefix : CMS_Time
      Type : counter
-- name : Jira_System
+- name : System
   objectName: java.lang:type=OperatingSystem
   InstancePrefix : System
   required: true
@@ -131,7 +133,7 @@ mbeans:
    - Attribute : OpenFileDescriptorCount
      InstancePrefix : Open_FD
      Type : gauge
-- name : Jira_Catalina_38080_Requests
+- name : Catalina_38080_Requests
   objectName: Catalina:type=GlobalRequestProcessor,name=\"http-nio-38080\"
   InstancePrefix : Catalina_38080_Req_Stats
   required: true
@@ -142,7 +144,7 @@ mbeans:
    - Attribute : errorCount
      InstancePrefix : errorCount
      Type : counter
-- name : Jira_Catalina_38080_ThreadPool
+- name : Catalina_38080_ThreadPool
   objectName: Catalina:type=ThreadPool,name=\"http-nio-38080\"
   InstancePrefix : Catalina_38080_TP_Stats
   required: true
@@ -159,7 +161,7 @@ mbeans:
    - Attribute : minSpareThreads
      InstancePrefix : Min_Num
      Type : gauge
-- name : Jira_DataSource
+- name : DataSource
   objectName: com.atlassian.jira:name=BasicDataSource,connectionpool=connections
   InstancePrefix : DataSource_Stats
   required: true
