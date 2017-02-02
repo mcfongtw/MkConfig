@@ -67,7 +67,7 @@ function do_init {
     echo '==============================================='
     echo 'Create virtualenv at ' $PY_ENV_HOME
     echo '-----------------------------------------------'
-    virtualenv --no-site-packages $PY_ENV_HOME
+    virtualenv --python=python3 --no-site-packages $PY_ENV_HOME
     # Activate the virtual env
     source $PY_ENV_HOME/bin/activate
     echo '==============================================='
