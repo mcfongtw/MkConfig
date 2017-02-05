@@ -19,7 +19,7 @@ class ChainOfTransfiguration(object):
 
     def add(self, transfiguration):
         self._chain.append(transfiguration)
-        logger.debug('Add transfiguration : [{}] to chain'.format(transfiguration.__class__))
+        logger.debug('Add transfiguration : [%s] to chain', transfiguration.__class__)
 
     def get(self, index):
         return self._chain[index]
@@ -29,7 +29,7 @@ class ChainOfTransfiguration(object):
 
     def execute(self, context = None):
         for transfiguration in self._chain :
-            logger.info("Performing Transfiguration [{}]".format(transfiguration.__class__))
+            logger.info("Performing Transfiguration [%s]", transfiguration.__class__)
             transfiguration.perform(context)
 
 

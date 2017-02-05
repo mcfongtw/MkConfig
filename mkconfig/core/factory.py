@@ -11,7 +11,7 @@ class TemplateEngineFactory(object):
 
     @staticmethod
     def add_factory(entity, factory):
-        logger.info('Add Factory {}'.format(entity))
+        logger.info('Class-Loading Factory {%s}', entity)
         TemplateEngineFactory._factories[entity] = factory
 
     @staticmethod
@@ -26,5 +26,5 @@ class TemplateEngineFactory(object):
         if entity not in TemplateEngineFactory._factories:
             TemplateEngineFactory._factories[entity] = eval(entity + '.Factory()')
 
-        logger.debug('Invoke {}.Factory()'.format(entity))
+        logger.debug('Invoke {%s}.Factory()', entity)
         return TemplateEngineFactory._factories[entity].create()

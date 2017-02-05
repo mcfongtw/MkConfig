@@ -125,9 +125,6 @@ class MkConfigApp(CementApp):
         try:
             self.setup()
 
-            # log stuff
-            logger.debug("About to run my mkconfig application!")
-
             # run the application
             self.run()
 

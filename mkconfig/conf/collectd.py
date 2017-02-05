@@ -31,7 +31,7 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         logger.info('Set the conf file for app [%s] at [%s]', appName, appConfYamlFile)
 
         logger.debug("======================================================================")
-        logger.debug('PrepareAppConf Transifiguration w/ appName [%s]', appName)
+        logger.debug('[Transifig] PrepareAppConf w/ appName [%s]', appName)
         logger.debug("======================================================================")
 
 
@@ -87,7 +87,7 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('CollectdJmx Transifig Template[%s]->Stub @ [%s]', self._input, self._output)
+        logger.debug('[Transifig] CollectdJmx Template[%s]->Stub @ [%s]', self._input, self._output)
         logger.debug("======================================================================")
 
 
@@ -111,7 +111,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('CollectdJmx Transifig Stub->Output @ [%s]', self._output)
+        logger.debug('[Transifig] CollectdJmx Stub->Output @ [%s]', self._output)
         logger.debug("======================================================================")
 
 
@@ -134,8 +134,16 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         self.add(self._step2)
         self.add(self._step3)
 
-        logger.info("PARTIAL CollectdJmx Transfiguration Chain COMPLETE")
+    def execute(self, context):
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain] PerAPP CollectdJmx Transfiguration BEGINS")
+        logger.info("///////////////////////////////////////////////////////////////////////")
 
+        super().execute(context)
+
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain] PerAPP CollectdJmx Transfiguration COMPLETES")
+        logger.info("///////////////////////////////////////////////////////////////////////")
 
 class SplitAppConfTransfiguration(ContextAwareTransfiguration):
     """
@@ -155,7 +163,7 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
                 self.generateAppPartialConfiguration(context, appName)
 
         logger.debug("======================================================================")
-        logger.debug('Split app configuration w/ app list [%s]', listOfAppNames)
+        logger.debug('[Transifig] Split app configuration w/ app list [%s]', listOfAppNames)
         logger.debug("======================================================================")
 
     def generateAppPartialConfiguration(self, context, appName):
@@ -234,7 +242,7 @@ LoadPlugin java
             logger.info("Final collectd jmx configuration output @ [%s]" % output_filename)
 
             logger.debug("======================================================================")
-            logger.debug('CollectdJmx merge all partial output @ [%s]', output_filename)
+            logger.debug('[Transfig] CollectdJmx merge all partial output @ [%s]', output_filename)
             logger.debug("======================================================================")
 
 
@@ -252,7 +260,18 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
         self.add(self._step0)
         self.add(self._step1)
 
-        logger.info("CollectdJmx Transfiguration Chain COMPLETE")
+    def execute(self, context):
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain] OVERALL CollectdJmx Transfiguration BEGINS")
+        logger.info("///////////////////////////////////////////////////////////////////////")
+
+        super().execute(context)
+
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain] OVERALL CollectdJmx Transfiguration COMPLETES")
+        logger.info("///////////////////////////////////////////////////////////////////////")
+
+
 
 
 

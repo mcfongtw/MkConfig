@@ -20,7 +20,7 @@ def setup_logging(is_test = False) :
         {
             'default':
                 {
-                    'format' : '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+                    'format' : '%(asctime)s %(name)-25s %(levelname)-8s %(message)s'
                 }
         },
         handlers =

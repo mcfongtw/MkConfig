@@ -22,7 +22,7 @@ class Transfiguration(object):
     def perform(self, context):
 
         logger.debug("======================================================================")
-        logger.debug('Transfiguration being performed:[{}]'.format(self.__class__.__name__))
+        logger.debug('[Transifig] being performed:[%s]', self.__class__.__name__)
         logger.debug("======================================================================")
         pass
 
@@ -39,7 +39,7 @@ class ContextAwareTransfiguration(Transfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('Transfiguration performed w/ Context : [{}]'.format(context))
+        logger.debug('[Transifig] performed w/ Context : [%s]', context)
         logger.debug("======================================================================")
         return context;
 
@@ -63,7 +63,7 @@ class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
         self._engine.apply(context, self._input, None, True)
 
         logger.debug("======================================================================")
-        logger.debug('Jinja2 Template Transifiguration [{}] performed in-memory'.format(self._input))
+        logger.debug('[Transifig] Jinja2 Template [%s] performed in-memory', self._input)
         logger.debug("======================================================================")
 
 
@@ -86,7 +86,7 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
         self._engine.apply(context, self._input, self._output)
 
         logger.debug("======================================================================")
-        logger.debug('Jinja2 Template Transifiguration [{}] performed in-file'.format(self._input))
+        logger.debug('[Transifig] Jinja2 Template [%s] performed in-file', self._input)
         logger.debug("======================================================================")
 
 
@@ -112,11 +112,11 @@ class FileReaderToContextTransfiguration(ContextAwareTransfiguration):
             self._file = open(file_path, 'r')
         except IOError as e:
             errno, strerror = e.args
-            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, file_path, strerror))
+            logger.error("I/O error[%s] at [%s]: %s", errno, file_path, strerror)
             raise
 
         logger.debug("======================================================================")
-        logger.debug('FileReader Transifiguration performed from [{}]'.format(file_path))
+        logger.debug('[Transifig] FileReader performed from [%s]', file_path)
         logger.debug("======================================================================")
 
 
@@ -134,7 +134,7 @@ class YamlFileReaderToContextTransfiguration(FileReaderToContextTransfiguration)
         self._file.close()
 
         logger.debug("======================================================================")
-        logger.debug('YamlFileReader Transifiguration performed'.format(context))
+        logger.debug('[Transifig] YamlFileReader performed', context)
         logger.debug("======================================================================")
 
     def read_content(self, context):
