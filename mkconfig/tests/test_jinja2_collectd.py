@@ -1,13 +1,14 @@
+from mkconfig.env import setup_logging_with_details
+import logging
+setup_logging_with_details()
+logger = logging.getLogger(__name__)
+
 from mkconfig.conf.collectd import CollectdJmxPartialTransifgurationChain, YamlFileReaderToContextTransfiguration
 from unittest import TestCase
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from mkconfig.conf.factory import ConfigTemplateFactory
-import logging
-import mkconfig.env
 
-
-logger = logging.getLogger(__name__)
 
 class TestConfigTemplateFactory(TestCase):
 

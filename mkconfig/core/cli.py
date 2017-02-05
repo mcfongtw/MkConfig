@@ -1,8 +1,9 @@
 from mkconfig.conf.collectd import CollectdJmxTransfigurationChain
-from mkconfig.conf.context import *
+from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, \
+    CTX_KEY_COLLECTD_JMX_APP_CONF_DIR
 from mkconfig.conf.factory import ConfigTemplateFactory
 import logging
-import mkconfig.env
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 from cement.utils.misc import init_defaults

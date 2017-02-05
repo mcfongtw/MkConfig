@@ -1,6 +1,8 @@
 #!/usr/bin/python
 #
 
+from mkconfig.env import setup_logging
+setup_logging()
 from mkconfig.core.cli import MkConfigApp
 
 

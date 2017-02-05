@@ -1,8 +1,7 @@
 from mkconfig.core.engine import TemplateEngine
 from jinja2 import Environment
-import logging
 from mkconfig.env import Configurations
-import mkconfig.env
+import logging
 
 logger = logging.getLogger(__name__)
 

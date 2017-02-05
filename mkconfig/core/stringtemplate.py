@@ -2,8 +2,6 @@ from mkconfig.core.engine import TemplateEngine
 from mkconfig.env import Configurations
 from string import Template
 import logging
-import mkconfig.env
-
 
 logger = logging.getLogger(__name__)
 

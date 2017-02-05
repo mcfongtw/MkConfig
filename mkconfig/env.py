@@ -2,33 +2,47 @@ import os
 from logging.config import dictConfig
 import logging
 
-logging_config = dict(
-    version = 1,
-    formatters =
-    {
-        'default':
-            {
-                'format' : '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-            }
-    },
-    handlers =
-    {
-        'default':
-            {
-                'class': 'logging.StreamHandler',
-                'formatter': 'default',
-                'level': logging.INFO
-            }
-    },
-    root =
-    {
-        'handlers': ['default'],
-        'level': logging.INFO,
-        'propagate': True
-    },
-)
 
-dictConfig(logging_config)
+def setup_logging_with_details():
+    setup_logging(True)
+
+
+def setup_logging(is_test = False) :
+
+    if is_test:
+        default_log_lvl = logging.DEBUG
+    else:
+        default_log_lvl = logging.INFO
+
+    logging_config = dict(
+        version = 1,
+        formatters =
+        {
+            'default':
+                {
+                    'format' : '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+                }
+        },
+        handlers =
+        {
+            'default':
+                {
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'default',
+                    'level': default_log_lvl
+                }
+        },
+        root =
+        {
+            'handlers': ['default'],
+            'level': default_log_lvl,
+            'propagate': True
+        },
+    )
+
+    dictConfig(logging_config)
+
+
 ###########################################
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

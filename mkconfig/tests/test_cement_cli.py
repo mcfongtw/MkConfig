@@ -1,9 +1,11 @@
-from mkconfig.core.cli import MkConfigApp
+from mkconfig.env import setup_logging_with_details
 import logging
-import mkconfig.env
 from cement.utils import test
-
+setup_logging_with_details()
 logger = logging.getLogger(__name__)
+
+from mkconfig.core.cli import MkConfigApp
+
 
 class TestMkConfigApp(test.CementTestCase):
     app_class =  MkConfigApp

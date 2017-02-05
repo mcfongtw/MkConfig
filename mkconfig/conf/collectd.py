@@ -1,17 +1,17 @@
 from mkconfig.core.transfig import ContextAwareTransfiguration, Jinja2FileTemplateTransfiguration, \
     YamlFileReaderToContextTransfiguration
-from mkconfig.conf.context import *
+from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_APP_CONF_DIR, \
+    CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COLLECTD_JMX_APP_PREFIX, \
+    CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from mkconfig.env import Configurations
 from mkconfig.core.chain import ChainOfTransfiguration
 from mkconfig.conf.utils import Utils
-from os import listdir
-from os.path import isfile, join
 import os.path
 import yaml
 import logging
-import mkconfig.env
 
 
 logger = logging.getLogger(__name__)

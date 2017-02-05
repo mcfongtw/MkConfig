@@ -1,5 +1,4 @@
 import logging
-import mkconfig.env
 
 logger = logging.getLogger(__name__)
 

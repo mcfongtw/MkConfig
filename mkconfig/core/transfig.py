@@ -4,7 +4,6 @@ from mkconfig.core.jinja2 import Jinja2Engine
 from jinja2 import FileSystemLoader
 import yaml
 import logging
-import mkconfig.env
 
 logger = logging.getLogger(__name__)
 

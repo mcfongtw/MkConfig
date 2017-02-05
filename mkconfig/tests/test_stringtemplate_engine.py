@@ -1,10 +1,10 @@
+from mkconfig.env import setup_logging_with_details
+import logging
+setup_logging_with_details()
+logger = logging.getLogger(__name__)
 from mkconfig.core.stringtemplate import PySTEngine
 import unittest
-import logging
-import mkconfig.env
 
-
-logger = logging.getLogger(__name__)
 
 
 class TestStringTemplateEngine(unittest.TestCase):

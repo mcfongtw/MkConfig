@@ -1,11 +1,10 @@
-from mkconfig.conf.utils import Utils
-import unittest
+from mkconfig.env import setup_logging_with_details
 import logging
-import mkconfig.env
-
-
+setup_logging_with_details()
 logger = logging.getLogger(__name__)
 
+from mkconfig.conf.utils import Utils
+import unittest
 
 class TestUtilFunctions(unittest.TestCase):
 

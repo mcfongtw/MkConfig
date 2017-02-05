@@ -1,12 +1,13 @@
+from mkconfig.env import setup_logging_with_details
+import logging
 from mkconfig.core.jinja2 import Jinja2Engine
-from jinja2 import DictLoader, Environment
+from jinja2 import DictLoader
 import unittest
 import yaml
 from collections import OrderedDict
-import logging
-import mkconfig.env
 
 
+setup_logging_with_details()
 logger = logging.getLogger(__name__)
 
 

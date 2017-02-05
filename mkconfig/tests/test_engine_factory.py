@@ -1,14 +1,16 @@
+from mkconfig.env import setup_logging_with_details
+import logging
 from mkconfig.core.engine import TemplateEngine, TemplateEngineEnum
 from mkconfig.core.factory import TemplateEngineFactory
-from mkconfig.core.jinja2 import Jinja2Engine
-from mkconfig.core.stringtemplate import PySTEngine
 from mkconfig.env import Configurations
 import unittest
-import logging
-import mkconfig.env
-
-
+from mkconfig.core.stringtemplate import PySTEngine
+setup_logging_with_details()
 logger = logging.getLogger(__name__)
+
+
+from mkconfig.core.jinja2 import Jinja2Engine
+
 
 
 class TestEngine1(TemplateEngine):

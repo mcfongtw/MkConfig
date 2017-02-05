@@ -1,12 +1,13 @@
-from mkconfig.core.transfig import Transfiguration, ContextAwareTransfiguration
-from mkconfig.core.chain import ChainOfTransfiguration
 import unittest
 from mkconfig.core.error import IllegalStateException
+from mkconfig.env import setup_logging_with_details
 import logging
-import mkconfig.env
-
-
+from mkconfig.core.transfig import Transfiguration, ContextAwareTransfiguration
+setup_logging_with_details()
 logger = logging.getLogger(__name__)
+
+
+from mkconfig.core.chain import ChainOfTransfiguration
 
 
 class TransfigurationSpell(Transfiguration):
