@@ -28,10 +28,10 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         appConfYamlFile = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + "collectd.jmx." + appName + '.conf.yaml'
         PrepareAppConfTransfiguration.validate_file_exist(appConfYamlFile)
         context[CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE] = appConfYamlFile
-        logger.info('Set the conf file for app [{0}] at [{1}]'.format(appName, appConfYamlFile))
+        logger.info('Set the conf file for app [%s] at [%s]', appName, appConfYamlFile)
 
         logger.debug("======================================================================")
-        logger.debug('PrepareAppConf Transifiguration w/ appName [{}]'.format(appName))
+        logger.debug('PrepareAppConf Transifiguration w/ appName [%s]', appName)
         logger.debug("======================================================================")
 
 
@@ -87,8 +87,7 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('CollectdJmx Transifig Template[{0}]->Stub @ [{1}]'.format(self._input,
-                                                                                self._output))
+        logger.debug('CollectdJmx Transifig Template[%s]->Stub @ [%s]', self._input, self._output)
         logger.debug("======================================================================")
 
 
@@ -112,7 +111,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('CollectdJmx Transifig Stub->Output @ [{}]'.format(self._output))
+        logger.debug('CollectdJmx Transifig Stub->Output @ [%s]', self._output)
         logger.debug("======================================================================")
 
 
@@ -156,7 +155,7 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
                 self.generateAppPartialConfiguration(context, appName)
 
         logger.debug("======================================================================")
-        logger.debug('Split app configuration w/ app list [{}]'.format(listOfAppNames))
+        logger.debug('Split app configuration w/ app list [%s]', listOfAppNames)
         logger.debug("======================================================================")
 
     def generateAppPartialConfiguration(self, context, appName):
@@ -210,7 +209,7 @@ LoadPlugin java
                     file = open(partial_file_path, "r")
                 except IOError as e:
                     errno, strerror = e.args
-                    logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, partial_file_path, strerror))
+                    logger.error("I/O error[%s] at [%s]: %s", errno, partial_file_path, strerror)
                     raise
                 else:
                     partial_content = file.read()
@@ -227,7 +226,7 @@ LoadPlugin java
             file = open(output_filename, "w")
         except IOError as e:
             errno, strerror = e.args
-            logger.error("I/O error[{0}] at [{1}]: {2}".format(errno, output_filename, strerror))
+            logger.error("I/O error[{0}] at [%s]: %s", errno, output_filename, strerror)
             raise
         else:
             file.write(content)
@@ -235,7 +234,7 @@ LoadPlugin java
             logger.info("Final collectd jmx configuration output @ [%s]" % output_filename)
 
             logger.debug("======================================================================")
-            logger.debug('CollectdJmx merge all partial output @ [{}]'.format(output_filename))
+            logger.debug('CollectdJmx merge all partial output @ [%s]', output_filename)
             logger.debug("======================================================================")
 
 
