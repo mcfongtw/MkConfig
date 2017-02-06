@@ -195,7 +195,7 @@ function do_analysis {
     echo
 
     echo '==============================================='
-    echo 'Perform nosetests '
+    echo 'Perform pylint '
     echo '-----------------------------------------------'
     pylint --rcfile=mkconfig/tests/pylintrc -f parseable mkconfig/core mkconfig/conf | tee pylint.out
     cat pylint.out
