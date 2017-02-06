@@ -11,12 +11,12 @@ class TemplateEngineFactory(object):
 
     @staticmethod
     def add_factory(entity, factory):
-        logger.info('Class-Loading Factory {%s}', entity)
+        logger.debug('[Factory] Loading Factory [%s] for [%s]', factory, entity)
         TemplateEngineFactory._factories[entity] = factory
 
     @staticmethod
     def clear_all():
-        logger.info('Clear all factories')
+        logger.debug('[Factory] Clear all factories')
         TemplateEngineFactory._factories={}
 
 
@@ -26,5 +26,5 @@ class TemplateEngineFactory(object):
         if entity not in TemplateEngineFactory._factories:
             TemplateEngineFactory._factories[entity] = eval(entity + '.Factory()')
 
-        logger.debug('Invoke {%s}.Factory()', entity)
+        logger.debug('[Factory] Invoke [%s].Factory()', entity)
         return TemplateEngineFactory._factories[entity].create()
