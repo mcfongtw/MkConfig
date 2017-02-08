@@ -66,12 +66,12 @@ class TestTemplateEngineFactory(unittest.TestCase):
             TemplateEngineFactory.create_engine('TestEngine1')
 
     def test_unit_template_engine_factory_1(self):
-        TemplateEngineFactory.add_factory('TestEngine1', TestEngine1.Factory)
+        TemplateEngineFactory.register_factory('TestEngine1', TestEngine1.Factory)
         test_engine = TemplateEngineFactory.create_engine('TestEngine1')
         self.assertEqual('TestEngine1.init()', test_engine.init())
         self.assertEqual('TestEngine1.apply()', test_engine.apply(None, None, None))
 
     def test_unit_template_engine_factory_for_jinja2_engine(self):
-        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
         test_engine = TemplateEngineFactory.create_engine('Jinja2Engine')
         test_engine.init(Configurations.getTemplateDir())

@@ -16,11 +16,18 @@ class Transfiguration(object):
     __metaclass__ = ABCMeta
 
     def __init__(self):
+        """
+        prepare the transiguration
+        """
         pass
 
     @abstractmethod
     def perform(self, context):
+        """
+        Abstract function to perform transfiguration
 
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         logger.debug("======================================================================")
         logger.debug('[Transifig] being performed:[%s]', self.__class__.__name__)
         logger.debug("======================================================================")
@@ -33,15 +40,22 @@ class ContextAwareTransfiguration(Transfiguration):
     """
 
     def __init__(self):
+        """
+        prepare the transiguration
+        """
         super().__init__()
 
     def perform(self, context):
+        """
+        To perform transfiguration with context
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         super().perform(context)
 
         logger.debug("======================================================================")
         logger.debug('[Transifig] performed w/ Context : [%s]', context)
         logger.debug("======================================================================")
-        return context;
 
 
 class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
@@ -54,11 +68,19 @@ class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
     _output = None
 
     def __init__(self, searchPath):
+        """
+        prepare the transiguration
+        """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
         self._engine.init(FileSystemLoader(searchPath))
 
     def perform(self, context):
+        """
+        To transfigurate while applying Jinja2 templating in-memory
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         super().perform(context)
         self._engine.apply(context, self._input, None, True)
 
@@ -77,11 +99,19 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     _output = None
 
     def __init__(self, searchPath):
+        """
+        prepare the transiguration
+        """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
         self._engine.init(FileSystemLoader(searchPath))
 
     def perform(self, context):
+        """
+        To transfigurate while applying Jinja2 templating in-file
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         super().perform(context)
         self._engine.apply(context, self._input, self._output)
 
@@ -100,10 +130,18 @@ class FileReaderToContextTransfiguration(ContextAwareTransfiguration):
     _file = None
 
     def __init__(self, ctx_key):
+        """
+        prepare the transiguration
+        """
         super().__init__()
         self._ctx_key_file_path = ctx_key
 
     def perform(self, context):
+        """
+        To transfigurate while reading file to context
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         super().perform(context)
 
         file_path = context[self._ctx_key_file_path]
@@ -126,9 +164,17 @@ class YamlFileReaderToContextTransfiguration(FileReaderToContextTransfiguration)
     """
 
     def __init__(self, keyName):
+        """
+        prepare the transiguration
+        """
         super().__init__(keyName)
 
     def perform(self, context):
+        """
+        To transfigurate while reading Yaml file to context
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         super().perform(context)
         self.read_content(context)
         self._file.close()

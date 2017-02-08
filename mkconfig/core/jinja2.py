@@ -16,6 +16,11 @@ class Jinja2Engine(TemplateEngine):
         super().__init__()
 
     def init(self, initLoader):
+        """
+        Initialize the jinja2 environment
+
+        :param initLoader:
+        """
         logger.debug('Jinja2.init()')
 
         self._engine = Environment(
@@ -24,6 +29,14 @@ class Jinja2Engine(TemplateEngine):
             trim_blocks=False)
 
     def apply(self, context, templateName, outputFile, isInMemory=False):
+        """
+        Apply the template with jinja2 engine.
+
+        :param context: A map of key-value attribute defined variables to be applied with template
+        :param templateName: name of template to apply with
+        :param outputFile: file name to the substitution result.
+        :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
+        """
         logger.debug('Jinja2.generate()')
 
         if isInMemory :
@@ -39,4 +52,10 @@ class Jinja2Engine(TemplateEngine):
         Inner Factory class to fulfill the binding from TemplateEngineFactory
         """
         @staticmethod
-        def create(): return Jinja2Engine()
+        def create():
+            """
+            A factory method to create an associated Jinja2Engine instance
+
+            :return: the associated Jinja2Engine object
+            """
+            return Jinja2Engine()

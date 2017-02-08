@@ -91,10 +91,15 @@ function do_doc {
     # Activate the virtual env
     source $PY_ENV_HOME/bin/activate
 
+    local DOC_OUTPUT=docs/build
+    local DOC_CONF=docs/source
+
     echo '==============================================='
     echo 'Install build-doc required libraries'
     echo '-----------------------------------------------'
     pip install sphinx
+    rm -rf $DOC_OUTPUT
+    sphinx-build -b html $DOC_CONF $DOC_OUTPUT
     echo '==============================================='
     echo
 

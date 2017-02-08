@@ -7,7 +7,7 @@ from mkconfig.conf.collectd import CollectdJmxPartialTransifgurationChain, YamlF
 from unittest import TestCase
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
-from mkconfig.conf.factory import ConfigTemplateFactory
+from mkconfig.conf.factory import ConfigurationTypeFactory
 
 
 class TestConfigTemplateFactory(TestCase):
@@ -19,11 +19,11 @@ class TestConfigTemplateFactory(TestCase):
         print('Unit Test [{}] Stop'.format(self.id()))
 
     def test_default_config_template_factory(self):
-        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte(None))
-        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte('rubbish'))
+        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte(None))
+        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte('rubbish'))
 
     def test_collectd_jmx_config_template_factory(self):
-        self.assertEqual('collectd_jmx.template', ConfigTemplateFactory.get_config_tempalte('collectd_jmx'))
+        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte('collectd_jmx'))
 
 
 
@@ -40,7 +40,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context = {
             'test_input' : 'test.basics.properties.yaml'
         }
-        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         reader = YamlFileReaderToContextTransfiguration('test_input')
         reader.perform(context)
@@ -52,7 +52,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context = {
             'test_input' : 'test.basics.properties.yaml1'
         }
-        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         reader = YamlFileReaderToContextTransfiguration('test_input')
 

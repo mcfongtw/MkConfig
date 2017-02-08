@@ -21,6 +21,11 @@ class TemplateEngineEnum(object) :
     """
     @staticmethod
     def getAllShapes():
+        """
+        Return a list of class name of subtype of class TemplateEngine
+
+        :return: a list of subclass of TemplateEngine
+        """
         classes = TemplateEngine.__subclasses__()
         values = []
         for clazz in classes:
@@ -30,6 +35,12 @@ class TemplateEngineEnum(object) :
 
     @staticmethod
     def valueOf(str):
+        """
+
+        :param str: the literal name of TemplateEngine subclass
+
+        :return: the literal name of TemplateEngine subclass
+        """
         if str in TemplateEngineEnum.getAllShapes():
             return str
         else:

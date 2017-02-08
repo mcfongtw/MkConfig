@@ -23,6 +23,11 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
     """
 
     def perform(self, context):
+        """
+        To transfigurate while preparing configuration meta
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         appName = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX]
 
         appConfYamlFile = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + "collectd.jmx." + appName + '.conf.yaml'
@@ -47,9 +52,17 @@ class CollectdJmxConfToContextTransfiguration(YamlFileReaderToContextTransfigura
     """
 
     def __init__(self, keyName = CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE):
+        """
+        prepare the transiguration
+        """
         super().__init__(keyName)
 
     def read_content(self, context):
+        """
+        Read content of a Yaml file
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         yaml_content = yaml.load(self._file)
 
         for key, value in yaml_content.items():
@@ -62,6 +75,11 @@ class CollectdJmxConfToContextTransfiguration(YamlFileReaderToContextTransfigura
 
 
     def patch_mbean_table_value(self, mbean):
+        """
+        Patch the specific mbean attribute
+
+        :param mbean: mbean attribute to be patched
+        """
         for attribute in mbean['attributes']:
             if 'Table' in attribute:
                 value = attribute['Table']
@@ -76,9 +94,17 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
     """
 
     def __init__(self):
+        """
+        prepare the transiguration
+        """
         super().__init__(Configurations.getTemplateDir())
 
     def perform(self, context):
+        """
+        To transfigurate while converting template to stub configuration
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         input = context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE]
         intermediate_template = '_' + input + '.tmp'
 
@@ -99,9 +125,17 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
     """
 
     def __init__(self):
+        """
+        prepare the transiguration
+        """
         super().__init__(Configurations.getTempDir())
 
     def perform(self, context):
+        """
+        To transfigurate while converting stub configuration to partial configuration for an application
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         intermediate_template = '_' + context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE] + '.tmp'
 
         output_filename = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] + '.output.partial'
@@ -121,8 +155,11 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
     """
 
     def __init__(self):
+        """
+        prepare the chain of transfiguration
+        """
         super().__init__()
-        TemplateEngineFactory.add_factory('Jinja2Engine', Jinja2Engine.Factory)
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         self._step0 = PrepareAppConfTransfiguration()
         self._step1 = CollectdJmxConfToContextTransfiguration()
@@ -135,6 +172,11 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         self.add(self._step3)
 
     def execute(self, context):
+        """
+        To execute the whole series of transfiguration execution
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         logger.info("///////////////////////////////////////////////////////////////////////")
         logger.info("[Chain] PerAPP CollectdJmx Transfiguration BEGINS")
         logger.info("///////////////////////////////////////////////////////////////////////")
@@ -150,6 +192,11 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
     A outer chain that controls the whole process of performing config generation for each applicaiton and merge the partial results into a final output
     """
     def perform(self, context):
+        """
+        To transfigurate while parsing the list of applications to be processed
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
         #FIXME: The distinguishment might not be necessary, as above always return a list of 0 or 1 element
@@ -167,6 +214,12 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         logger.debug("======================================================================")
 
     def generateAppPartialConfiguration(self, context, appName):
+        """
+        Create a CollectdJmxPartialTransifgurationChain to perform config generation with a specific application
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        :param appName: the name of application to generate configuration with
+        """
         logger.info('Spliting the partial configuraiton for [%s]' % appName)
 
         context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] = appName
@@ -179,10 +232,17 @@ class CollectdJmxConsolidatePartialConfigurations(ContextAwareTransfiguration):
     The final phase of CollectdJmxTransfiguration to consolidated a complete Collectd-Jmx configuration.
     """
     def __init__(self):
+        """
+        prepare the transiguration
+        """
         super().__init__()
 
     def perform(self, context):
+        """
+        To transfigurate while consolidates multiple application-specific configuration into a final output
 
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         header = """
 LoadPlugin java
 
@@ -252,6 +312,9 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
     """
 
     def __init__(self):
+        """
+        prepare the chain of transiguration
+        """
         super().__init__()
 
         self._step0 = SplitAppConfTransfiguration()
@@ -261,6 +324,11 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
         self.add(self._step1)
 
     def execute(self, context):
+        """
+        To execute the whole series of transfiguration execution
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
         logger.info("///////////////////////////////////////////////////////////////////////")
         logger.info("[Chain] OVERALL CollectdJmx Transfiguration BEGINS")
         logger.info("///////////////////////////////////////////////////////////////////////")
@@ -270,9 +338,3 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
         logger.info("///////////////////////////////////////////////////////////////////////")
         logger.info("[Chain] OVERALL CollectdJmx Transfiguration COMPLETES")
         logger.info("///////////////////////////////////////////////////////////////////////")
-
-
-
-
-
-

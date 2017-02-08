@@ -18,10 +18,22 @@ class PySTEngine(TemplateEngine):
         logger.debug('PythonSTEngine.init()')
 
     def init(self, line):
+        """
+        initialize paramters
+
+        :param line: line of string containing templates
+        """
         logger.debug('PythonSTEngine.init()')
         self._template = Template(line)
 
     def apply(self, context, outputFile, isInMemory=False):
+        """
+        Apply the template with python string template engine.
+
+        :param context: A map of key-value attribute defined variables to be applied with template
+        :param outputFile: file name to the substitution result.
+        :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
+        """
         logger.debug('PythonSTEngine.generate()')
 
         result = self._template.safe_substitute(context)
@@ -36,4 +48,9 @@ class PySTEngine(TemplateEngine):
         Inner Factory class to fulfill the binding from TemplateEngineFactory
         """
         @staticmethod
-        def create(): return PySTEngine()
+        def create():
+            """
+            A factory method to create an associated PySTEngine instance
+            :return: the associated PySTEngine object
+            """
+            return PySTEngine()

@@ -2,7 +2,7 @@ from mkconfig.conf.collectd import CollectdJmxTransfigurationChain
 from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
     CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, \
     CTX_KEY_COLLECTD_JMX_APP_CONF_DIR
-from mkconfig.conf.factory import ConfigTemplateFactory
+from mkconfig.conf.factory import ConfigurationTypeFactory
 import logging
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
@@ -37,7 +37,12 @@ class CliController(CementBaseController):
 
     @expose(hide=True, help="Generate configuration", aliases=['run'])
     def default(self):
-        config_template_file = ConfigTemplateFactory.get_config_tempalte(self.app.pargs.template)
+        """
+        A default command to execute. Internally, it will execute the chain of transfiguration that generates the
+        configuration
+
+        """
+        config_template_file = ConfigurationTypeFactory.get_config_tempalte(self.app.pargs.template)
 
         context = {
             CTX_KEY_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
@@ -122,6 +127,10 @@ class MkConfigApp(CementApp):
         ]
 
     def go(self):
+        """
+        Execute the cement application lifecycle.
+
+        """
         try:
             self.setup()
 
