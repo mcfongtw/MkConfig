@@ -49,6 +49,7 @@ function check_init {
     fi
 
 }
+
 function do_init {
     #clean first
     do_clean
