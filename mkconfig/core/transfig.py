@@ -67,13 +67,15 @@ class Jinja2InMemoryTemplateTransfiguration(ContextAwareTransfiguration):
     _input = None
     _output = None
 
-    def __init__(self, searchPath):
+    def __init__(self, search_path):
         """
         prepare the transiguration
+
+        :param search_path: file path of the template to search for
         """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
-        self._engine.init(FileSystemLoader(searchPath))
+        self._engine.init(FileSystemLoader(search_path))
 
     def perform(self, context):
         """
@@ -98,13 +100,15 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     _input = None
     _output = None
 
-    def __init__(self, searchPath):
+    def __init__(self, search_path):
         """
         prepare the transiguration
+
+        :param search_path: file path of the template to search for
         """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
-        self._engine.init(FileSystemLoader(searchPath))
+        self._engine.init(FileSystemLoader(search_path))
 
     def perform(self, context):
         """
@@ -132,6 +136,8 @@ class FileReaderToContextTransfiguration(ContextAwareTransfiguration):
     def __init__(self, ctx_key):
         """
         prepare the transiguration
+
+        :param ctx_key: A context key referring to as path of the file being read
         """
         super().__init__()
         self._ctx_key_file_path = ctx_key
@@ -166,6 +172,8 @@ class YamlFileReaderToContextTransfiguration(FileReaderToContextTransfiguration)
     def __init__(self, keyName):
         """
         prepare the transiguration
+
+        :param keyName: A context key referring to as path of the YAML file being read
         """
         super().__init__(keyName)
 

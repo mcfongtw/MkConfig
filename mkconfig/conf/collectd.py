@@ -31,7 +31,7 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         appName = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX]
 
         appConfYamlFile = context[CTX_KEY_COLLECTD_JMX_APP_CONF_DIR] + "collectd.jmx." + appName + '.conf.yaml'
-        PrepareAppConfTransfiguration.validate_file_exist(appConfYamlFile)
+        self.validate_file_exist(appConfYamlFile)
         context[CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE] = appConfYamlFile
         logger.info('Set the conf file for app [%s] at [%s]', appName, appConfYamlFile)
 
@@ -40,8 +40,7 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         logger.debug("======================================================================")
 
 
-    @staticmethod
-    def validate_file_exist(file_path):
+    def validate_file_exist(self, file_path):
         if not os.path.isfile(file_path):
             raise IOError('File [{0}] not found !'.format(file_path))
 
@@ -213,16 +212,16 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         logger.debug('[Transifig] Split app configuration w/ app list [%s]', listOfAppNames)
         logger.debug("======================================================================")
 
-    def generateAppPartialConfiguration(self, context, appName):
+    def generateAppPartialConfiguration(self, context, app_name):
         """
         Create a CollectdJmxPartialTransifgurationChain to perform config generation with a specific application
 
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
-        :param appName: the name of application to generate configuration with
+        :param app_name: the name of application to generate configuration with
         """
-        logger.info('Spliting the partial configuraiton for [%s]' % appName)
+        logger.info('Spliting the partial configuraiton for [%s]' % app_name)
 
-        context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] = appName
+        context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] = app_name
         inner_chain = CollectdJmxPartialTransifgurationChain()
         inner_chain.execute(context)
 

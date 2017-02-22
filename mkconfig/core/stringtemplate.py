@@ -26,21 +26,21 @@ class PySTEngine(TemplateEngine):
         logger.debug('PythonSTEngine.init()')
         self._template = Template(line)
 
-    def apply(self, context, outputFile, isInMemory=False):
+    def apply(self, context, output_file, is_in_memory=False):
         """
         Apply the template with python string template engine.
 
         :param context: A map of key-value attribute defined variables to be applied with template
-        :param outputFile: file name to the substitution result.
+        :param output_file: file name to the substitution result.
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
         logger.debug('PythonSTEngine.generate()')
 
         result = self._template.safe_substitute(context)
-        if isInMemory:
+        if is_in_memory:
             return result
         else:
-            with open(Configurations.getTemplateFile(outputFile), 'w') as file:
+            with open(Configurations.getTemplateFile(output_file), 'w') as file:
                 file.write(result)
 
     class Factory(object):

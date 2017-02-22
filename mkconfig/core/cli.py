@@ -64,34 +64,66 @@ class MkConfigApp(CementApp):
         A Meta class that defines hook
         """
         # define any hook functions here
+
+
         def pre_setup_hook(self):
+            """
+            a hook before setup()
+            """
             logger.debug("pre_setup hook")
 
         def post_setup_hook(self):
+            """
+            a hook after setup()
+            """
             logger.debug("post_setup hook")
 
         def pre_run_hook(self):
+            """
+            a hook before run()
+            """
             logger.debug("pre_run hook")
 
         def post_run_hook(self):
+            """
+            a hook after run()
+            """
             logger.debug("post_run hook")
 
         def pre_argument_parsing_hook(self):
+            """
+            a hook before parse_arg()
+            """
             logger.debug("pre_argument_parsing hook")
 
         def pre_render_hook(self):
+            """
+            a hook before render()
+            """
             logger.debug("pre_render hook")
 
         def post_render_hook(self):
+            """
+            a hook after render()
+            """
             logger.debug("post_render hook")
 
         def pre_close_hook(self):
+            """
+            a hook before close()
+            """
             logger.debug("pre_close hook")
 
         def post_close_hook(self):
+            """
+            a hook after close()
+            """
             logger.debug("post_close hook")
 
         def post_argument_parsing_hook(self):
+            """
+            a hook after parse_arg()
+            """
             logger.debug("post_argument_parsing hook")
 
             logger.info("Received option: apps_list => %s" % self.pargs.apps_list)

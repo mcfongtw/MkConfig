@@ -15,36 +15,36 @@ class Jinja2Engine(TemplateEngine):
     def __init__(self):
         super().__init__()
 
-    def init(self, initLoader):
+    def init(self, init_loader):
         """
-        Initialize the jinja2 environment
+        Initialize the Jinja2 environment
 
-        :param initLoader:
+        :param init_loader: The template loader for Jinja2 environment
         """
         logger.debug('Jinja2.init()')
 
         self._engine = Environment(
             autoescape=False,
-            loader=initLoader,
+            loader=init_loader,
             trim_blocks=False)
 
-    def apply(self, context, templateName, outputFile, isInMemory=False):
+    def apply(self, context, template_name, output_file, is_in_memory=False):
         """
-        Apply the template with jinja2 engine.
+        Apply the template with Jinja2 environment.
 
         :param context: A map of key-value attribute defined variables to be applied with template
-        :param templateName: name of template to apply with
-        :param outputFile: file name to the substitution result.
+        :param template_name: name of template to apply with
+        :param output_file: file name to the substitution result.
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
         logger.debug('Jinja2.generate()')
 
-        if isInMemory :
-            result = self._engine.get_template(templateName).render(context)
+        if is_in_memory :
+            result = self._engine.get_template(template_name).render(context)
             return result
         else:
-            result = self._engine.get_template(templateName).render(context)
-            with open(Configurations.getTemplateFile(outputFile), 'w') as file:
+            result = self._engine.get_template(template_name).render(context)
+            with open(Configurations.getTemplateFile(output_file), 'w') as file:
                 file.write(result)
 
     class Factory(object):
