@@ -1,41 +1,41 @@
 Auto Generated Source Code Documentation
 ========================================
-.. automodule:: env
+.. automodule:: mkconfig.env
     :members:
     :undoc-members:
 
-.. automodule:: core.chain
+.. automodule:: mkconfig.core.chain
     :members:
     :undoc-members:
 
-.. automodule:: core.cli
+.. automodule:: mkconfig.core.cli
     :members:
     :undoc-members:
 
-.. automodule:: core.engine
+.. automodule:: mkconfig.core.engine
     :members:
     :undoc-members:
 
-.. automodule:: core.error
+.. automodule:: mkconfig.core.error
     :members:
     :undoc-members:
 
-.. automodule:: core.factory
+.. automodule:: mkconfig.core.factory
     :members:
     :undoc-members:
 
-.. automodule:: core.jinja2
+.. automodule:: mkconfig.core.jinja2
     :members:
     :undoc-members:
 
-.. automodule:: core.stringtemplate
+.. automodule:: mkconfig.core.stringtemplate
     :members:
     :undoc-members:
 
-.. automodule:: conf.collectd
+.. automodule:: mkconfig.conf.collectd
     :members:
     :undoc-members:
 
-.. automodule:: conf.factory
+.. automodule:: mkconfig.conf.factory
     :members:
     :undoc-members:
