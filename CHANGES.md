@@ -4,8 +4,8 @@
     * Jenkins integration to ensure project quality (MKCONFIG-15)
 - Improvements
     * Enhance logger appender format and better descriptive message (MKCONFIG-19)
-    * Consolidate CollectdJmx configiguration into one for each application (MKCONFIG-34)
-    * Organize attributes of CollectdJmx output. (MKCONFIG- 45)
+    * Consolidate Collectd-GenericJmx meta files into one for each application (MKCONFIG-34)
+    * Organize attributes of Collectd-GenericJmx output. (MKCONFIG- 45)
     * Reconstruct project source repository for ease of setup. (MKCONFIG-80)
 - Critical Bug Fixes
     * None
