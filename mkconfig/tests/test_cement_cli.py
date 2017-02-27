@@ -1,4 +1,7 @@
-from mkconfig.env import setup_logging_with_details
+import os
+
+from mkconfig.conf.utils import Utils
+from mkconfig.env import setup_logging_with_details, Configurations
 import logging
 from cement.utils import test
 setup_logging_with_details()
@@ -14,6 +17,16 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Unit Test [{}] Start'.format(self.id()))
 
     def tearDown(self):
+        folder = Configurations.getTmpTemplateDir()
+        logger.info('Removing all files under %s', folder)
+        for the_file in os.listdir(folder):
+            file_path = os.path.join(folder, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(e)
+        logger.info('Removing all files under %s ---- DONE', folder)
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_normal_start_and_stop(self):
@@ -25,6 +38,11 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app.pargs.template, 'collectd_jmx')
         self.assertEqual(app.pargs.output, 'test.output')
         self.assertEqual(app.pargs.apps_list, 'cassandra')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.plugin.partial.template.tmp')))
 
         app.close()
 
@@ -38,6 +56,11 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app3.pargs.output, 'test.output')
         self.assertEqual(app3.pargs.apps_list, 'cassandra')
 
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.plugin.partial.template.tmp')))
+
         app3.close()
 
     def test_normal_start_and_stop_with_apps_list(self):
@@ -48,6 +71,13 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app.pargs.output, 'test.output')
         self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
 
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.plugin.partial.template.tmp')))
+
         app.close()
 
     def test_normal_start_and_stop_with_all_exampl_apps(self):
@@ -57,6 +87,15 @@ class TestMkConfigApp(test.CementTestCase):
 
         self.assertEqual(app.pargs.output, 'test.output')
         self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jira.output.partial')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.plugin.partial.template.tmp')))
 
         app.close()
 

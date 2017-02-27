@@ -3,7 +3,7 @@ from mkconfig.core.transfig import ContextAwareTransfiguration, Jinja2FileTempla
 from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_APP_CONF_DIR, \
     CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
-    CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST
+    CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_JMX_MBEANS_SET
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from mkconfig.env import Configurations
@@ -41,7 +41,7 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
 
 
     def validate_file_exist(self, file_path):
-        if not os.path.isfile(file_path):
+        if not Utils.is_file_exist(file_path):
             raise IOError('File [{0}] not found !'.format(file_path))
 
 
@@ -67,10 +67,10 @@ class CollectdJmxConfToContextTransfiguration(YamlFileReaderToContextTransfigura
         for key, value in yaml_content.items():
             context[key] = value
 
-        for idx, mbean in enumerate(context['mbeans']):
+        for idx, mbean in enumerate(context[CTX_KEY_COLLECTD_JMX_MBEANS_SET]):
             self.patch_mbean_table_value(mbean)
             #mbean is updated
-            context['mbeans'][idx] = mbean
+            context[CTX_KEY_COLLECTD_JMX_MBEANS_SET][idx] = mbean
 
 
     def patch_mbean_table_value(self, mbean):
@@ -199,7 +199,7 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
         #distinguish between string object and list
-        if isinstance(listOfAppNames, str):
+        if Utils.is_string_type(listOfAppNames):
             logger.info('Processing ONE app [%s]' %listOfAppNames)
             listOfAppNames = [listOfAppNames]
 

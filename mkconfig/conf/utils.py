@@ -1,5 +1,5 @@
 import logging
-
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -28,3 +28,7 @@ class Utils(object):
         :return: True if obj is str; False otherwise.
         """
         return isinstance(obj, str)
+
+    @staticmethod
+    def is_file_exist(file_path):
+        return os.path.isfile(file_path)

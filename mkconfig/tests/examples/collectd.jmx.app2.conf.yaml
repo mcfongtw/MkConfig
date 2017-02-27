@@ -1,0 +1,29 @@
+progName : 'app2'
+hostAddr : 'localhost'
+hostPort : '2222'
+fqdn : 'my.host.cc'
+progPrefix : "APP2_"
+progVer : '2.2'
+mbeans:
+- name : Memory
+  objectName: java.lang:type=Memory
+  InstancePrefix : Memory
+  required: true
+  attributes:
+   - Attribute : HeapMemoryUsage
+     InstancePrefix : Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+   - Attribute : NonHeapMemoryUsage
+     InstancePrefix : Non_Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+- name : Hello2
+  objectName: com.example:type=Hello2
+  InstancePrefix : Hello2
+  required: true
+  attributes:
+   - Attribute : Value
+     InstancePrefix : Value
+     Type : gauge
+     Table : false
