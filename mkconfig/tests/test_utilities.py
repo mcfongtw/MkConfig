@@ -24,5 +24,22 @@ class TestUtilFunctions(unittest.TestCase):
         result = Utils.boolean_to_lowercase_literal('Abc')
         self.assertEqual(result, 'Abc')
 
+    def test_utilities_is_type_string(self):
+        #string
+        self.assertTrue(Utils.is_string_type('abc'))
+        test = "abc"
+        self.assertTrue(Utils.is_string_type(test))
+
+        #list
+        self.assertFalse(Utils.is_string_type([1,2,3]))
+        list = [1,2,3]
+        self.assertFalse(Utils.is_string_type(list))
+
+        #tuple
+        self.assertFalse(Utils.is_string_type((1,2,3)))
+        tuple = (1,2,3)
+        self.assertFalse(Utils.is_string_type(tuple))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -19,3 +19,12 @@ class Utils(object):
         if isinstance(value, bool):
             value = str(value).lower()
         return value
+
+    @staticmethod
+    def is_string_type(obj):
+        """
+        Check if given object is of string type.
+        :param obj: object to check against its type
+        :return: True if obj is str; False otherwise.
+        """
+        return isinstance(obj, str)

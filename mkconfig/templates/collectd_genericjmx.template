@@ -1,0 +1,9 @@
+
+{% include 'collectd_genericjmx.header.partial.template' %}
+
+
+{% for appName in _collectd_jmx_app_prefix_list.split() %}
+    {% include '%s.output.partial' % appName %}
+{% endfor %}
+
+{% include 'collectd_genericjmx.footer.partial.template' %}

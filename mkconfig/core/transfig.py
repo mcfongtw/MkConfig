@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from jinja2 import FileSystemLoader
+from mkconfig.conf.utils import Utils
 import yaml
 import logging
 
@@ -100,15 +101,17 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     _input = None
     _output = None
 
-    def __init__(self, search_path):
+    def __init__(self, search_path_list):
         """
         prepare the transiguration
 
-        :param search_path: file path of the template to search for
+        :param search_path_list: list of file path of the template to search for
         """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
-        self._engine.init(FileSystemLoader(search_path))
+        if Utils.is_string_type(search_path_list):
+            search_path_list = [search_path_list]
+        self._engine.init(FileSystemLoader(search_path_list))
 
     def perform(self, context):
         """

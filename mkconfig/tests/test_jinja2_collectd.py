@@ -19,11 +19,11 @@ class TestConfigTemplateFactory(TestCase):
         print('Unit Test [{}] Stop'.format(self.id()))
 
     def test_default_config_template_factory(self):
-        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte(None))
-        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte('rubbish'))
+        self.assertEqual('collectd_genericjmx.plugin.partial.template', ConfigurationTypeFactory.get_config_tempalte(None))
+        self.assertEqual('collectd_genericjmx.plugin.partial.template', ConfigurationTypeFactory.get_config_tempalte('rubbish'))
 
     def test_collectd_jmx_config_template_factory(self):
-        self.assertEqual('collectd_jmx.template', ConfigurationTypeFactory.get_config_tempalte('collectd_jmx'))
+        self.assertEqual('collectd_genericjmx.plugin.partial.template', ConfigurationTypeFactory.get_config_tempalte('collectd_jmx'))
 
 
 
@@ -64,7 +64,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context =  {
             '_collectd_jmx_app_conf_dir' : '../examples/',
             '_collectd_jmx_app_prefix': 'cassandra',
-            '_collectd_jmx_input' : 'collectd_jmx.template',
+            '_collectd_jmx_input' : 'collectd_genericjmx.plugin.partial.template',
             '_collectd_jmx_output' : 'test.output',
         }
         chain = CollectdJmxPartialTransifgurationChain()

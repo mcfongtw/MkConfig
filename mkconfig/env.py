@@ -66,46 +66,78 @@ class Configurations(object):
 
     @staticmethod
     def getProjectRootDir():
+        """
+        Get the dir path of this project/
+        """
         return ROOT_DIR
 
     @staticmethod
     def getProjectRootFile(fname):
+        """
+        Get the file path under project/
+        :param fname: name of file under specific dir
+        """
         return os.path.join(Configurations.getProjectRootDir(), fname)
 
     @staticmethod
     def getTemplateDir():
+        """
+        Get the dir path of templates, project/templates/
+        """
         return os.path.join(Configurations.getProjectRootDir(), TEMPLATE_DIR_NAME)
 
     @staticmethod
     def getTemplateFile(fname):
+        """
+        Get the file path under project/templates/
+        :param fname: name of file under specific dir
+        """
         return os.path.join(Configurations.getTemplateDir(), fname)
 
-    @staticmethod
-    def getTestsDir():
-        return os.path.join(Configurations.getProjectRootDir(), TEST_DIR_NAME)
-
-    @staticmethod
-    def getTestFile(fname):
-        return os.path.join(Configurations.getTestsDir(), fname)
 
     @staticmethod
     def getOutputDir():
+        """
+        Get the dir path of project/tests/
+        """
         directory = os.path.join(Configurations.getProjectRootDir(), OUTPUT_DIR_NAME)
         if not os.path.exists(directory):
-            logger.warn('Directory %s not exist, CREATE!', directory)
+            logger.warning('Directory %s not exist, CREATE!', directory)
             os.makedirs(directory)
 
         return directory
 
     @staticmethod
     def getOutputFile(fname):
+        """
+        Get the file path under /project/tests/
+        :param fname: name of file under specific dir
+        """
         return os.path.join(Configurations.getOutputDir(), fname)
 
     @staticmethod
-    def getTempDir():
+    def getSystemTmpDir():
+        """
+        Get the dir pth of system temp, /tmp/
+        """
         return os.path.join(Configurations.getProjectRootDir(), TEMP_DIR_NAME)
 
     @staticmethod
-    def getTempFile(fname):
-        return os.path.join(Configurations.getTempDir(), fname)
+    def getTmpTemplateDir():
+        """
+        Get the temporary templates dir path, /tmp/templates/
+        """
+        directory = os.path.join(Configurations.getSystemTmpDir(), TEMPLATE_DIR_NAME);
+        if not os.path.exists(directory):
+            logger.warning('Directory %s not exist, CREATE!', directory)
+            os.makedirs(directory)
+        return directory
+
+    @staticmethod
+    def getTmpTemplateFile(fname):
+        """
+        Get the file path under /tmp/templates/
+        :param fname: name of file under specific dir
+        """
+        return os.path.join(Configurations.getTmpTemplateDir(), fname)
 

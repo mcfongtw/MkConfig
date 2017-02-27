@@ -96,7 +96,7 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         """
         prepare the transiguration
         """
-        super().__init__(Configurations.getTemplateDir())
+        super().__init__([Configurations.getTemplateDir()])
 
     def perform(self, context):
         """
@@ -108,7 +108,7 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         intermediate_template = '_' + input + '.tmp'
 
         self._input = input
-        self._output = Configurations.getTempFile(intermediate_template)
+        self._output = Configurations.getTmpTemplateFile(intermediate_template)
         super().perform(context)
 
         logger.debug("======================================================================")
@@ -127,7 +127,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
         """
         prepare the transiguration
         """
-        super().__init__(Configurations.getTempDir())
+        super().__init__([Configurations.getTmpTemplateDir()])
 
     def perform(self, context):
         """
@@ -140,7 +140,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
         output_filename = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] + '.output.partial'
 
         self._input = intermediate_template
-        self._output = Configurations.getOutputFile(output_filename)
+        self._output = Configurations.getTmpTemplateFile(output_filename)
         super().perform(context)
 
         logger.debug("======================================================================")
@@ -198,15 +198,13 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         """
         listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
-        #FIXME: The distinguishment might not be necessary, as above always return a list of 0 or 1 element
         #distinguish between string object and list
         if isinstance(listOfAppNames, str):
             logger.info('Processing ONE app [%s]' %listOfAppNames)
-            self.generateAppPartialConfiguration(context, listOfAppNames)
-        else :
-            logger.info('Processing list of apps [%s]' % listOfAppNames)
-            for appName in listOfAppNames:
-                self.generateAppPartialConfiguration(context, appName)
+            listOfAppNames = [listOfAppNames]
+
+        for appName in listOfAppNames:
+            self.generateAppPartialConfiguration(context, appName)
 
         logger.debug("======================================================================")
         logger.debug('[Transifig] Split app configuration w/ app list [%s]', listOfAppNames)
@@ -225,84 +223,37 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         inner_chain = CollectdJmxPartialTransifgurationChain()
         inner_chain.execute(context)
 
+class CollectdJmxTransConsolidationToFinalOutput(Jinja2FileTemplateTransfiguration):
+    """
+    The last phase of CollectdJmxTransfiguration to consolidate all partial output into a final
+    output.
+    """
 
-class CollectdJmxConsolidatePartialConfigurations(ContextAwareTransfiguration):
-    """
-    The final phase of CollectdJmxTransfiguration to consolidated a complete Collectd-Jmx configuration.
-    """
     def __init__(self):
         """
         prepare the transiguration
         """
-        super().__init__()
+        super().__init__([Configurations.getTemplateDir(), Configurations.getTmpTemplateDir()])
 
     def perform(self, context):
         """
-        To transfigurate while consolidates multiple application-specific configuration into a final output
+        To transfigurate while merging all partial output via Jinja2 inclusion.
 
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
-        header = """
-LoadPlugin java
 
-<Plugin "java">
-    #JVMARG "-verbose:jni"
-    #JVMARG "-Xmx128m"
-    JVMArg "-Djava.class.path=/usr/share/collectd/java/collectd-api.jar:/usr/share/collectd/java/generic-jmx.jar"
+        final_template_file = 'collectd_genericjmx.template'
 
-    LoadPlugin "org.collectd.java.GenericJMX"
-        """
+        self._input = final_template_file
+        self._output = Configurations.getOutputFile(context[CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT])
+        super().perform(context)
 
-        footer = """
+        logger.debug("======================================================================")
+        logger.debug('[Transifig] CollectdJmx Consolidation[%s]->Final output @ [%s]',
+                     self._input,
+                     self._output)
+        logger.debug("======================================================================")
 
-
-</Plugin>
-        """
-
-        content = header
-        partial_files = []
-
-        listOfAppNames = context[CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
-
-        # Retreive list of partial files based on user selected apps under output/
-        for appName in listOfAppNames :
-            file_name = appName + ".output.partial"
-            partial_files.append(Configurations.getOutputFile(file_name))
-
-
-        for partial_file_path in partial_files:
-            if partial_file_path.endswith('.partial'):
-                try:
-                    file = open(partial_file_path, "r")
-                except IOError as e:
-                    errno, strerror = e.args
-                    logger.error("I/O error[%s] at [%s]: %s", errno, partial_file_path, strerror)
-                    raise
-                else:
-                    partial_content = file.read()
-                    content += partial_content
-                    file.close()
-                    logger.info("Read partial content fromm [%s]" % partial_file_path)
-
-
-        content += footer
-
-        output_filename = Configurations.getOutputFile(context[CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT])
-
-        try:
-            file = open(output_filename, "w")
-        except IOError as e:
-            errno, strerror = e.args
-            logger.error("I/O error[{0}] at [%s]: %s", errno, output_filename, strerror)
-            raise
-        else:
-            file.write(content)
-            file.close()
-            logger.info("Final collectd jmx configuration output @ [%s]" % output_filename)
-
-            logger.debug("======================================================================")
-            logger.debug('[Transfig] CollectdJmx merge all partial output @ [%s]', output_filename)
-            logger.debug("======================================================================")
 
 
 class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
@@ -315,9 +266,10 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
         prepare the chain of transiguration
         """
         super().__init__()
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
         self._step0 = SplitAppConfTransfiguration()
-        self._step1 = CollectdJmxConsolidatePartialConfigurations()
+        self._step1 = CollectdJmxTransConsolidationToFinalOutput()
 
         self.add(self._step0)
         self.add(self._step1)

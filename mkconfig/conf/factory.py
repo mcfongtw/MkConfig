@@ -15,12 +15,12 @@ class ConfigurationTypeFactory(object):
 
         :return: the name of template file
         """
-        default_config_template = 'collectd_jmx.template'
+        default_config_template = 'collectd_genericjmx.plugin.partial.template'
 
         if type is None:
             return default_config_template
         if type == 'collectd_jmx':
-            return 'collectd_jmx.template'
+            return 'collectd_genericjmx.plugin.partial.template'
         else:
             #default
             return default_config_template
