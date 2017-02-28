@@ -1,5 +1,5 @@
 from mkconfig.core.transfig import ContextAwareTransfiguration, Jinja2FileTemplateTransfiguration, \
-    YamlFileReaderToContextTransfiguration
+    YamlFileReaderToContextTransfiguration, ChainedTransfiguration
 from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_APP_CONF_DIR, \
     CTX_KEY_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
@@ -105,7 +105,7 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
         input = context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE]
-        intermediate_template = '_' + input + '.tmp'
+        intermediate_template = '_' + input + '.stub'
 
         self._input = input
         self._output = Configurations.getTmpTemplateFile(intermediate_template)
@@ -114,8 +114,6 @@ class CollectdJmxTransTemplateToStubJinja2(Jinja2FileTemplateTransfiguration):
         logger.debug("======================================================================")
         logger.debug('[Transifig] CollectdJmx Template[%s]->Stub @ [%s]', self._input, self._output)
         logger.debug("======================================================================")
-
-
 
 
 class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
@@ -135,7 +133,7 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
 
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
-        intermediate_template = '_' + context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE] + '.tmp'
+        intermediate_template = '_' + context[CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE] + '.stub'
 
         output_filename = context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] + '.output.partial'
 
@@ -144,13 +142,15 @@ class CollectdJmxTransStubToConfiguration(Jinja2FileTemplateTransfiguration):
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('[Transifig] CollectdJmx Stub->Output @ [%s]', self._output)
+        logger.debug('[Transifig] CollectdJmx Stub [%s] ->Output @ [%s]', self._input, self._output)
         logger.debug("======================================================================")
 
 
-class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
+class CollectdJmxPartialChainedTransfiguration(ChainedTransfiguration):
     """
-    An (inner) chain of transfiguration that transform input to a partial collectd jmx configuration
+    A chained transfiguration that transform input to a collectd genericjmx
+    template for one specific application - incomplete still and need to consolidate all parts
+    into one final output with CollectdJmxCompleteChainedTransfiguration
     """
 
     def __init__(self):
@@ -186,6 +186,7 @@ class CollectdJmxPartialTransifgurationChain(ChainOfTransfiguration):
         logger.info("[Chain] PerAPP CollectdJmx Transfiguration COMPLETES")
         logger.info("///////////////////////////////////////////////////////////////////////")
 
+
 class SplitAppConfTransfiguration(ContextAwareTransfiguration):
     """
     A outer chain that controls the whole process of performing config generation for each applicaiton and merge the partial results into a final output
@@ -220,7 +221,7 @@ class SplitAppConfTransfiguration(ContextAwareTransfiguration):
         logger.info('Spliting the partial configuraiton for [%s]' % app_name)
 
         context[CTX_KEY_COLLECTD_JMX_APP_PREFIX] = app_name
-        inner_chain = CollectdJmxPartialTransifgurationChain()
+        inner_chain = CollectdJmxPartialChainedTransfiguration()
         inner_chain.execute(context)
 
 class CollectdJmxTransConsolidationToFinalOutput(Jinja2FileTemplateTransfiguration):
@@ -255,10 +256,10 @@ class CollectdJmxTransConsolidationToFinalOutput(Jinja2FileTemplateTransfigurati
         logger.debug("======================================================================")
 
 
-
-class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
+class CollectdJmxCompleteChainedTransfiguration(ChainedTransfiguration):
     """
-    An (outer) chain of transfiguration that consolidate all partial pieces to a complete collectd jmx configuration
+    A chained transfiguration that consolidate all partial pieces to a complete collectd jmx
+    configuration
     """
 
     def __init__(self):
@@ -281,11 +282,11 @@ class CollectdJmxTransfigurationChain(ChainOfTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
         logger.info("///////////////////////////////////////////////////////////////////////")
-        logger.info("[Chain] OVERALL CollectdJmx Transfiguration BEGINS")
+        logger.info("[Chain] COMPLETE CollectdJmx Transfiguration BEGINS")
         logger.info("///////////////////////////////////////////////////////////////////////")
 
         super().execute(context)
 
         logger.info("///////////////////////////////////////////////////////////////////////")
-        logger.info("[Chain] OVERALL CollectdJmx Transfiguration COMPLETES")
+        logger.info("[Chain] COMPLETE CollectdJmx Transfiguration COMPLETES")
         logger.info("///////////////////////////////////////////////////////////////////////")

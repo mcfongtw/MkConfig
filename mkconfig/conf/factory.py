@@ -2,13 +2,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class ConfigurationTypeFactory(object):
     """
     A Factory method that returns type of Configuration. Internal logics would retrive the associated template given a
     known type
     """
     @staticmethod
-    def get_config_tempalte(type) :
+    def get_config_template(type) :
         """
         Retrieve the template file name, given a tempalte type
         :param type: type of template to perform with

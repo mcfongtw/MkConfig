@@ -1,4 +1,4 @@
-from mkconfig.conf.collectd import CollectdJmxTransfigurationChain
+from mkconfig.conf.collectd import CollectdJmxCompleteChainedTransfiguration
 from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
     CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, \
     CTX_KEY_COLLECTD_JMX_APP_CONF_DIR
@@ -42,7 +42,7 @@ class CliController(CementBaseController):
         configuration
 
         """
-        config_template_file = ConfigurationTypeFactory.get_config_tempalte(self.app.pargs.template)
+        config_template_file = ConfigurationTypeFactory.get_config_template(self.app.pargs.template)
 
         context = {
             CTX_KEY_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
@@ -50,7 +50,7 @@ class CliController(CementBaseController):
             CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
             CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
         }
-        chain = CollectdJmxTransfigurationChain()
+        chain = CollectdJmxCompleteChainedTransfiguration()
         chain.execute(context)
 
 

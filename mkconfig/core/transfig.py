@@ -3,6 +3,7 @@ from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
 from jinja2 import FileSystemLoader
 from mkconfig.conf.utils import Utils
+from mkconfig.core.chain import ChainOfTransfiguration
 import yaml
 import logging
 
@@ -199,3 +200,39 @@ class YamlFileReaderToContextTransfiguration(FileReaderToContextTransfiguration)
 
         for key, value in yaml_content.items():
             context[key] = value
+
+
+class ChainedTransfiguration(ChainOfTransfiguration, ContextAwareTransfiguration):
+    """
+    An special type of chained transfiguration that performs series of transfiguration one after
+    another
+    """
+
+    def __init__(self):
+        """
+        prepare the chain of transfiguration
+        """
+        super().__init__()
+
+    def perform(self, context):
+        """
+        Equals to self.execute(context)
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
+        self.execute(context)
+
+    def execute(self, context):
+        """
+        To execute the whole series of transfiguration execution
+
+        :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
+        """
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain Transfiguration] BEGINS")
+        logger.info("///////////////////////////////////////////////////////////////////////")
+
+        super().execute(context)
+
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[Chain Transfiguration] COMPLETES")
+        logger.info("///////////////////////////////////////////////////////////////////////")

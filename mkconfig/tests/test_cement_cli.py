@@ -42,7 +42,7 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.output.partial')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.tmp')))
+            '_collectd_genericjmx.plugin.partial.template.stub')))
 
         app.close()
 
@@ -59,7 +59,7 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.output.partial')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.tmp')))
+            '_collectd_genericjmx.plugin.partial.template.stub')))
 
         app3.close()
 
@@ -76,12 +76,12 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'jenkins.output.partial')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.tmp')))
+            '_collectd_genericjmx.plugin.partial.template.stub')))
 
         app.close()
 
     def test_normal_start_and_stop_with_all_exampl_apps(self):
-        app = self.make_app(argv=['-tcollectd_jmx.template', '-otest.output', '-scassandra jenkins jira', '-d../examples/'])
+        app = self.make_app(argv=['-otest.output', '-scassandra jenkins jira', '-d../examples/'])
         app.setup()
         app.run()
 
@@ -95,7 +95,7 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'jira.output.partial')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.tmp')))
+            '_collectd_genericjmx.plugin.partial.template.stub')))
 
         app.close()
 

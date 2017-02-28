@@ -1,0 +1,29 @@
+progName : 'app3'
+hostAddr : 'localhost'
+hostPort : '3333'
+fqdn : 'my.host.cc'
+progPrefix : "APP3_"
+progVer : '3.3'
+mbeans:
+- name : Memory
+  objectName: java.lang:type=Memory
+  InstancePrefix : Memory
+  required: true
+  attributes:
+   - Attribute : HeapMemoryUsage
+     InstancePrefix : Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+   - Attribute : NonHeapMemoryUsage
+     InstancePrefix : Non_Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+- name : Hello3
+  objectName: com.example:type=Hello3
+  InstancePrefix : Hello3
+  required: true
+  attributes:
+   - Attribute : Value
+     InstancePrefix : Value
+     Type : gauge
+     Table : false
