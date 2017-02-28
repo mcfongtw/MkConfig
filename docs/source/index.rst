@@ -10,9 +10,9 @@ Welcome to MkConfig's documentation!
 Overview
 ========
 
-.. include:: ../../README
+.. include:: ../../README.md
     :literal:
-(from README)
+(from README.md)
 
 List Of Content
 ===============

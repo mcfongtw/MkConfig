@@ -1,5 +1,5 @@
 Overview
---------
+========
 MkConfig is a python based, general-purposed configuration generator.
 All of the implementation should follow PEP-8 standard.
 This project is also evaluated with pyLint.
@@ -20,6 +20,6 @@ Here are types of configuration supported :
 
 Guideline to Try New Build from Source
 ------------------------------------------
-./simulate clean
-./simulate build
-./simulate install
+1. ./simulate clean
+2. ./simulate build
+3. ./simulate install
