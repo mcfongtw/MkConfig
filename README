@@ -16,3 +16,10 @@ Supported Configuration
 -----------------------
 Here are types of configuration supported :
 1. Collectd - GenericJMX
+
+
+Guideline to Try New Build from Source
+------------------------------------------
+./simulate clean
+./simulate build
+./simulate install

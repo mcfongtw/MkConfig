@@ -23,7 +23,7 @@ def install_requirement():
     print("-------------------")
     return requirements
 
-VERSION = '0.1-b'
+VERSION = '0.1'
 
 setup_info = dict(
     # Metadata
