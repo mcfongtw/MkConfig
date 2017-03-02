@@ -1,12 +1,15 @@
-from mkconfig.conf.collectd import CollectdJmxCompleteChainedTransfiguration
-from mkconfig.conf.context import CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE, \
-    CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT, \
-    CTX_KEY_COLLECTD_JMX_APP_CONF_DIR
-from mkconfig.conf.factory import ConfigurationTypeFactory
 import logging
-from cement.core.foundation import CementApp
+
 from cement.core.controller import CementBaseController, expose
+from cement.core.foundation import CementApp
 from cement.utils.misc import init_defaults
+
+from mkconfig.conf.collectd.genericjmx import GenericJmxCompleteChainedTransfiguration
+from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT, \
+    CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR, CTX_KEY_COLLECTD_COMMON_JMX_TYPE
+from mkconfig.conf.factory import ConfigurationTypeFactory, ConfigurationType
+from mkconfig.core.error import IllegalStateException
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +33,7 @@ class CliController(CementBaseController):
                 dict(action='store', metavar='STR', help='Directory for app configuration',
                      default="./", required=True)),
             (['-t', '--template'],
-                dict(action='store', metavar='STR', help='Type of configuration template', default="collectd_jmx")),
+                dict(action='store', metavar='STR', help='Type of configuration template', default="collectd_genericjmx")),
             (['-o', '--output'],
                 dict(action='store', metavar='File', help='Path to output file', required=True)),
         ]
@@ -42,17 +45,24 @@ class CliController(CementBaseController):
         configuration
 
         """
-        config_template_file = ConfigurationTypeFactory.get_config_template(self.app.pargs.template)
 
-        context = {
-            CTX_KEY_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
-            CTX_KEY_COLLECTD_JMX_TEMPLATE_FILE: config_template_file,
-            CTX_KEY_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
-            CTX_KEY_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
-        }
-        chain = CollectdJmxCompleteChainedTransfiguration()
-        chain.execute(context)
+        config_template_type = ConfigurationTypeFactory.get_config_type(self.app.pargs.template)
 
+        if config_template_type.get_supertype() == ConfigurationType.COLLECTD_GENERIC_JMX.get_supertype():
+            config_template_file = config_template_type.get_template_file()
+            config_template_subtype = config_template_type.get_subtype()
+
+            context = {
+                CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
+                CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE: config_template_file,
+                CTX_KEY_COLLECTD_COMMON_JMX_TYPE: config_template_subtype,
+                CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT: self.app.pargs.output,
+                CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
+            }
+            chain = GenericJmxCompleteChainedTransfiguration()
+            chain.execute(context)
+        else :
+            raise IllegalStateException('Unknown config type [%d]' % config_template_type.get_supertype())
 
 # define the application class
 class MkConfigApp(CementApp):

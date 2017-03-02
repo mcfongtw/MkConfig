@@ -30,12 +30,12 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_normal_start_and_stop(self):
-        app = self.make_app(argv=['-tcollectd_jmx', '-otest.output', '-scassandra', '-d../examples/'])
+        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra', '-d../examples/'])
         app.setup()
         app.run()
 
         self.assertEqual(app.pargs.app_conf_dir, '../examples/')
-        self.assertEqual(app.pargs.template, 'collectd_jmx')
+        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
         self.assertEqual(app.pargs.output, 'test.output')
         self.assertEqual(app.pargs.apps_list, 'cassandra')
 
@@ -52,7 +52,7 @@ class TestMkConfigApp(test.CementTestCase):
         app3.run()
 
         self.assertEqual(app3.pargs.app_conf_dir, '../examples/')
-        self.assertEqual(app3.pargs.template, 'collectd_jmx')
+        self.assertEqual(app3.pargs.template, 'collectd_genericjmx')
         self.assertEqual(app3.pargs.output, 'test.output')
         self.assertEqual(app3.pargs.apps_list, 'cassandra')
 
@@ -64,7 +64,7 @@ class TestMkConfigApp(test.CementTestCase):
         app3.close()
 
     def test_normal_start_and_stop_with_apps_list(self):
-        app = self.make_app(argv=['-tcollectd_jmx.template', '-otest.output', '-scassandra jenkins', '-d../examples/'])
+        app = self.make_app(argv=['-tcollectd_genericjmx.template', '-otest.output', '-scassandra jenkins', '-d../examples/'])
         app.setup()
         app.run()
 
