@@ -34,7 +34,7 @@ setup_info = dict(
 #    url='',
 #    download_url='',
     description='Make Configuration Utilities',
-    long_description=read('README'),
+    long_description=read('README.md'),
     license='MIT',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
