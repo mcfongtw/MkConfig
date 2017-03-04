@@ -1,8 +1,8 @@
-progName : 'app2'
+progName : 'RandomGauge'
 hostAddr : 'localhost'
-hostPort : '2222'
+hostPort : '10222'
 fqdn : 'my.host.cc'
-progPrefix : "APP2_"
+progPrefix : "RandomGauge_"
 progVer : '2.2'
 mbeans:
 - name : Memory
@@ -18,9 +18,9 @@ mbeans:
      InstancePrefix : Non_Heap_Memory_Usage_
      Type : gauge
      Table : true
-- name : Hello2
-  objectName: com.example:type=Hello2
-  InstancePrefix : Hello2
+- name : RandomGauge
+  objectName: org.example.simple:type=RandomGauge
+  InstancePrefix : RandomGauge
   required: true
   attributes:
    - Attribute : Value

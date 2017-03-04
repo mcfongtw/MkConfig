@@ -1,8 +1,8 @@
-progName : 'app1'
+progName : 'ConstantGauge'
 hostAddr : 'localhost'
-hostPort : '1111'
+hostPort : '10111'
 fqdn : 'my.host.cc'
-progPrefix : "APP1_"
+progPrefix : "ConstantGauge_"
 progVer : '1.1+'
 mbeans:
 - name : Memory
@@ -18,9 +18,9 @@ mbeans:
      InstancePrefix : Non_Heap_Memory_Usage_
      Type : gauge
      Table : true
-- name : Hello1
-  objectName: com.example:type=Hello1
-  InstancePrefix : Hello1
+- name : ConstantGauge
+  objectName: org.example.simple:type=ConstantGauge
+  InstancePrefix : ConstantGauge
   required: true
   attributes:
    - Attribute : Value

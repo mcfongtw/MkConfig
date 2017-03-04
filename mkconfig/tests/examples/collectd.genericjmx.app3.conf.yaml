@@ -1,8 +1,8 @@
-progName : 'app3'
+progName : 'ConstantCounter'
 hostAddr : 'localhost'
-hostPort : '3333'
+hostPort : '10333'
 fqdn : 'my.host.cc'
-progPrefix : "APP3_"
+progPrefix : "ConstantCounter_"
 progVer : '3.3'
 mbeans:
 - name : Memory
@@ -18,12 +18,12 @@ mbeans:
      InstancePrefix : Non_Heap_Memory_Usage_
      Type : gauge
      Table : true
-- name : Hello3
-  objectName: com.example:type=Hello3
-  InstancePrefix : Hello3
+- name : ConstantCounter
+  objectName: org.example.simple:type=ConstantCounter
+  InstancePrefix : ConstantCounter
   required: true
   attributes:
-   - Attribute : Value
-     InstancePrefix : Value
-     Type : gauge
+   - Attribute : Counter
+     InstancePrefix : Counter
+     Type : counter
      Table : false
