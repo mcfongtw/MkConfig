@@ -102,8 +102,8 @@ class TestCollectdJmxTransfiguration(TestCase):
         reader = ConfReaderToContextTransfiguration()
         reader.perform(context)
 
-        self.assertEqual(context['progName'], 'app1')
-        self.assertEqual(context['progPrefix'], 'APP1_')
+        self.assertEqual(context['progName'], 'ConstantGauge')
+        self.assertEqual(context['progPrefix'], 'ConstantGauge_')
         self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][0]['attributes'][0][
                                                                       'Attribute'], 'HeapMemoryUsage')
         self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][0]['attributes'][1][
