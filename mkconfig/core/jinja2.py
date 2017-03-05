@@ -44,6 +44,7 @@ class Jinja2Engine(TemplateEngine):
             return result
         else:
             result = self._engine.get_template(template_name).render(context)
+            # TODO: open(output_file, 'w')
             with open(Configurations.getTemplateFile(output_file), 'w') as file:
                 file.write(result)
 

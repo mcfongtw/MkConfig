@@ -63,7 +63,7 @@ setup_info = dict(
 
     #This would work after making templats/ as a python package
     package_data={
-        '' : ['*.template']
+        '' : ['*.template', '*.inc']
     },
 
     # List run-time dependencies here.  These will be installed by pip when

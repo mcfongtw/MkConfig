@@ -34,7 +34,7 @@ class PrepareAppConfTransfiguration(ContextAwareTransfiguration):
         logger.info('Set the conf file for app [%s] at [%s]', appName, appConfYamlFile)
 
         logger.debug("======================================================================")
-        logger.debug('[Transifig] PrepareAppConf w/ appName [%s]', appName)
+        logger.debug('[Transifig] Prepare conf meta for application [%s]', appName)
         logger.debug("======================================================================")
 
 
@@ -71,7 +71,6 @@ class ConfReaderToContextTransfiguration(YamlFileReaderToContextTransfiguration)
             self.patch_mbean_table_value(mbean)
             #mbean is updated
             context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][idx] = mbean
-
 
     def patch_mbean_table_value(self, mbean):
         """

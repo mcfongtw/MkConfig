@@ -1,3 +1,5 @@
+from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE
+from mkconfig.conf.factory import ConfigurationType
 from mkconfig.env import setup_logging_with_details
 import logging
 setup_logging_with_details()
@@ -22,6 +24,18 @@ class TestStringTemplateEngine(unittest.TestCase):
 
         result = engine.apply(context, None, True)
         self.assertEqual("Hello World, John", result)
+
+    def test_unit_collectd_genericjmx_template_string(self):
+        engine = PySTEngine()
+        engine.init(ConfigurationType.COLLECTD_GENERIC_JMX.get_template_file())
+
+        context = {'attribute': 'mbean'}
+        result = engine.apply(context, None, True)
+        self.assertEqual('collectd_genericjmx.mbean.inc', result)
+
+        context = {'attribute': 'connection'}
+        result = engine.apply(context, None, True)
+        self.assertEqual('collectd_genericjmx.connection.inc', result)
 
 if __name__ == '__main__':
     unittest.main()

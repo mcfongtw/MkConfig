@@ -1,9 +1,20 @@
 
-{% include 'collectd_genericjmx.header.partial.template' %}
+{% include 'collectd_genericjmx.header.inc' %}
 
+#####################
+# MBeans Definition #
+#####################
 
-{% for appName in _collectd_jmx_app_prefix_list.split() %}
-    {% include '%s.output.partial' % appName %}
+{% for appName in _common_collectd_jmx_app_prefix_list.split() %}
+    {% include '%s.mbean.blocks.inc' % appName %}
 {% endfor %}
 
-{% include 'collectd_genericjmx.footer.partial.template' %}
+##########################
+# Connections Definition #
+##########################
+
+{% for appName in _common_collectd_jmx_app_prefix_list.split() %}
+    {% include '%s.connection.blocks.inc' % appName %}
+{% endfor %}
+
+{% include 'collectd_genericjmx.footer.inc' %}

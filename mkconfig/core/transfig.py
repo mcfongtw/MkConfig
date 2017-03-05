@@ -98,10 +98,7 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     A context-enabled transfiguration that transform with respect to given template name and write to output file
     """
 
-    _engine = None
-    _input = None
-    _output = None
-
+    #TODO: search_path_list = input_dir, could add output_dir for ease of use
     def __init__(self, search_path_list):
         """
         prepare the transiguration
@@ -113,6 +110,8 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
         if Utils.is_string_type(search_path_list):
             search_path_list = [search_path_list]
         self._engine.init(FileSystemLoader(search_path_list))
+        self._input = None
+        self._output = None
 
     def perform(self, context):
         """
@@ -228,11 +227,11 @@ class ChainedTransfiguration(ChainOfTransfiguration, ContextAwareTransfiguration
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
         logger.info("///////////////////////////////////////////////////////////////////////")
-        logger.info("[Chain Transfiguration] BEGINS")
+        logger.info("[Chain Transfiguration] Chain ...")
         logger.info("///////////////////////////////////////////////////////////////////////")
 
         super().execute(context)
 
         logger.info("///////////////////////////////////////////////////////////////////////")
-        logger.info("[Chain Transfiguration] COMPLETES")
+        logger.info("[Chain Transfiguration] Chain ... COMPLETES")
         logger.info("///////////////////////////////////////////////////////////////////////")

@@ -40,9 +40,13 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app.pargs.apps_list, 'cassandra')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.output.partial')))
+            'cassandra.mbean.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.stub')))
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
 
         app.close()
 
@@ -57,9 +61,13 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app3.pargs.apps_list, 'cassandra')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.output.partial')))
+            'cassandra.mbean.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.stub')))
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
 
         app3.close()
 
@@ -72,11 +80,17 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.output.partial')))
+            'cassandra.mbean.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'jenkins.output.partial')))
+            'cassandra.connection.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.stub')))
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
 
         app.close()
 
@@ -89,13 +103,21 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.output.partial')))
+            'cassandra.mbean.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'jenkins.output.partial')))
+            'cassandra.connection.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'jira.output.partial')))
+            'jenkins.mbean.blocks.inc')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.plugin.partial.template.stub')))
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jira.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jira.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
 
         app.close()
 

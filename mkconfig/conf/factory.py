@@ -8,7 +8,8 @@ class ConfigurationType(Enum):
     """
     An enumeration for configuration type
     """
-    COLLECTD_GENERIC_JMX = ('collectd_genericjmx.plugin.partial.template', 'collectd', 'genericjmx')
+    COLLECTD_GENERIC_JMX = ('collectd_genericjmx.$attribute.inc', 'collectd',
+                            'genericjmx')
 
     def __init__(self, template_file, supertype, subtype):
         self._template_file = template_file

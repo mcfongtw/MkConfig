@@ -15,7 +15,6 @@ class PySTEngine(TemplateEngine):
 
     def __init__(self):
         super().__init__()
-        logger.debug('PythonSTEngine.init()')
 
     def init(self, line):
         """
@@ -34,14 +33,17 @@ class PySTEngine(TemplateEngine):
         :param output_file: file name to the substitution result.
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
-        logger.debug('PythonSTEngine.generate()')
 
         result = self._template.safe_substitute(context)
+        logger.debug('PythonSTEngine.generate() w/ result [%s]', result)
+
         if is_in_memory:
             return result
         else:
+            # TODO: open(output_file, 'w')
             with open(Configurations.getTemplateFile(output_file), 'w') as file:
                 file.write(result)
+
 
     class Factory(object):
         """
