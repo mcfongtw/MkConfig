@@ -1,4 +1,4 @@
-from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE
+from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE
 from mkconfig.conf.factory import ConfigurationType
 from mkconfig.env import setup_logging_with_details
 import logging

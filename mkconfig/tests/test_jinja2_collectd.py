@@ -2,11 +2,11 @@ import logging
 import os
 
 from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration, ConfReaderToContextTransfiguration
-from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX, \
-    CTX_KEY_COLLECTD_COMMON_JMX_CONF_YAML_FILE, CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR, \
-    CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET, CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE, \
-    CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT, \
-    CTX_KEY_COLLECTD_COMMON_JMX_TYPE
+from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
+    CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, \
+    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
+    CTX_KEY_COMMON_COLLECTD_JMX_TYPE
 from mkconfig.conf.collectd.genericjmx import SpliByApplicationTransfiguration, GenericJmxCompleteChainedTransfiguration, \
     GenericJmxApplicationChainedTransfiguration
 from mkconfig.conf.utils import Utils
@@ -95,7 +95,7 @@ class TestCollectdJmxTransfiguration(TestCase):
 
     def test_functional_CollectdJmxConfToContextTransfiguration(self):
         context = {
-            CTX_KEY_COLLECTD_COMMON_JMX_CONF_YAML_FILE : 'examples/collectd.genericjmx.app1.conf.yaml'
+            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : 'examples/collectd.genericjmx.app1.conf.yaml'
         }
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -104,32 +104,32 @@ class TestCollectdJmxTransfiguration(TestCase):
 
         self.assertEqual(context['progName'], 'ConstantGauge')
         self.assertEqual(context['progPrefix'], 'ConstantGauge_')
-        self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][0]['attributes'][0][
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][0][
                                                                       'Attribute'], 'HeapMemoryUsage')
-        self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][0]['attributes'][1][
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][1][
                              'InstancePrefix'], 'Non_Heap_Memory_Usage_')
-        self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_MBEANS_SET][1]['attributes'][0][
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][1]['attributes'][0][
                              'Attribute'], 'Value')
 
     def test_functional_PrepareAppConfTransfiguration(self):
         context = {
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX : 'test',
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR : './',
-            CTX_KEY_COLLECTD_COMMON_JMX_TYPE : 'genericjmx',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : './',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
 
         transfig = PrepareAppConfTransfiguration()
         transfig.perform(context)
-        self.assertEqual(context[CTX_KEY_COLLECTD_COMMON_JMX_CONF_YAML_FILE],
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE],
                                  './collectd.genericjmx.test.conf.yaml')
 
     def test_functional_CollectdJmxPartialChainedTransfiguration(self):
         #init context
         context =  {
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR : 'examples/',
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX: 'app1',
-            CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
-            CTX_KEY_COLLECTD_COMMON_JMX_TYPE : 'genericjmx',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
+            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
         chain = GenericJmxApplicationChainedTransfiguration()
         chain.execute(context)
@@ -147,10 +147,10 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_SplitAppConfTransfiguration_for_two_app(self):
         #init context
         context =  {
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR : 'examples/',
-            CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
-            CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
-            CTX_KEY_COLLECTD_COMMON_JMX_TYPE : 'genericjmx',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
+            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
         transfig = SpliByApplicationTransfiguration()
         transfig.perform(context)
@@ -171,11 +171,11 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_CollectdJmxCompleteChainedTransfiguration_for_three_app(self):
         #init context
         context =  {
-            CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR : 'examples/',
-            CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
-            CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
-            CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT : 'test.output',
-            CTX_KEY_COLLECTD_COMMON_JMX_TYPE : 'genericjmx'
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
+            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx'
         }
         transfig = GenericJmxCompleteChainedTransfiguration()
         transfig.perform(context)

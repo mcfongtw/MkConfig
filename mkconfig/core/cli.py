@@ -5,9 +5,9 @@ from cement.core.foundation import CementApp
 from cement.utils.misc import init_defaults
 
 from mkconfig.conf.collectd.genericjmx import GenericJmxCompleteChainedTransfiguration
-from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE, \
-    CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT, \
-    CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR, CTX_KEY_COLLECTD_COMMON_JMX_TYPE
+from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
+    CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, CTX_KEY_COMMON_COLLECTD_JMX_TYPE
 from mkconfig.conf.factory import ConfigurationTypeFactory, ConfigurationType
 from mkconfig.core.error import IllegalStateException
 
@@ -53,11 +53,11 @@ class CliController(CementBaseController):
             config_template_subtype = config_template_type.get_subtype()
 
             context = {
-                CTX_KEY_COLLECTD_COMMON_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
-                CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE: config_template_file,
-                CTX_KEY_COLLECTD_COMMON_JMX_TYPE: config_template_subtype,
-                CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT: self.app.pargs.output,
-                CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
+                CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
+                CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE: config_template_file,
+                CTX_KEY_COMMON_COLLECTD_JMX_TYPE: config_template_subtype,
+                CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
+                CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
             }
             chain = GenericJmxCompleteChainedTransfiguration()
             chain.execute(context)

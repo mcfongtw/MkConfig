@@ -2,9 +2,9 @@ import logging
 
 from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration,  \
     ConfReaderToContextTransfiguration
-from mkconfig.conf.collectd.context import CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX, \
-    CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT, CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE, \
-    CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST, \
+from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
+    CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, \
     CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE, CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK
 from mkconfig.conf.utils import Utils
 from mkconfig.core.factory import TemplateEngineFactory
@@ -42,7 +42,7 @@ class GenericJmxGenerateTemplateNameWithPyST(ContextAwareTransfiguration):
         """
 
         engine = PySTEngine()
-        engine.init(context[CTX_KEY_COLLECTD_COMMON_JMX_TEMPLATE_FILE])
+        engine.init(context[CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE])
         replaced_template_name = engine.apply({'attribute':self._attribute}, None, True)
         context[CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE] = replaced_template_name
         context[CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK] = self._attribute
@@ -114,7 +114,7 @@ class GenericJmxStubToOutputViaJinja2(Jinja2FileTemplateTransfiguration):
         attr = context[CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK]
 
         stub_template_name = '_' + template_name_by_attr + '.stub'
-        output_filename = context[CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX] + '.' + attr + \
+        output_filename = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX] + '.' + attr + \
                           '.blocks.inc'
 
         self._input = stub_template_name
@@ -197,7 +197,7 @@ class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the
         whole lifecycle
         """
-        app = context[CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX]
+        app = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX]
         logger.info("///////////////////////////////////////////////////////////////////////")
         logger.info("[ChainedTransfig] Collectd-GenericJmx w/ Application-wise [%s] ...", app)
         logger.info("///////////////////////////////////////////////////////////////////////")
@@ -222,7 +222,7 @@ class SpliByApplicationTransfiguration(ContextAwareTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the
         whole lifecycle
         """
-        listOfAppNames = context[CTX_KEY_COLLECTD_COMMON_JMX_USER_SELECTED_APP_LIST].split()
+        listOfAppNames = context[CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
 
         #distinguish between string object and list
         if Utils.is_string_type(listOfAppNames):
@@ -247,7 +247,7 @@ class SpliByApplicationTransfiguration(ContextAwareTransfiguration):
         """
         logger.info('Spliting the partial configuraiton for [%s]' % app_name)
 
-        context[CTX_KEY_COLLECTD_COMMON_JMX_APP_PREFIX] = app_name
+        context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX] = app_name
         inner_chain = GenericJmxApplicationChainedTransfiguration()
         inner_chain.execute(context)
 
@@ -275,7 +275,7 @@ class GenericJmxConsolidateToFinalOutput(Jinja2FileTemplateTransfiguration):
         final_template_file = 'collectd_genericjmx.template'
 
         self._input = final_template_file
-        self._output = Configurations.getOutputFile(context[CTX_KEY_COLLECTD_COMMON_JMX_FINAL_OUTPUT])
+        self._output = Configurations.getOutputFile(context[CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT])
         super().perform(context)
 
         logger.debug("======================================================================")
