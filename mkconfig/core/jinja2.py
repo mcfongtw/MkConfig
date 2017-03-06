@@ -38,15 +38,19 @@ class Jinja2Engine(TemplateEngine):
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
         logger.debug('Jinja2.generate()')
+        result = self._engine.get_template(template_name).render(context)
 
         if is_in_memory :
-            result = self._engine.get_template(template_name).render(context)
             return result
         else:
-            result = self._engine.get_template(template_name).render(context)
-            # TODO: open(output_file, 'w')
-            with open(Configurations.getTemplateFile(output_file), 'w') as file:
+            try:
+                file = open(output_file, 'w')
                 file.write(result)
+                file.close()
+            except IOError as e:
+                errno, strerror = e.args
+                logger.error("I/O error[%s] at [%s]: %s", errno, output_file, strerror)
+                raise
 
     class Factory(object):
         """

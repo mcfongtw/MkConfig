@@ -40,9 +40,15 @@ class PySTEngine(TemplateEngine):
         if is_in_memory:
             return result
         else:
-            # TODO: open(output_file, 'w')
-            with open(Configurations.getTemplateFile(output_file), 'w') as file:
+            try:
+                file = open(output_file, 'w')
                 file.write(result)
+                file.close()
+            except IOError as e:
+                errno, strerror = e.args
+                logger.error("I/O error[%s] at [%s]: %s", errno, output_file, strerror)
+                raise
+
 
 
     class Factory(object):
