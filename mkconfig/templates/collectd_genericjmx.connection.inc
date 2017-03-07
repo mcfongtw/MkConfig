@@ -1,4 +1,4 @@
-        # Beginning of JMX definition for {{ progName }} as of version {{ progVer }}
+    # Beginning of JMX definition for {{ progName }} as of version {{ progVer }}
         <Connection>
             ServiceURL "service:jmx:rmi:///jndi/rmi://{{ hostAddr }}:{{ hostPort }}/jmxrmi"
             Host "{{ fqdn }}"
@@ -6,16 +6,16 @@
 
             {% for mbean in mbeans -%}
                 {% if mbean.secOrderSubstituion is defined -%}
-            {% raw %} {% for item in {% endraw %} {{ mbean.secOrderSubstituion }} {% raw %} %} {% endraw %}
+            {% raw %} {% for item in {% endraw %} {{ mbean.secOrderSubstituion }} {% raw %} -%} {% endraw %}
                 {% endif -%}
-                {% if mbean.required -%}
+            {%- if mbean.required -%}
             Collect {{ mbean.name }}
-                {% else -%}
+            {% else -%}
             #Collect {{ mbean.name }}
-                {% endif -%}
-                {% if mbean.secOrderSubstituion is defined -%}
-            {% raw %} {% endfor %} {% endraw %}
-                {% endif -%}
-            {% endfor -%}
-</Connection>
-        # End of JMX definition for {{ progName }} as of version {{ progVer }}
+            {% endif -%}
+            {% if mbean.secOrderSubstituion is defined -%}
+          {% raw %} {% endfor %} {% endraw %}
+            {% endif -%}
+            {%- endfor %}
+        </Connection>
+    # End of JMX definition for {{ progName }} as of version {{ progVer }}
