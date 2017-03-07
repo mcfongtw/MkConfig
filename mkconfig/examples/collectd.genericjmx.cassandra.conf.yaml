@@ -153,7 +153,7 @@ mbeans:
   objectName: org.apache.cassandra.request:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   required: true
-  collection : requests
+  secOrderSubstituion : requests
   attributes:
    - Attribute : CompletedTasks
      InstancePrefix : Completed_Tasks
@@ -168,7 +168,7 @@ mbeans:
   objectName: org.apache.cassandra.internal:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   required: true
-  collection : internals
+  secOrderSubstituion : internals
   attributes:
    - Attribute : CompletedTasks
      InstancePrefix : Completed_Tasks
@@ -183,7 +183,7 @@ mbeans:
   objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace }},columnfamily={{ item }}
   InstancePrefix : CF_{{ keyspace }}_{{ item }}
   required: true
-  collection : cfs
+  secOrderSubstituion : cfs
   attributes:
    - Attribute : RecentReadLatencyMicros
      InstancePrefix : Recent_Read_Latency_Micros
@@ -203,7 +203,7 @@ mbeans:
   objectName: org.apache.cassandra.metrics:type=DroppedMessage,scope={{ item }},name=Dropped
   InstancePrefix : TPStats_Dropped_{{ item }}
   required: true
-  collection : drops
+  secOrderSubstituion : drops
   attributes:
    - Attribute : Count
      InstancePrefix : Count

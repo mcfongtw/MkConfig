@@ -5,15 +5,15 @@
             InstancePrefix "{{ progPrefix }}"
 
             {% for mbean in mbeans -%}
-                {% if mbean.collection is defined -%}
-            {% raw %} {% for item in {% endraw %} {{ mbean.collection }} {% raw %} %} {% endraw %}
+                {% if mbean.secOrderSubstituion is defined -%}
+            {% raw %} {% for item in {% endraw %} {{ mbean.secOrderSubstituion }} {% raw %} %} {% endraw %}
                 {% endif -%}
                 {% if mbean.required -%}
             Collect {{ mbean.name }}
                 {% else -%}
             #Collect {{ mbean.name }}
                 {% endif -%}
-                {% if mbean.collection is defined -%}
+                {% if mbean.secOrderSubstituion is defined -%}
             {% raw %} {% endfor %} {% endraw %}
                 {% endif -%}
             {% endfor -%}
