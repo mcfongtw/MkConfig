@@ -166,7 +166,8 @@ function do_install {
 
 
 function do_nosetests {
-    check_init
+    do_clean
+    do_install
     # Activate the virtual env
     source $PY_ENV_HOME/bin/activate
 
@@ -180,8 +181,8 @@ function do_nosetests {
     echo '==============================================='
     echo 'Perform nosetests '
     echo '-----------------------------------------------'
-    cd $CURRENT_WORKSPACE_PATH/mkconfig/tests/
-    nosetests --with-xcoverage --with-xunit --cover-package=mkconfig.conf --cover-package=mkconfig.core --cover-inclusive
+    cd $CURRENT_WORKSPACE_PATH
+    nosetests mkconfig.tests --with-xcoverage --with-xunit --cover-package=mkconfig.conf --cover-package=mkconfig.core --cover-inclusive
     echo '==============================================='
     echo
 

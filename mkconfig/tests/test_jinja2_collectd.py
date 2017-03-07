@@ -52,6 +52,9 @@ class TestConfigTemplateFactory(TestCase):
 
 class TestCollectdJmxTransfiguration(TestCase):
 
+    test_example_dir = Configurations.getProjectRootDir() + '/tests/examples/'
+    test_dir = Configurations.getProjectRootDir() + '/tests/'
+
     def setUp(self):
         logger.info('Unit Test [{}] Start'.format(self.id()))
 
@@ -71,7 +74,7 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_YamlFileReaderToContextTransfiguration_normal(self):
         ctx_key = '_test_input_key'
         context = {
-            ctx_key : 'collectd.genericjmx.test.conf.yaml'
+            ctx_key : self.test_dir + 'collectd.genericjmx.test.conf.yaml'
         }
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -95,7 +98,7 @@ class TestCollectdJmxTransfiguration(TestCase):
 
     def test_functional_CollectdJmxConfToContextTransfiguration(self):
         context = {
-            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : 'examples/collectd.genericjmx.app1.conf.yaml'
+            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : self.test_example_dir + 'collectd.genericjmx.app1.conf.yaml'
         }
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -114,19 +117,19 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_PrepareAppConfTransfiguration(self):
         context = {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
-            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : './',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
 
         transfig = PrepareAppConfTransfiguration()
         transfig.perform(context)
-        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE],
-                                 './collectd.genericjmx.test.conf.yaml')
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE], Configurations.getProjectRootDir() +
+                         '/tests/collectd.genericjmx.test.conf.yaml')
 
     def test_functional_CollectdJmxPartialChainedTransfiguration(self):
         #init context
         context =  {
-            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
             CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
@@ -147,7 +150,7 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_SplitAppConfTransfiguration_for_two_app(self):
         #init context
         context =  {
-            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
             CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
@@ -171,7 +174,7 @@ class TestCollectdJmxTransfiguration(TestCase):
     def test_functional_CollectdJmxCompleteChainedTransfiguration_for_three_app(self):
         #init context
         context =  {
-            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : 'examples/',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
             CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',

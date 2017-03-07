@@ -12,6 +12,7 @@ from mkconfig.core.cli import MkConfigApp
 
 class TestMkConfigApp(test.CementTestCase):
     app_class =  MkConfigApp
+    example_dir = Configurations.getProjectRootDir() + '/examples/'
 
     def setUp(self):
         logger.info('Unit Test [{}] Start'.format(self.id()))
@@ -30,11 +31,11 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
     def test_normal_start_and_stop(self):
-        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra', '-d../examples/'])
+        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra', '-d' + self.example_dir])
         app.setup()
         app.run()
 
-        self.assertEqual(app.pargs.app_conf_dir, '../examples/')
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
         self.assertEqual(app.pargs.template, 'collectd_genericjmx')
         self.assertEqual(app.pargs.output, 'test.output')
         self.assertEqual(app.pargs.apps_list, 'cassandra')
@@ -51,11 +52,11 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_with_default_template(self):
-        app3 = self.make_app(argv=['-scassandra', '-otest.output', '-d../examples/'])
+        app3 = self.make_app(argv=['-scassandra', '-otest.output', '-d' + self.example_dir])
         app3.setup()
         app3.run()
 
-        self.assertEqual(app3.pargs.app_conf_dir, '../examples/')
+        self.assertEqual(app3.pargs.app_conf_dir, self.example_dir)
         self.assertEqual(app3.pargs.template, 'collectd_genericjmx')
         self.assertEqual(app3.pargs.output, 'test.output')
         self.assertEqual(app3.pargs.apps_list, 'cassandra')
@@ -72,7 +73,7 @@ class TestMkConfigApp(test.CementTestCase):
         app3.close()
 
     def test_normal_start_and_stop_with_apps_list(self):
-        app = self.make_app(argv=['-tcollectd_genericjmx.template', '-otest.output', '-scassandra jenkins', '-d../examples/'])
+        app = self.make_app(argv=['-tcollectd_genericjmx.template', '-otest.output', '-scassandra jenkins', '-d' + self.example_dir])
         app.setup()
         app.run()
 
@@ -95,7 +96,7 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_with_all_exampl_apps(self):
-        app = self.make_app(argv=['-otest.output', '-scassandra jenkins jira', '-d../examples/'])
+        app = self.make_app(argv=['-otest.output', '-scassandra jenkins jira', '-d' + self.example_dir])
         app.setup()
         app.run()
 
