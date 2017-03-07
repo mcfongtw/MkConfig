@@ -28,28 +28,28 @@ class Jinja2Engine(TemplateEngine):
             loader=init_loader,
             trim_blocks=False)
 
-    def apply(self, context, template_name, output_file, is_in_memory=False):
+    def apply(self, context, template_file_name, output_file_path, is_in_memory=False):
         """
         Apply the template with Jinja2 environment.
 
         :param context: A map of key-value attribute defined variables to be applied with template
-        :param template_name: name of template to apply with
-        :param output_file: file name to the substitution result.
+        :param template_file_name: name of template to apply with
+        :param output_file_path: file name to the substitution result.
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
         logger.debug('Jinja2.generate()')
-        result = self._engine.get_template(template_name).render(context)
+        result = self._engine.get_template(template_file_name).render(context)
 
         if is_in_memory :
             return result
         else:
             try:
-                file = open(output_file, 'w')
+                file = open(output_file_path, 'w')
                 file.write(result)
                 file.close()
             except IOError as e:
                 errno, strerror = e.args
-                logger.error("I/O error[%s] at [%s]: %s", errno, output_file, strerror)
+                logger.error("I/O error[%s] at [%s]: %s", errno, output_file_path, strerror)
                 raise
 
     class Factory(object):

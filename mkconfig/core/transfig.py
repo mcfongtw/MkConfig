@@ -98,7 +98,6 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
     A context-enabled transfiguration that transform with respect to given template name and write to output file
     """
 
-    #TODO: search_path_list = input_dir, could add output_dir for ease of use
     def __init__(self, search_path_list):
         """
         prepare the transiguration
@@ -107,11 +106,13 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
         """
         super().__init__()
         self._engine = TemplateEngineFactory.create_engine(Jinja2Engine.__name__)
+
         if Utils.is_string_type(search_path_list):
             search_path_list = [search_path_list]
+
         self._engine.init(FileSystemLoader(search_path_list))
-        self._input = None
-        self._output = None
+        self._template_file_name = None
+        self._output_file_path = None
 
     def perform(self, context):
         """
@@ -120,10 +121,10 @@ class Jinja2FileTemplateTransfiguration(ContextAwareTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the whole lifecycle
         """
         super().perform(context)
-        self._engine.apply(context, self._input, self._output)
+        self._engine.apply(context, self._template_file_name, self._output_file_path)
 
         logger.debug("======================================================================")
-        logger.debug('[Transifig] Jinja2 Template [%s] performed in-file', self._input)
+        logger.debug('[Transifig] Jinja2 Template [%s] performed in-file', self._template_file_name)
         logger.debug("======================================================================")
 
 

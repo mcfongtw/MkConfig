@@ -25,12 +25,12 @@ class PySTEngine(TemplateEngine):
         logger.debug('PythonSTEngine.init()')
         self._template = Template(line)
 
-    def apply(self, context, output_file, is_in_memory=False):
+    def apply(self, context, output_file_path, is_in_memory=False):
         """
         Apply the template with python string template engine.
 
         :param context: A map of key-value attribute defined variables to be applied with template
-        :param output_file: file name to the substitution result.
+        :param output_file_path: file name to the substitution result.
         :param isInMemory (bool):  whether to perform templateing in-memory or in-file.
         """
 
@@ -41,12 +41,12 @@ class PySTEngine(TemplateEngine):
             return result
         else:
             try:
-                file = open(output_file, 'w')
+                file = open(output_file_path, 'w')
                 file.write(result)
                 file.close()
             except IOError as e:
                 errno, strerror = e.args
-                logger.error("I/O error[%s] at [%s]: %s", errno, output_file, strerror)
+                logger.error("I/O error[%s] at [%s]: %s", errno, output_file_path, strerror)
                 raise
 
 

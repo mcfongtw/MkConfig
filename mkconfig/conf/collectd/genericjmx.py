@@ -78,13 +78,13 @@ class GenericJmxInputToStubWithJinja2(Jinja2FileTemplateTransfiguration):
         template_name_by_attr = context[CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE]
         stub_template_name = '_' + template_name_by_attr + '.stub'
 
-        self._input = template_name_by_attr
-        self._output = Configurations.getTmpTemplateFile(stub_template_name)
+        self._template_file_name = template_name_by_attr
+        self._output_file_path = Configurations.getTmpTemplateFile(stub_template_name)
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('[Transifig] Collectd-GenericJmx Template [%s] -> Stub [%s]', self._input,
-                     self._output)
+        logger.debug('[Transifig] Collectd-GenericJmx Template [%s] -> Stub [%s]', self._template_file_name,
+                     self._output_file_path)
         logger.debug("======================================================================")
 
 
@@ -117,13 +117,13 @@ class GenericJmxStubToOutputViaJinja2(Jinja2FileTemplateTransfiguration):
         output_filename = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX] + '.' + attr + \
                           '.blocks.inc'
 
-        self._input = stub_template_name
-        self._output = Configurations.getTmpTemplateFile(output_filename)
+        self._template_file_name = stub_template_name
+        self._output_file_path = Configurations.getTmpTemplateFile(output_filename)
         super().perform(context)
 
         logger.debug("======================================================================")
-        logger.debug('[Transifig] Collectd-GenericJmx Stub [%s] ->Output [%s]', self._input,
-                     self._output)
+        logger.debug('[Transifig] Collectd-GenericJmx Stub [%s] ->Output [%s]', self._template_file_name,
+                     self._output_file_path)
         logger.debug("======================================================================")
 
 
@@ -274,13 +274,13 @@ class GenericJmxConsolidateToFinalOutput(Jinja2FileTemplateTransfiguration):
 
         final_template_file = 'collectd_genericjmx.template'
 
-        self._input = final_template_file
-        self._output = Configurations.getOutputFile(context[CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT])
+        self._template_file_name = final_template_file
+        self._output_file_path = Configurations.getOutputFile(context[CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT])
         super().perform(context)
 
         logger.debug("======================================================================")
         logger.debug('[Transifig] Collectd-GenericJmx Consolidate [%s]->Final output [%s]',
-                     self._input, self._output)
+                     self._template_file_name, self._output_file_path)
         logger.debug("======================================================================")
 
 
