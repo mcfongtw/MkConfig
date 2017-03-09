@@ -19,12 +19,14 @@ collections:
 - name : System
 - name : Perf_Overall_Stats
 - name : TPStats_Compaction
-- name : TPStats_{{ item }}
+- name : TPStats_Request_{{ item }}
+  secOrderSubstituion : _def_tps_request
+- name : TPStats_Internal_{{ item }}
   secOrderSubstituion : _def_tps_internal
-- name : CF_{{ keyspace1 }}_{{ item }}
-  secOrderSubstituion : _clt_ks1_cfs
 - name : TPStats_Dropped_{{ item }}
   secOrderSubstituion : _def_tps_drop
+- name : CF_{{ keyspace1 }}_{{ item }}
+  secOrderSubstituion : _clt_ks1_cfs
 - name : Perf_Client_Read_Stats
 - name : Perf_Client_Write_Stats
 mbeans:
@@ -57,7 +59,7 @@ mbeans:
    - Attribute : ExceptionCount
      InstancePrefix : Exception_Count
      Type : counter
-- name: TPStats_{{ item }}
+- name: TPStats_Request_{{ item }}
   objectName: org.apache.cassandra.request:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   secOrderSubstituion : _def_tps_request
@@ -71,7 +73,7 @@ mbeans:
    - Attribute : TotalBlockedTasks
      InstancePrefix : Total_Blocked_Tasks
      Type : counter
-- name: TPStats_{{ item }}
+- name: TPStats_Internal_{{ item }}
   objectName: org.apache.cassandra.internal:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
   secOrderSubstituion : _def_tps_internal

@@ -5,7 +5,7 @@ import yaml
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, \
     CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, \
-    CTX_KEY_COMMON_COLLECTD_JMX_TYPE
+    CTX_KEY_COMMON_COLLECTD_JMX_TYPE, CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY
 from mkconfig.conf.utils import Utils
 from mkconfig.core.transfig import ContextAwareTransfiguration, YamlFileReaderToContextTransfiguration
 
@@ -66,6 +66,16 @@ class ConfReaderToContextTransfiguration(YamlFileReaderToContextTransfiguration)
 
         for key, value in yaml_content.items():
             context[key] = value
+            #memoize mbean hierarchy
+            logger.debug('Update Context[%s]=[%s]', key, value)
+            if key == CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET:
+                if not CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY in context:
+                    logger.info("Init context[%s]", CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY)
+                    context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY] = {}
+
+                app_name = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX]
+                context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY][app_name] = value
+                logger.debug("Update context[%s][%s]=[%s]", CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY, app_name, value)
 
         for idx, mbean in enumerate(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET]):
             self.patch_mbean_table_value(mbean)
@@ -83,4 +93,4 @@ class ConfReaderToContextTransfiguration(YamlFileReaderToContextTransfiguration)
                 value = attribute['Table']
                 attribute['Table'] = Utils.boolean_to_lowercase_literal(value)
 
-        logger.debug(mbean)
+        logger.debug('MBean patched result : [%s]', mbean)

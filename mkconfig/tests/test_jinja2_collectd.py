@@ -8,7 +8,7 @@ from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFI
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
     CTX_KEY_COMMON_COLLECTD_JMX_TYPE
 from mkconfig.conf.collectd.genericjmx import SpliByApplicationTransfiguration, GenericJmxCompleteChainedTransfiguration, \
-    GenericJmxApplicationChainedTransfiguration
+    GenericJmxApplicationChainedTransfiguration, GenericJmxValidateCollection
 from mkconfig.conf.utils import Utils
 from mkconfig.core.transfig import YamlFileReaderToContextTransfiguration
 from mkconfig.env import setup_logging_with_details, Configurations
@@ -98,7 +98,8 @@ class TestCollectdJmxTransfiguration(TestCase):
 
     def test_functional_CollectdJmxConfToContextTransfiguration(self):
         context = {
-            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : self.test_example_dir + 'collectd.genericjmx.app1.conf.yaml'
+            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : self.test_example_dir + 'collectd.genericjmx.app1.conf.yaml',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
         }
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -196,3 +197,20 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
+    def test_functional_GenericJmxValidateCollection(self):
+        #init context
+        mbean_hierarchy = {
+            "common": [
+                {"name": "JvmMemory"},
+
+            ],
+            "cassandra": [
+                {"name": "TPStats_Request_{{ item }}"},
+            ]
+        }
+        transfig = GenericJmxValidateCollection()
+
+        self.assertTrue(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'JvmMemory', 'common'))
+        self.assertFalse(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'Undefined', 'common'))
+        self.assertTrue(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'TPStats_Request_{{ item }}', 'cassandra'))
+        self.assertFalse(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'Undefined', 'cassandra'))

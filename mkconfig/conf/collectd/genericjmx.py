@@ -5,7 +5,8 @@ from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration,  \
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, \
-    CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE, CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK
+    CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE, CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK, \
+    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET
 from mkconfig.conf.utils import Utils
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
@@ -128,6 +129,10 @@ class GenericJmxStubToOutputViaJinja2(Jinja2FileTemplateTransfiguration):
 
 
 class GenericJmxAttributeChainedTransfiguration(ChainedTransfiguration):
+    """
+    A chained transfiguration that transform input to a collectd genericjmx template for one
+    specific attribute
+    """
 
     def __init__(self, attr):
         """
@@ -166,6 +171,68 @@ class GenericJmxAttributeChainedTransfiguration(ChainedTransfiguration):
         logger.info("///////////////////////////////////////////////////////////////////////")
 
 
+class GenericJmxValidateCollection(ContextAwareTransfiguration):
+    """
+    The last phase of GenericJmxApplicationChainedTransfiguration to validate the collecting mbean names. This will
+    invalidate the collection if the mbean name is incorrect.
+    """
+
+    def __init__(self):
+        """
+        prepare the transiguration
+
+        """
+        super().__init__()
+
+    def perform(self, context):
+        """
+        To transfigurate while validating the mbean names out of collection list.
+
+        :param context: A key-value paired map that stores attributes carried throughput the
+        whole lifecycle
+        """
+        super().perform(context)
+
+        collections = context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET]
+        for idx, entry in enumerate(collections):
+            mbean_name = entry['name']
+            app_name = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX]
+
+            if self.validate_mbean_from_hierarchy(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, 'common'):
+                self.validate_collection_by_mbean(context, mbean_name, True)
+            elif self.validate_mbean_from_hierarchy(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, app_name):
+                self.validate_collection_by_mbean(context, mbean_name, True)
+            else:
+                self.validate_collection_by_mbean(context, mbean_name, False)
+                logger.warning("Collect [%s] does not exist!", mbean_name)
+
+
+        logger.debug("======================================================================")
+        logger.debug('[Transifig] Collectd-GenericJmx Collected mbean names validated')
+        logger.debug("======================================================================")
+
+    def validate_mbean_from_hierarchy(self, dict, mbean_name, app_name):
+        if app_name in dict:
+            lst = dict[app_name]
+            for idx, entry in enumerate(lst):
+                key = entry['name']
+                if mbean_name == key:
+                    logger.debug("Collect[%s] Found in [%s]", mbean_name, app_name)
+                    return True
+            return False
+        else:
+            logger.warning('dict[%s] does not exist', app_name)
+            return False
+
+    def validate_collection_by_mbean(self, context, mbean_name, is_validated):
+        lst = context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET]
+
+        for idx, entry in enumerate(lst):
+            key = entry['name']
+            if mbean_name == key:
+                entry['validated'] = is_validated
+
+
 class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):
     """
     A chained transfiguration that transform input to a collectd genericjmx template for one
@@ -182,13 +249,16 @@ class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):
 
         step1 = PrepareAppConfTransfiguration()
         step2 = ConfReaderToContextTransfiguration()
-        step3 = GenericJmxAttributeChainedTransfiguration('mbean')
-        step4 = GenericJmxAttributeChainedTransfiguration('connection')
+        step3 = GenericJmxValidateCollection()
+        step4 = GenericJmxAttributeChainedTransfiguration('mbean')
+        step5 = GenericJmxAttributeChainedTransfiguration('connection')
 
         self.add(step1)
         self.add(step2)
         self.add(step3)
         self.add(step4)
+        self.add(step5)
+
 
     def execute(self, context):
         """

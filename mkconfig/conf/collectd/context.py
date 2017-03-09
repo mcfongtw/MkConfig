@@ -10,6 +10,9 @@ CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE = "_common_collectd_jmx_conf_yaml_fil
 CTX_KEY_COMMON_COLLECTD_JMX_TYPE = "_common_collectd_jmx_type"
 
 CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET = "mbeans"
+CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY = "mbean_hierarchy"
+
+CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET = "collections"
 
 #################################################
 # CTX_KEY for Collectd Generic-Jmx configuration
