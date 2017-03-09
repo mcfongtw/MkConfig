@@ -6,7 +6,8 @@ from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFI
     CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, \
     CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE, CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK, \
-    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET
+    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET, \
+    CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED
 from mkconfig.conf.utils import Utils
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
@@ -198,12 +199,14 @@ class GenericJmxValidateCollection(ContextAwareTransfiguration):
             mbean_name = entry['name']
             app_name = context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX]
 
-            if self.validate_mbean_from_hierarchy(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, 'common'):
-                self.validate_collection_by_mbean(context, mbean_name, True)
-            elif self.validate_mbean_from_hierarchy(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, app_name):
-                self.validate_collection_by_mbean(context, mbean_name, True)
+            if self.is_mbean_exist_in_hierarchy(
+                    context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, app_name):
+                entry[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED] = True
+            elif self.is_mbean_exist_in_hierarchy(context[
+                                                       CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY], mbean_name, 'common'):
+                entry[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED] = True
             else:
-                self.validate_collection_by_mbean(context, mbean_name, False)
+                entry[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED] = False
                 logger.warning("Collect [%s] does not exist!", mbean_name)
 
 
@@ -211,9 +214,16 @@ class GenericJmxValidateCollection(ContextAwareTransfiguration):
         logger.debug('[Transifig] Collectd-GenericJmx Collected mbean names validated')
         logger.debug("======================================================================")
 
-    def validate_mbean_from_hierarchy(self, dict, mbean_name, app_name):
-        if app_name in dict:
-            lst = dict[app_name]
+    def is_mbean_exist_in_hierarchy(self, hierarchy_dict, mbean_name, app_name):
+        """
+        Check whether mbean_name exist in hierarchy_dictionary
+        :param hierarchy_dict: a dictionary that contains mbean hierarchy
+        :param mbean_name: a mbean name to check against
+        :param app_name: application name to look up for
+        :return: True, if such mbean_name exists; False, otherwise.
+        """
+        if app_name in hierarchy_dict:
+            lst = hierarchy_dict[app_name]
             for idx, entry in enumerate(lst):
                 key = entry['name']
                 if mbean_name == key:
@@ -223,14 +233,6 @@ class GenericJmxValidateCollection(ContextAwareTransfiguration):
         else:
             logger.warning('dict[%s] does not exist', app_name)
             return False
-
-    def validate_collection_by_mbean(self, context, mbean_name, is_validated):
-        lst = context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET]
-
-        for idx, entry in enumerate(lst):
-            key = entry['name']
-            if mbean_name == key:
-                entry['validated'] = is_validated
 
 
 class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):

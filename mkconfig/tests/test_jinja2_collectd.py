@@ -6,7 +6,7 @@ from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFI
     CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, \
     CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
-    CTX_KEY_COMMON_COLLECTD_JMX_TYPE
+    CTX_KEY_COMMON_COLLECTD_JMX_TYPE, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET
 from mkconfig.conf.collectd.genericjmx import SpliByApplicationTransfiguration, GenericJmxCompleteChainedTransfiguration, \
     GenericJmxApplicationChainedTransfiguration, GenericJmxValidateCollection
 from mkconfig.conf.utils import Utils
@@ -197,7 +197,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
-    def test_functional_GenericJmxValidateCollection(self):
+    def test_unit_GenericJmxValidateCollection(self):
         #init context
         mbean_hierarchy = {
             "common": [
@@ -210,7 +210,36 @@ class TestCollectdJmxTransfiguration(TestCase):
         }
         transfig = GenericJmxValidateCollection()
 
-        self.assertTrue(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'JvmMemory', 'common'))
-        self.assertFalse(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'Undefined', 'common'))
-        self.assertTrue(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'TPStats_Request_{{ item }}', 'cassandra'))
-        self.assertFalse(transfig.validate_mbean_from_hierarchy(mbean_hierarchy, 'Undefined', 'cassandra'))
+        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'JvmMemory', 'common'))
+        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'common'))
+        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'TPStats_Request_{{ item }}', 'cassandra'))
+        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'cassandra'))
+
+    def test_functional_GenericJmxValidateCollection(self):
+        #init context
+        context = {
+                "mbean_hierarchy": {
+                    "common": [
+                        {"name": "JvmMemory"},
+                    ],
+                    "app1" : [
+                        {"name": "TP_Stat"},
+                    ]
+                },
+                "collections":[
+                    {"name": "JvmMemory"},
+                    {"name": "TP_Stat"},
+                    {"name": "DoesNotExist"}
+                ],
+                CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
+            }
+
+        transfig = GenericJmxValidateCollection()
+        transfig.perform(context)
+        self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][0][
+            'validated'])
+        self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][1][
+                            'validated'])
+        self.assertFalse(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][2][
+                            'validated'])
+
