@@ -4,123 +4,33 @@ hostPort : '7199'
 fqdn : 'my.host.cc'
 progPrefix : "CASSANDRA_"
 progVer : '3.9+'
-cfs : ['Standard1', 'Super1']
-keyspace : 'Keyspace1'
-requests : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage']
-internals : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage']
-drops : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ', 'REQUEST_RESPONSE']
-compaction_task_types : ['CompletedTasks', 'PendingTasks']
-mbeans:
-- name : Memory
-  objectName: java.lang:type=Memory
-  InstancePrefix : Memory
-  required: true
-  attributes:
-   - Attribute : HeapMemoryUsage
-     InstancePrefix : Heap_Memory_Usage_
-     Type : gauge
-     Table : true
-   - Attribute : NonHeapMemoryUsage
-     InstancePrefix : Non_Heap_Memory_Usage_
-     Type : gauge
-     Table : true
-- name : Memory_EdenSpace
-  objectName: java.lang:type=MemoryPool,name=Eden Space
-  InstancePrefix : Memory
-  required: false
-  attributes:
-   - Attribute : Usage
-     InstancePrefix : EdenSpace_Usage_
-     Type : gauge
-     Table : true
-- name : Memory_SurvivorSpace
-  objectName: java.lang:type=MemoryPool,name=Survivor Space
-  InstancePrefix : Memory
-  required: false
-  attributes:
-   - Attribute : Usage
-     InstancePrefix : SurvivorSpace_Usage_
-     Type : gauge
-     Table : true
-- name : Memory_TenuredGen
-  objectName: java.lang:type=MemoryPool,name=Tenured Gen
-  InstancePrefix : Memory
-  required: false
-  attributes:
-   - Attribute : Usage
-     InstancePrefix : TenuredGen_Usage_
-     Type : gauge
-     Table : true
-- name : Nio_DirectMemory
-  objectName: java.nio:type=BufferPool,name=direct
-  InstancePrefix : Nio
-  required: false
-  attributes:
-   - Attribute : MemoryUsed
-     InstancePrefix : DirectMemory_Used
-     Type : gauge
-   - Attribute : TotalCapacity
-     InstancePrefix : DirectMemory_Max
-     Type : gauge
-- name : Nio_MappedMemory
-  objectName: java.nio:type=BufferPool,name=mapped
-  InstancePrefix : Nio
-  required: false
-  attributes:
-   - Attribute : MemoryUsed
-     InstancePrefix : MappedMemory_Used
-     Type : gauge
-   - Attribute : TotalCapacity
-     InstancePrefix : MappedMemory_Max
-     Type : gauge
-- name : Threading
-  objectName: java.lang:type=Threading
-  InstancePrefix : Threading
-  required: true
-  attributes:
-   - Attribute : ThreadCount
-     InstancePrefix : Count
-     Type : counter
-   - Attribute : PeakThreadCount
-     InstancePrefix : Peak_Count
-     Type : counter
+keyspace1 : 'Keyspace1'
+_def_ks1_cfs : ['Standard1', 'Super1']
+_def_tps_request : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage']
+_def_tps_internal : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage']
+_def_tps_drop : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ', 'REQUEST_RESPONSE']
+_clt_ks1_cfs : ['Standard1']
+collections:
+- name : JvmMemory
+- name : NativeMemory_NioDirectMemory
+- name : JvmThread
 - name : GC_ParNew
-  objectName: java.lang:type=GarbageCollector,name=ParNew
-  InstancePrefix : GC
-  required: false
-  attributes:
-   - Attribute : CollectionCount
-     InstancePrefix : ParNew_Count
-     Type : counter
-   - Attribute : CollectionTime
-     InstancePrefix : ParNew_Time
-     Type : counter
 - name : GC_ConcurrentMarkSweep
-  objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
-  InstancePrefix : GC
-  required: false
-  attributes:
-   - Attribute : CollectionCount
-     InstancePrefix : CMS_Count
-     Type : counter
-   - Attribute : CollectionTime
-     InstancePrefix : CMS_Time
-     Type : counter
 - name : System
-  objectName: java.lang:type=OperatingSystem
-  InstancePrefix : System
-  required: true
-  attributes:
-   - Attribute : MaxFileDescriptorCount
-     InstancePrefix : Max_FD
-     Type : gauge
-   - Attribute : OpenFileDescriptorCount
-     InstancePrefix : Open_FD
-     Type : gauge
+- name : Perf_Overall_Stats
+- name : TPStats_Compaction
+- name : TPStats_{{ item }}
+  secOrderSubstituion : _def_tps_internal
+- name : CF_{{ keyspace1 }}_{{ item }}
+  secOrderSubstituion : _clt_ks1_cfs
+- name : TPStats_Dropped_{{ item }}
+  secOrderSubstituion : _def_tps_drop
+- name : Perf_Client_Read_Stats
+- name : Perf_Client_Write_Stats
+mbeans:
 - name : Perf_Overall_Stats
   objectName: org.apache.cassandra.db:type=StorageProxy
   InstancePrefix : Perf
-  required: true
   attributes:
    - Attribute : RecentReadLatencyMicros
      InstancePrefix : Recent_Read_Latency_Micros
@@ -133,7 +43,6 @@ mbeans:
 - name : TPStats_Compaction
   objectName: org.apache.cassandra.db:type=CompactionManager
   InstancePrefix : TPStats_Stage_Compaction
-  required: true
   attributes:
    - Attribute : CompletedTasks
      InstancePrefix : Completed_Tasks
@@ -144,7 +53,6 @@ mbeans:
 - name : StorageService
   objectName: org.apache.cassandra.db:type=StorageService
   InstancePrefix : StorageService
-  required: false
   attributes:
    - Attribute : ExceptionCount
      InstancePrefix : Exception_Count
@@ -152,8 +60,7 @@ mbeans:
 - name: TPStats_{{ item }}
   objectName: org.apache.cassandra.request:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
-  required: true
-  secOrderSubstituion : requests
+  secOrderSubstituion : _def_tps_request
   attributes:
    - Attribute : CompletedTasks
      InstancePrefix : Completed_Tasks
@@ -167,8 +74,7 @@ mbeans:
 - name: TPStats_{{ item }}
   objectName: org.apache.cassandra.internal:type={{ item }}
   InstancePrefix : TPStats_Stage_{{ item }}
-  required: true
-  secOrderSubstituion : internals
+  secOrderSubstituion : _def_tps_internal
   attributes:
    - Attribute : CompletedTasks
      InstancePrefix : Completed_Tasks
@@ -179,11 +85,10 @@ mbeans:
    - Attribute : TotalBlockedTasks
      InstancePrefix : Total_Blocked_Tasks
      Type : counter
-- name: CF_{{ keyspace }}_{{ item }}
-  objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace }},columnfamily={{ item }}
-  InstancePrefix : CF_{{ keyspace }}_{{ item }}
-  required: true
-  secOrderSubstituion : cfs
+- name: CF_{{ keyspace1 }}_{{ item }}
+  objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace1 }},columnfamily={{ item }}
+  InstancePrefix : CF_{{ keyspace1 }}_{{ item }}
+  secOrderSubstituion : _def_ks1_cfs
   attributes:
    - Attribute : RecentReadLatencyMicros
      InstancePrefix : Recent_Read_Latency_Micros
@@ -202,8 +107,7 @@ mbeans:
 - name: TPStats_Dropped_{{ item }}
   objectName: org.apache.cassandra.metrics:type=DroppedMessage,scope={{ item }},name=Dropped
   InstancePrefix : TPStats_Dropped_{{ item }}
-  required: true
-  secOrderSubstituion : drops
+  secOrderSubstituion : _def_tps_drop
   attributes:
    - Attribute : Count
      InstancePrefix : Count
@@ -211,7 +115,6 @@ mbeans:
 - name : Perf_Client_Read_Stats
   objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Read,name=Latency
   InstancePrefix : Perf
-  required: false
   attributes:
    - Attribute : Mean
      InstancePrefix : Client_Read_Latency_Mean
@@ -222,7 +125,6 @@ mbeans:
 - name : Perf_Client_Write_Stats
   objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Write,name=Latency
   InstancePrefix : Perf
-  required: false
   attributes:
    - Attribute : Mean
      InstancePrefix : Client_Write_Latency_Mean

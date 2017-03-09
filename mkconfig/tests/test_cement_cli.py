@@ -30,7 +30,28 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Removing all files under %s ---- DONE', folder)
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
-    def test_normal_start_and_stop(self):
+    def test_normal_start_and_stop_on_jenkins(self):
+        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-sjenkins', '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
+        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'jenkins')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_on_cassandra(self):
         app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra', '-d' + self.example_dir])
         app.setup()
         app.run()

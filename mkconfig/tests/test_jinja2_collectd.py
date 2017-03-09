@@ -108,11 +108,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertEqual(context['progName'], 'ConstantGauge')
         self.assertEqual(context['progPrefix'], 'ConstantGauge_')
         self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][0][
-                                                                      'Attribute'], 'HeapMemoryUsage')
-        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][1][
-                             'InstancePrefix'], 'Non_Heap_Memory_Usage_')
-        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][1]['attributes'][0][
-                             'Attribute'], 'Value')
+                                                                      'Attribute'], 'Value')
 
     def test_functional_PrepareAppConfTransfiguration(self):
         context = {

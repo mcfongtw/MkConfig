@@ -4,20 +4,10 @@ hostPort : '10111'
 fqdn : 'my.host.cc'
 progPrefix : "ConstantGauge_"
 progVer : '1.1+'
+collections:
+- name : JvmMemory
+- name : ConstantGauge
 mbeans:
-- name : Memory
-  objectName: java.lang:type=Memory
-  InstancePrefix : Memory
-  required: true
-  attributes:
-   - Attribute : HeapMemoryUsage
-     InstancePrefix : Heap_Memory_Usage_
-     Type : gauge
-     Table : true
-   - Attribute : NonHeapMemoryUsage
-     InstancePrefix : Non_Heap_Memory_Usage_
-     Type : gauge
-     Table : true
 - name : ConstantGauge
   objectName: org.example.simple:type=ConstantGauge
   InstancePrefix : ConstantGauge

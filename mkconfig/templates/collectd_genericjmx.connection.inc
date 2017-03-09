@@ -4,16 +4,12 @@
             Host "{{ fqdn }}"
             InstancePrefix "{{ progPrefix }}"
 
-            {% for mbean in mbeans -%}
-                {% if mbean.secOrderSubstituion is defined -%}
-            {% raw %} {% for item in {% endraw %} {{ mbean.secOrderSubstituion }} {% raw %} -%} {% endraw %}
+            {% for collection in collections -%}
+                {% if collection.secOrderSubstituion is defined -%}
+            {% raw %} {% for item in {% endraw %} {{ collection.secOrderSubstituion }} {% raw %} -%} {% endraw %}
                 {% endif -%}
-            {%- if mbean.required -%}
-            Collect {{ mbean.name }}
-            {% else -%}
-            #Collect {{ mbean.name }}
-            {% endif -%}
-            {% if mbean.secOrderSubstituion is defined -%}
+            Collect {{ collection.name }}
+            {% if collection.secOrderSubstituion is defined -%}
           {% raw %} {% endfor %} {% endraw %}
             {% endif -%}
             {%- endfor %}

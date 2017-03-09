@@ -4,20 +4,10 @@ hostPort : '10222'
 fqdn : 'my.host.cc'
 progPrefix : "RandomGauge_"
 progVer : '2.2'
+collections:
+- name : JvmMemory
+- name : RandomGauge
 mbeans:
-- name : Memory
-  objectName: java.lang:type=Memory
-  InstancePrefix : Memory
-  required: true
-  attributes:
-   - Attribute : HeapMemoryUsage
-     InstancePrefix : Heap_Memory_Usage_
-     Type : gauge
-     Table : true
-   - Attribute : NonHeapMemoryUsage
-     InstancePrefix : Non_Heap_Memory_Usage_
-     Type : gauge
-     Table : true
 - name : RandomGauge
   objectName: org.example.simple:type=RandomGauge
   InstancePrefix : RandomGauge

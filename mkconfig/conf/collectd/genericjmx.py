@@ -138,13 +138,13 @@ class GenericJmxAttributeChainedTransfiguration(ChainedTransfiguration):
         super().__init__()
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
-        self._step1 = GenericJmxGenerateTemplateNameWithPyST(attr)
-        self._step2 = GenericJmxInputToStubWithJinja2()
-        self._step3 = GenericJmxStubToOutputViaJinja2()
+        step1 = GenericJmxGenerateTemplateNameWithPyST(attr)
+        step2 = GenericJmxInputToStubWithJinja2()
+        step3 = GenericJmxStubToOutputViaJinja2()
 
-        self.add(self._step1)
-        self.add(self._step2)
-        self.add(self._step3)
+        self.add(step1)
+        self.add(step2)
+        self.add(step3)
         self._attribute = attr
 
     def execute(self, context):
@@ -180,15 +180,15 @@ class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):
         super().__init__()
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
-        self._step0 = PrepareAppConfTransfiguration()
-        self._step1 = ConfReaderToContextTransfiguration()
-        self._step2 = GenericJmxAttributeChainedTransfiguration('mbean')
-        self._step3 = GenericJmxAttributeChainedTransfiguration('connection')
+        step1 = PrepareAppConfTransfiguration()
+        step2 = ConfReaderToContextTransfiguration()
+        step3 = GenericJmxAttributeChainedTransfiguration('mbean')
+        step4 = GenericJmxAttributeChainedTransfiguration('connection')
 
-        self.add(self._step0)
-        self.add(self._step1)
-        self.add(self._step2)
-        self.add(self._step3)
+        self.add(step1)
+        self.add(step2)
+        self.add(step3)
+        self.add(step4)
 
     def execute(self, context):
         """
@@ -207,6 +207,48 @@ class GenericJmxApplicationChainedTransfiguration(ChainedTransfiguration):
         logger.info("///////////////////////////////////////////////////////////////////////")
         logger.info("[ChainedTransfig] Collectd-GenericJmx w/ Application-wise [%s] ... "
                     "COMPLETES", app)
+        logger.info("///////////////////////////////////////////////////////////////////////")
+
+
+class GenericJmxCommonMBeansChainedTransfiguration(ChainedTransfiguration):
+    """
+    A chained transfiguration that transform to a collectd genericjmx template for common mbean
+    definitions - incomplete still and need to consolidate all parts into one final output with
+    CollectdJmxCompleteChainedTransfiguration
+    """
+
+    def __init__(self):
+        """
+        prepare the chain of transfiguration
+        """
+        super().__init__()
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
+
+        step1 = PrepareAppConfTransfiguration()
+        step2 = ConfReaderToContextTransfiguration()
+        step3 = GenericJmxAttributeChainedTransfiguration('mbean')
+
+        self.add(step1)
+        self.add(step2)
+        self.add(step3)
+
+    def execute(self, context):
+        """
+        To execute the whole series of transfiguration execution
+
+        :param context: A key-value paired map that stores attributes carried throughput the
+        whole lifecycle
+        """
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[ChainedTransfig] Collectd-GenericJmx w/ Common MBeans Generation...")
+        logger.info("///////////////////////////////////////////////////////////////////////")
+
+        #insert common to assemble collectd.genericjmx.common.conf in later step
+        context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX] = 'common'
+        super().execute(context)
+
+        logger.info("///////////////////////////////////////////////////////////////////////")
+        logger.info("[ChainedTransfig] Collectd-GenericJmx w/ Common MBeans Generation... COMPLETES")
         logger.info("///////////////////////////////////////////////////////////////////////")
 
 
@@ -297,11 +339,13 @@ class GenericJmxCompleteChainedTransfiguration(ChainedTransfiguration):
         super().__init__()
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
-        self._step0 = SpliByApplicationTransfiguration()
-        self._step1 = GenericJmxConsolidateToFinalOutput()
+        step1 = GenericJmxCommonMBeansChainedTransfiguration()
+        step2 = SpliByApplicationTransfiguration()
+        step3 = GenericJmxConsolidateToFinalOutput()
 
-        self.add(self._step0)
-        self.add(self._step1)
+        self.add(step1)
+        self.add(step2)
+        self.add(step3)
 
     def execute(self, context):
         """

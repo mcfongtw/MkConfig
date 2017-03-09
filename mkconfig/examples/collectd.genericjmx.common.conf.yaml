@@ -1,0 +1,98 @@
+progName : 'CommonJmxMBeans'
+mbeans:
+- name : JvmMemory
+  objectName: java.lang:type=Memory
+  InstancePrefix : JvmMemory
+  attributes:
+   - Attribute : HeapMemoryUsage
+     InstancePrefix : Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+   - Attribute : NonHeapMemoryUsage
+     InstancePrefix : Non_Heap_Memory_Usage_
+     Type : gauge
+     Table : true
+- name : HeapMemory_EdenSpace
+  objectName: java.lang:type=MemoryPool,name=Eden Space
+  InstancePrefix : HeapMemory
+  attributes:
+   - Attribute : Usage
+     InstancePrefix : EdenSpace_Usage_
+     Type : gauge
+     Table : true
+- name : HeapMemory_SurvivorSpace
+  objectName: java.lang:type=MemoryPool,name=Survivor Space
+  InstancePrefix : HeapMemory
+  attributes:
+   - Attribute : Usage
+     InstancePrefix : SurvivorSpace_Usage_
+     Type : gauge
+     Table : true
+- name : HeapMemory_TenuredGen
+  objectName: java.lang:type=MemoryPool,name=Tenured Gen
+  InstancePrefix : HeapMemory
+  attributes:
+   - Attribute : Usage
+     InstancePrefix : TenuredGen_Usage_
+     Type : gauge
+     Table : true
+- name : NativeMemory_NioDirectMemory
+  objectName: java.nio:type=BufferPool,name=direct
+  InstancePrefix : NativeMemory
+  attributes:
+   - Attribute : MemoryUsed
+     InstancePrefix : NioDirectMemory_Used
+     Type : gauge
+   - Attribute : TotalCapacity
+     InstancePrefix : NioDirectMemory_Max
+     Type : gauge
+- name : NativeMemory_NioMappedMemory
+  objectName: java.nio:type=BufferPool,name=mapped
+  InstancePrefix : NativeMemory
+  attributes:
+   - Attribute : MemoryUsed
+     InstancePrefix : NioMappedMemory_Used
+     Type : gauge
+   - Attribute : TotalCapacity
+     InstancePrefix : NioMappedMemory_Max
+     Type : gauge
+- name : JvmThread
+  objectName: java.lang:type=Threading
+  InstancePrefix : Thread
+  attributes:
+   - Attribute : ThreadCount
+     InstancePrefix : Count
+     Type : counter
+   - Attribute : PeakThreadCount
+     InstancePrefix : Peak_Count
+     Type : counter
+- name : GC_ParNew
+  objectName: java.lang:type=GarbageCollector,name=ParNew
+  InstancePrefix : GC
+  attributes:
+   - Attribute : CollectionCount
+     InstancePrefix : ParNew_Count
+     Type : counter
+   - Attribute : CollectionTime
+     InstancePrefix : ParNew_Time
+     Type : counter
+- name : GC_ConcurrentMarkSweep
+  objectName: java.lang:type=GarbageCollector,name=ConcurrentMarkSweep
+  InstancePrefix : GC
+  attributes:
+   - Attribute : CollectionCount
+     InstancePrefix : CMS_Count
+     Type : counter
+   - Attribute : CollectionTime
+     InstancePrefix : CMS_Time
+     Type : counter
+- name : System
+  objectName: java.lang:type=OperatingSystem
+  InstancePrefix : System
+  attributes:
+   - Attribute : MaxFileDescriptorCount
+     InstancePrefix : Max_FD
+     Type : gauge
+   - Attribute : OpenFileDescriptorCount
+     InstancePrefix : Open_FD
+     Type : gauge
