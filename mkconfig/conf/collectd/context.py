@@ -1,7 +1,8 @@
 ################################################
 # CTX_KEY for Common Collectd Jmx configuration
 ################################################
-CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE = "_common_collectd_jmx_template_engine_input"
+CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE = "_common_collectd_jmx_attr_template_input"
+CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE = "_common_collectd_jmx_full_template_input"
 CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT = "_common_collectd_jmx_final_output"
 CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST = "_common_collectd_jmx_app_prefix_list"
 CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX = "_common_collectd_jmx_app_prefix"

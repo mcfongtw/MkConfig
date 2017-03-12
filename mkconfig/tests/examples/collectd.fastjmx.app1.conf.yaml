@@ -1,0 +1,21 @@
+progName : 'ConstantGauge'
+hostAddr : 'localhost'
+hostPort : '10111'
+fqdn : 'my.host.cc'
+progPrefix : "ConstantGauge"
+progVer : '1.1+'
+pathToCollectdFastJmxJar : /etc/collectd.d/collectd-fast-jmx-1.0.0.jar
+timeToLive : 120
+collections:
+- name : JvmMemory
+- name : ConstantGauge
+mbeans:
+- name : ConstantGauge
+  objectName: org.example.simple:type=ConstantGauge
+  InstancePrefix : ConstantGauge
+  required: true
+  attributes:
+   - Attribute : Value
+     InstancePrefix : Value
+     Type : gauge
+     Table : false

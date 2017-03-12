@@ -4,9 +4,10 @@ import os
 from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration, ConfReaderToContextTransfiguration
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, \
-    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
-    CTX_KEY_COMMON_COLLECTD_JMX_TYPE, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET
+    CTX_KEY_COMMON_COLLECTD_JMX_TYPE, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET, \
+    CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE
 from mkconfig.conf.collectd.genericjmx import SpliByApplicationTransfiguration, GenericJmxCompleteChainedTransfiguration, \
     GenericJmxApplicationChainedTransfiguration, GenericJmxValidateCollection
 from mkconfig.conf.utils import Utils
@@ -30,7 +31,7 @@ class TestConfigurationType(TestCase):
         print('Unit Test [{}] Stop'.format(self.id()))
 
     def testCollectdGenericJmx(self):
-        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationType.COLLECTD_GENERIC_JMX.get_template_file())
+        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationType.COLLECTD_GENERIC_JMX.get_attribute_template_file())
         self.assertEqual('collectd', ConfigurationType.COLLECTD_GENERIC_JMX.get_supertype())
         self.assertEqual('genericjmx', ConfigurationType.COLLECTD_GENERIC_JMX.get_subtype())
 
@@ -43,11 +44,11 @@ class TestConfigTemplateFactory(TestCase):
         print('Unit Test [{}] Stop'.format(self.id()))
 
     def test_default_config_template_factory(self):
-        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type(None).get_template_file())
-        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type('rubbish').get_template_file())
+        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type(None).get_attribute_template_file())
+        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type('rubbish').get_attribute_template_file())
 
     def test_collectd_genericjmx_config_template_factory(self):
-        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type('collectd_genericjmx').get_template_file())
+        self.assertEqual('collectd_genericjmx.$attribute.inc', ConfigurationTypeFactory.get_config_type('collectd_genericjmx').get_attribute_template_file())
 
 
 class TestCollectdJmxTransfiguration(TestCase):
@@ -128,7 +129,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
-            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
         chain = GenericJmxApplicationChainedTransfiguration()
@@ -149,7 +150,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
-            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
         transfig = SpliByApplicationTransfiguration()
@@ -168,12 +169,13 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
-    def test_functional_CollectdJmxCompleteChainedTransfiguration_for_three_app(self):
+    def test_functional_CollectdJmxCompleteChainedTransfiguration_for_3_app_with_genericjmx(self):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
             CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
-            CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE: 'collectd_genericjmx.template',
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx'
         }
@@ -196,6 +198,36 @@ class TestCollectdJmxTransfiguration(TestCase):
             '_collectd_genericjmx.mbean.inc.stub')))
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
+
+    def test_functional_CollectdJmxCompleteChainedTransfiguration_for_3_app_with_fastjmx(self):
+        #init context
+        context =  {
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_fastjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE: 'collectd_fastjmx.template',
+            CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx'
+        }
+        transfig = GenericJmxCompleteChainedTransfiguration()
+        transfig.perform(context)
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app2.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app3.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app2.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app3.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
 
     def test_unit_GenericJmxValidateCollection(self):
         #init context

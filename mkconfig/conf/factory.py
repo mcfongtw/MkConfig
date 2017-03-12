@@ -9,18 +9,28 @@ class ConfigurationType(Enum):
     An enumeration for configuration type
     """
     COLLECTD_GENERIC_JMX = ('collectd_genericjmx.$attribute.inc', 'collectd',
-                            'genericjmx')
+                            'genericjmx', 'collectd_genericjmx.template')
 
-    def __init__(self, template_file, supertype, subtype):
-        self._template_file = template_file
+    COLLECTD_FAST_JMX = ('collectd_fastjmx.$attribute.inc', 'collectd',
+                            'fastjmx', 'collectd_fastjmx.template')
+
+    def __init__(self, attribute_template_file, supertype, subtype, full_template_file):
+        self._attr_template_file = attribute_template_file
         self._supertype = supertype
         self._subtype = subtype
+        self._full_template_file = full_template_file
 
-    def get_template_file(self):
+    def get_attribute_template_file(self):
         """
-        Retrieve the template file name associated with this configuration type
+        Retrieve the attribute template file name associated with this configuration type
         """
-        return self._template_file
+        return self._attr_template_file
+
+    def get_full_template_file(self):
+        """
+        Retrieve the attribute template file name associated with this configuration type
+        """
+        return self._full_template_file
 
     def get_supertype(self):
         """
@@ -56,9 +66,14 @@ class ConfigurationTypeFactory(object):
             result = default_config_template
             logger.warning("Unsupported config type [%s]. Fall back with [%s] as default",
                            cli_attr, result)
-        if cli_attr == 'collectd_genericjmx':
+        elif cli_attr == 'collectd_genericjmx':
             result = ConfigurationType.COLLECTD_GENERIC_JMX
-            logger.debug("Located config type [%s]")
+            logger.debug("Located for type [%s] | templates[%s/%s]", cli_attr,
+                         result.get_attribute_template_file(), result.get_full_template_file())
+        elif cli_attr == 'collectd_fastjmx':
+            result = ConfigurationType.COLLECTD_FAST_JMX
+            logger.debug("Located for type [%s] | templates[%s/%s]", cli_attr,
+                         result.get_attribute_template_file(), result.get_full_template_file())
         else:
             #default
             result = default_config_template

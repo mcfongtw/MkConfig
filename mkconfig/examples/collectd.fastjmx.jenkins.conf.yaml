@@ -1,0 +1,15 @@
+progName : 'Jenkins'
+hostAddr : 'localhost'
+hostPort : '18888'
+fqdn : 'my.host.cc'
+progPrefix : "JENKINS"
+progVer : '2.24'
+pathToCollectdFastJmxJar : /etc/collectd.d/collectd-fast-jmx-1.0.0.jar
+timeToLive : 14400
+collections:
+- name : JvmMemory
+- name : NativeMemory_NioDirectMemory
+- name : JvmThread
+- name : GC_ParNew
+- name : GC_ConcurrentMarkSweep
+- name : System

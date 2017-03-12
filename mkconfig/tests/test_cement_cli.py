@@ -30,47 +30,9 @@ class TestMkConfigApp(test.CementTestCase):
         logger.info('Removing all files under %s ---- DONE', folder)
         logger.info('Unit Test [{}] Stop'.format(self.id()))
 
-    def test_normal_start_and_stop_on_jenkins(self):
-        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-sjenkins', '-d' + self.example_dir])
-        app.setup()
-        app.run()
-
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
-        self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'jenkins')
-
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'jenkins.mbean.blocks.inc')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'jenkins.connection.blocks.inc')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.mbean.inc.stub')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.connection.inc.stub')))
-
-        app.close()
-
-    def test_normal_start_and_stop_on_cassandra(self):
-        app = self.make_app(argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra', '-d' + self.example_dir])
-        app.setup()
-        app.run()
-
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
-        self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra')
-
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.mbean.blocks.inc')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            'cassandra.connection.blocks.inc')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.mbean.inc.stub')))
-        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
-            '_collectd_genericjmx.connection.inc.stub')))
-
-        app.close()
+    #########################################################################################
+    # Default Behavior
+    #########################################################################################
 
     def test_normal_with_default_template(self):
         app3 = self.make_app(argv=['-scassandra', '-otest.output', '-d' + self.example_dir])
@@ -93,8 +55,67 @@ class TestMkConfigApp(test.CementTestCase):
 
         app3.close()
 
-    def test_normal_start_and_stop_with_apps_list(self):
-        app = self.make_app(argv=['-tcollectd_genericjmx.template', '-otest.output', '-scassandra jenkins', '-d' + self.example_dir])
+    def test_file_not_found_1(self):
+        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown', '-d1'])
+        app1.setup()
+        with self.assertRaises(IOError):
+            app1.run()
+        app1.close()
+
+    #########################################################################################
+    # Collectd-GenericJmx specific
+    #########################################################################################
+
+    def test_normal_start_and_stop_on_jenkins_with_genericjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_genericjmx', '-otest.output', '-sjenkins',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
+        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'jenkins')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_on_cassandra_with_genericjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
+        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_genericjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_with_apps_list_with_genericjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra jenkins',
+                  '-d' + self.example_dir])
         app.setup()
         app.run()
 
@@ -116,8 +137,10 @@ class TestMkConfigApp(test.CementTestCase):
 
         app.close()
 
-    def test_normal_start_and_stop_with_all_exampl_apps(self):
-        app = self.make_app(argv=['-otest.output', '-scassandra jenkins jira', '-d' + self.example_dir])
+    def test_normal_start_and_stop_with_all_exampl_apps_with_genericjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra jenkins jira',
+                  '-d' + self.example_dir])
         app.setup()
         app.run()
 
@@ -143,12 +166,107 @@ class TestMkConfigApp(test.CementTestCase):
 
         app.close()
 
+    #########################################################################################
+    # Collectd-FastJmx specific
+    #########################################################################################
 
-    def test_file_not_found_1(self):
-        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown', '-d1'])
-        app1.setup()
-        with self.assertRaises(IOError):
-            app1.run()
-        app1.close()
+    def test_normal_start_and_stop_on_jenkins_with_fastjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_fastjmx', '-otest.output', '-sjenkins',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
 
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
+        self.assertEqual(app.pargs.template, 'collectd_fastjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'jenkins')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_on_cassandra_with_fastjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
+        self.assertEqual(app.pargs.template, 'collectd_fastjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_with_apps_list_with_fastjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra jenkins',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+        app.close()
+
+    def test_normal_start_and_stop_with_all_exampl_apps_with_fastjmx(self):
+        app = self.make_app(
+            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra jenkins jira',
+                  '-d' + self.example_dir])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.output, 'test.output')
+        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'cassandra.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jenkins.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jira.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'jira.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+        app.close()
 

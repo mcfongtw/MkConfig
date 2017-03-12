@@ -1,0 +1,21 @@
+progName : 'RandomGauge'
+hostAddr : 'localhost'
+hostPort : '10222'
+fqdn : 'my.host.cc'
+progPrefix : "RandomGauge"
+progVer : '2.2'
+pathToCollectdFastJmxJar : /etc/collectd.d/collectd-fast-jmx-1.0.0.jar
+timeToLive : 120
+collections:
+- name : JvmMemory
+- name : RandomGauge
+mbeans:
+- name : RandomGauge
+  objectName: org.example.simple:type=RandomGauge
+  InstancePrefix : RandomGauge
+  required: true
+  attributes:
+   - Attribute : Value
+     InstancePrefix : Value
+     Type : gauge
+     Table : false

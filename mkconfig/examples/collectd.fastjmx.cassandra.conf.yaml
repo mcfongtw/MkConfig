@@ -1,0 +1,137 @@
+progName : 'Cassandra'
+hostAddr : 'localhost'
+hostPort : '7199'
+fqdn : 'my.host.cc'
+progPrefix : "CASSANDRA"
+progVer : '3.9+'
+pathToCollectdFastJmxJar : /path/to/collectd/fast-jmx.jar
+keyspace1 : 'Keyspace1'
+_def_ks1_cfs : ['Standard1', 'Super1']
+_def_tps_request : ['MutationStage', 'ReadRepairStage', 'ReadStage', 'ReplicateOnWriteStage', 'RequestResponseStage']
+_def_tps_internal : ['FlushWriter', 'MemtablePostFlusher', 'commitlog_archiver', 'MigrationStage']
+_def_tps_drop : ['MUTATION', 'COUNTER_MUTATION', 'READ_REPAIR', 'READ', 'REQUEST_RESPONSE']
+_clt_ks1_cfs : ['Standard1']
+collections:
+- name : JvmMemory
+- name : NativeMemory_NioDirectMemory
+- name : JvmThread
+- name : GC_ParNew
+- name : GC_ConcurrentMarkSweep
+- name : System
+- name : Perf_Overall_Stats
+- name : TPStats_Compaction
+- name : TPStats_Request_{{ item }}
+  secOrderSubstituion : _def_tps_request
+- name : TPStats_Internal_{{ item }}
+  secOrderSubstituion : _def_tps_internal
+- name : TPStats_Dropped_{{ item }}
+  secOrderSubstituion : _def_tps_drop
+- name : CF_{{ keyspace1 }}_{{ item }}
+  secOrderSubstituion : _clt_ks1_cfs
+- name : Perf_Client_Read_Stats
+- name : Perf_Client_Write_Stats
+mbeans:
+- name : Perf_Overall_Stats
+  objectName: org.apache.cassandra.db:type=StorageProxy
+  InstancePrefix : Perf
+  attributes:
+   - Attribute : RecentReadLatencyMicros
+     InstancePrefix : Recent_Read_Latency_Micros
+   - Attribute : ReadOperations
+     InstancePrefix : Read_Operation
+   - Attribute : RecentWriteLatencyMicros
+     InstancePrefix : Recent_Write_Latency_Micros
+   - Attribute : WriteOperations
+     InstancePrefix : Write_Operation
+- name : TPStats_Compaction
+  objectName: org.apache.cassandra.db:type=CompactionManager
+  InstancePrefix : TPStats_Stage_Compaction
+  attributes:
+   - Attribute : CompletedTasks
+     InstancePrefix : Completed_Tasks
+     Type : counter
+   - Attribute : PendingTasks
+     InstancePrefix : Pending_Tasks
+     Type : counter
+- name : StorageService
+  objectName: org.apache.cassandra.db:type=StorageService
+  InstancePrefix : StorageService
+  attributes:
+   - Attribute : ExceptionCount
+     InstancePrefix : Exception_Count
+     Type : counter
+- name: TPStats_Request_{{ item }}
+  objectName: org.apache.cassandra.request:type={{ item }}
+  InstancePrefix : TPStats_Stage_{{ item }}
+  secOrderSubstituion : _def_tps_request
+  attributes:
+   - Attribute : CompletedTasks
+     InstancePrefix : Completed_Tasks
+     Type : counter
+   - Attribute : PendingTasks
+     InstancePrefix : Pending_Tasks
+     Type : counter
+   - Attribute : TotalBlockedTasks
+     InstancePrefix : Total_Blocked_Tasks
+     Type : counter
+- name: TPStats_Internal_{{ item }}
+  objectName: org.apache.cassandra.internal:type={{ item }}
+  InstancePrefix : TPStats_Stage_{{ item }}
+  secOrderSubstituion : _def_tps_internal
+  attributes:
+   - Attribute : CompletedTasks
+     InstancePrefix : Completed_Tasks
+     Type : counter
+   - Attribute : PendingTasks
+     InstancePrefix : Pending_Tasks
+     Type : counter
+   - Attribute : TotalBlockedTasks
+     InstancePrefix : Total_Blocked_Tasks
+     Type : counter
+- name: CF_{{ keyspace1 }}_{{ item }}
+  objectName: org.apache.cassandra.db:type=ColumnFamilies,keyspace={{ keyspace1 }},columnfamily={{ item }}
+  InstancePrefix : CF_{{ keyspace1 }}_{{ item }}
+  secOrderSubstituion : _def_ks1_cfs
+  attributes:
+   - Attribute : RecentReadLatencyMicros
+     InstancePrefix : Recent_Read_Latency_Micros
+   - Attribute : RecentWriteLatencyMicros
+     InstancePrefix : Recent_Write_Latency_Micros
+   - Attribute : ReadCount
+     InstancePrefix : Read_Count
+     Type : counter
+   - Attribute : WriteCount
+     InstancePrefix : Write_Count
+     Type : counter
+   - Attribute : PendingTasks
+     InstancePrefix : Pending_Tasks
+   - Attribute : TotalDiskSpaceUsed
+     InstancePrefix : Total_Disk_Space_Used
+- name: TPStats_Dropped_{{ item }}
+  objectName: org.apache.cassandra.metrics:type=DroppedMessage,scope={{ item }},name=Dropped
+  InstancePrefix : TPStats_Dropped_{{ item }}
+  secOrderSubstituion : _def_tps_drop
+  attributes:
+   - Attribute : Count
+     InstancePrefix : Count
+     Type : counter
+- name : Perf_Client_Read_Stats
+  objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Read,name=Latency
+  InstancePrefix : Perf
+  attributes:
+   - Attribute : Mean
+     InstancePrefix : Client_Read_Latency_Mean
+   - Attribute : MeanRate
+     InstancePrefix : Client_Read_Latency_MeanRate
+   - Attribute : StdDev
+     InstancePrefix : Client_Read_Latency_StdDev
+- name : Perf_Client_Write_Stats
+  objectName: org.apache.cassandra.metrics:type=ClientRequest,scope=Write,name=Latency
+  InstancePrefix : Perf
+  attributes:
+   - Attribute : Mean
+     InstancePrefix : Client_Write_Latency_Mean
+   - Attribute : MeanRate
+     InstancePrefix : Client_Write_Latency_MeanRate
+   - Attribute : StdDev
+     InstancePrefix : Client_Write_Latency_StdDev

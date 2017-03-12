@@ -3,11 +3,12 @@ import logging
 from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration,  \
     ConfReaderToContextTransfiguration
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
-    CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE, \
+    CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, \
     CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE, CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK, \
     CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_HIERARCHY, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET, \
-    CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED
+    CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_ENTRY_VALIDATED, \
+    CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE
 from mkconfig.conf.utils import Utils
 from mkconfig.core.factory import TemplateEngineFactory
 from mkconfig.core.jinja2 import Jinja2Engine
@@ -18,6 +19,8 @@ from mkconfig.env import Configurations
 
 logger = logging.getLogger(__name__)
 
+#TODO: Organize commonjmx.py and genericjmx.py for GenericJmx vs FastJmx
+#TODO: Organize comments for GenericJmx vs FastJmx
 
 class GenericJmxGenerateTemplateNameWithPyST(ContextAwareTransfiguration):
     """
@@ -44,7 +47,7 @@ class GenericJmxGenerateTemplateNameWithPyST(ContextAwareTransfiguration):
         """
 
         engine = PySTEngine()
-        engine.init(context[CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE])
+        engine.init(context[CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE])
         replaced_template_name = engine.apply({'attribute':self._attribute}, None, True)
         context[CTX_KEY_COLLECTD_GENERIC_JMX_TEMPLATE_FILE] = replaced_template_name
         context[CTX_KEY_COLLECTD_GENERIC_JMX_ATTRIBUTE_BLOCK] = self._attribute
@@ -386,9 +389,7 @@ class GenericJmxConsolidateToFinalOutput(Jinja2FileTemplateTransfiguration):
         whole lifecycle
         """
 
-        final_template_file = 'collectd_genericjmx.template'
-
-        self._template_file_name = final_template_file
+        self._template_file_name = context[CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE]
         self._output_file_path = Configurations.getOutputFile(context[CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT])
         super().perform(context)
 

@@ -1,0 +1,75 @@
+progName : 'Jira'
+hostAddr : 'localhost'
+hostPort : '38888'
+fqdn : 'my.host.cc'
+progPrefix : "JIRA"
+progVer : '7.2'
+pathToCollectdFastJmxJar : /path/to/collectd/fast-jmx.jar
+collections:
+- name : JvmMemory
+- name : NativeMemory_NioDirectMemory
+- name : JvmThread
+- name : GC_ParNew
+- name : GC_ConcurrentMarkSweep
+- name : System
+- name : Catalina_38080_Requests
+- name : Catalina_38080_ThreadPool
+- name : DataSource
+mbeans:
+- name : Catalina_38080_Requests
+  objectName: Catalina:type=GlobalRequestProcessor,name=\"http-nio-38080\"
+  InstancePrefix : Catalina_38080_Req_Stats
+  attributes:
+   - Attribute : requestCount
+     InstancePrefix : RequestCount
+     Type : counter
+   - Attribute : errorCount
+     InstancePrefix : errorCount
+     Type : counter
+- name : Catalina_38080_ThreadPool
+  objectName: Catalina:type=ThreadPool,name=\"http-nio-38080\"
+  InstancePrefix : Catalina_38080_TP_Stats
+  attributes:
+   - Attribute : currentThreadCount
+     InstancePrefix : Active_Num
+     Type : gauge
+   - Attribute : currentThreadsBusy
+     InstancePrefix : Busy_Num
+     Type : gauge
+   - Attribute : maxThreads
+     InstancePrefix : Max_Num
+     Type : gauge
+   - Attribute : minSpareThreads
+     InstancePrefix : Min_Num
+     Type : gauge
+- name : DataSource
+  objectName: com.atlassian.jira:name=BasicDataSource,connectionpool=connections
+  InstancePrefix : DataSource_Stats
+  attributes:
+   - Attribute : BorrowedCount
+     InstancePrefix : Borrowed_Count
+     Type : counter
+   - Attribute : CreatedCount
+     InstancePrefix : Created_Count
+     Type : counter
+   - Attribute : DestroyedCount
+     InstancePrefix : Destroyed_Count
+     Type : counter
+   - Attribute : NumActive
+     InstancePrefix : Num_Active
+     Type : gauge
+   - Attribute : NumIdle
+     InstancePrefix : Num_Idle
+     Type : gauge
+   - Attribute : NumWaiters
+     InstancePrefix : Num_Waiters
+     Type : gauge
+   - Attribute : MeanActiveTimeMillis
+     InstancePrefix : Mean_Active_Time_Millis
+     Type : gauge
+   - Attribute : MeanBorrowWaitTimeMillis
+     InstancePrefix : Mean_Borrow_Wait_Time_Millis
+     Type : gauge
+   - Attribute : MeanIdleTimeMillis
+     InstancePrefix : Mean_Idle_Time_Millis
+     Type : gauge

@@ -1,4 +1,4 @@
-from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_TEMPLATE_FILE
+from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE
 from mkconfig.conf.factory import ConfigurationType
 from mkconfig.env import setup_logging_with_details
 import logging
@@ -27,7 +27,7 @@ class TestStringTemplateEngine(unittest.TestCase):
 
     def test_unit_collectd_genericjmx_template_string(self):
         engine = PySTEngine()
-        engine.init(ConfigurationType.COLLECTD_GENERIC_JMX.get_template_file())
+        engine.init(ConfigurationType.COLLECTD_GENERIC_JMX.get_attribute_template_file())
 
         context = {'attribute': 'mbean'}
         result = engine.apply(context, None, True)

@@ -1,0 +1,21 @@
+progName : 'ConstantCounter'
+hostAddr : 'localhost'
+hostPort : '10333'
+fqdn : 'my.host.cc'
+progPrefix : "ConstantCounter"
+progVer : '3.3'
+pathToCollectdFastJmxJar : /etc/collectd.d/collectd-fast-jmx-1.0.0.jar
+timeToLive : 120
+collections:
+- name : JvmMemory
+- name : ConstantCounter
+mbeans:
+- name : ConstantCounter
+  objectName: org.example.simple:type=ConstantCounter
+  InstancePrefix : ConstantCounter
+  required: true
+  attributes:
+   - Attribute : Counter
+     InstancePrefix : Counter
+     Type : counter
+     Table : false
