@@ -1,6 +1,6 @@
 Overview
 ========
-MkConfig is a python based, general-purposed configuration generator.
+MkConfig is a python based , general-purposed configuration generator.
 All of the implementation should follow PEP-8 standard.
 This project is also evaluated with pyLint.
 
@@ -15,7 +15,8 @@ Please refer to requirements.txt for details
 Supported Configuration
 -----------------------
 Here are types of configuration supported :
-1. Collectd - GenericJMX
+1. CollectdJmx - GenericJmx
+1. CollectdJmx - FastJmx (https://github.com/egineering-llc/collectd-fast-jmx)
 
 
 Guideline to Try New Build from Source
