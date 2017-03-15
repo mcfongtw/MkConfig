@@ -1,15 +1,15 @@
 import logging
 import os
 
-from mkconfig.conf.collectd.commonjmx import PrepareAppConfTransfiguration, ConfReaderToContextTransfiguration
+from mkconfig.conf.collectd.jmx import PrepareAppConfTransfiguration, ConfReaderToContextTransfiguration
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX, \
     CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE, CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, \
     CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET, CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
     CTX_KEY_COMMON_COLLECTD_JMX_TYPE, CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET, \
     CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE
-from mkconfig.conf.collectd.genericjmx import SpliByApplicationTransfiguration, GenericJmxCompleteChainedTransfiguration, \
-    GenericJmxApplicationChainedTransfiguration, GenericJmxValidateCollection
+from mkconfig.conf.collectd.jmx import SpliByApplicationTransfiguration, FullChainedTransfiguration, \
+    ApplicationChainedTransfiguration, ValidateCollectionTags
 from mkconfig.conf.utils import Utils
 from mkconfig.core.transfig import YamlFileReaderToContextTransfiguration
 from mkconfig.env import setup_logging_with_details, Configurations
@@ -97,10 +97,32 @@ class TestCollectdJmxTransfiguration(TestCase):
         with self.assertRaises(IOError):
             reader.perform(context)
 
-    def test_functional_CollectdJmxConfToContextTransfiguration(self):
+    def test_unit_ValidateCollectionTags(self):
+        #init context
+        mbean_hierarchy = {
+            "common": [
+                {"name": "JvmMemory"},
+
+            ],
+            "cassandra": [
+                {"name": "TPStats_Request_{{ item }}"},
+            ]
+        }
+        transfig = ValidateCollectionTags()
+
+        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'JvmMemory', 'common'))
+        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'common'))
+        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'TPStats_Request_{{ item }}', 'cassandra'))
+        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'cassandra'))
+
+    #########################################################################################
+    # Collectd-GenericJmx specific
+    #########################################################################################
+
+    def test_functional_CollectdJmxConfToContextTransfiguration_with_genericjmx(self):
         context = {
             CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : self.test_example_dir + 'collectd.genericjmx.app1.conf.yaml',
-            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'app1',
         }
         TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
 
@@ -112,7 +134,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][0][
                                                                       'Attribute'], 'Value')
 
-    def test_functional_PrepareAppConfTransfiguration(self):
+    def test_functional_PrepareAppConfTransfiguration_with_genericjmx(self):
         context = {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_dir,
@@ -124,7 +146,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE], Configurations.getProjectRootDir() +
                          '/tests/collectd.genericjmx.test.conf.yaml')
 
-    def test_functional_CollectdJmxPartialChainedTransfiguration(self):
+    def test_functional_ApplicationChainedTransfiguration_with_genericjmx(self):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
@@ -132,7 +154,7 @@ class TestCollectdJmxTransfiguration(TestCase):
             CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
-        chain = GenericJmxApplicationChainedTransfiguration()
+        chain = ApplicationChainedTransfiguration()
         chain.execute(context)
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
@@ -145,7 +167,7 @@ class TestCollectdJmxTransfiguration(TestCase):
             '_collectd_genericjmx.connection.inc.stub')))
 
 
-    def test_functional_SplitAppConfTransfiguration_for_two_app(self):
+    def test_functional_SplitAppConfTransfiguration_for_two_app_with_genericjmx(self):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
@@ -169,7 +191,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
-    def test_functional_CollectdJmxCompleteChainedTransfiguration_for_3_app_with_genericjmx(self):
+    def test_functional_FullChainedTransfiguration_for_3_app_with_genericjmx(self):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
@@ -179,7 +201,7 @@ class TestCollectdJmxTransfiguration(TestCase):
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx'
         }
-        transfig = GenericJmxCompleteChainedTransfiguration()
+        transfig = FullChainedTransfiguration()
         transfig.perform(context)
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
@@ -199,7 +221,113 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
-    def test_functional_CollectdJmxCompleteChainedTransfiguration_for_3_app_with_fastjmx(self):
+
+    def test_functional_ValidateCollectionTags_with_genericjmx(self):
+        #init context
+        context = {
+                "mbean_hierarchy": {
+                    "common": [
+                        {"name": "JvmMemory"},
+                    ],
+                    "app1" : [
+                        {"name": "TP_Stat"},
+                    ]
+                },
+                "collections":[
+                    {"name": "JvmMemory"},
+                    {"name": "TP_Stat"},
+                    {"name": "DoesNotExist"}
+                ],
+                CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
+                CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
+            }
+
+        transfig = ValidateCollectionTags()
+        transfig.perform(context)
+        self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][0][
+            'validated'])
+        self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][1][
+                            'validated'])
+        self.assertFalse(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][2][
+                            'validated'])
+
+    #########################################################################################
+    # Collectd-FastJmx specific
+    #########################################################################################
+
+    def test_functional_CollectdJmxConfToContextTransfiguration_with_fastjmx(self):
+        context = {
+            CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE : self.test_example_dir + 'collectd.fastjmx.app1.conf.yaml',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'app1',
+        }
+        TemplateEngineFactory.register_factory('Jinja2Engine', Jinja2Engine.Factory)
+
+        reader = ConfReaderToContextTransfiguration()
+        reader.perform(context)
+
+        self.assertEqual(context['progName'], 'ConstantGauge')
+        self.assertEqual(context['progPrefix'], 'ConstantGauge')
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET][0]['attributes'][0][
+                             'Attribute'], 'Value')
+
+    def test_functional_PrepareAppConfTransfiguration_with_fastjmx(self):
+        context = {
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX : 'test',
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_dir,
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx',
+        }
+
+        transfig = PrepareAppConfTransfiguration()
+        transfig.perform(context)
+        self.assertEqual(context[CTX_KEY_COMMON_COLLECTD_JMX_CONF_YAML_FILE], Configurations.getProjectRootDir() +
+                         '/tests/collectd.fastjmx.test.conf.yaml')
+
+    def test_functional_ApplicationChainedTransfiguration_with_fastjmx(self):
+        #init context
+        context =  {
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_fastjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx',
+        }
+        chain = ApplicationChainedTransfiguration()
+        chain.execute(context)
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+
+    def test_functional_SplitAppConfTransfiguration_for_two_app_with_fastjmx(self):
+        #init context
+        context =  {
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
+            CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_fastjmx.$attribute.inc',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx',
+        }
+        transfig = SpliByApplicationTransfiguration()
+        transfig.perform(context)
+
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app2.mbean.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app1.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            'app2.connection.blocks.inc')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.mbean.inc.stub')))
+        self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
+            '_collectd_fastjmx.connection.inc.stub')))
+
+    def test_functional_FullChainedTransfiguration_for_3_app_with_fastjmx(self):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
@@ -209,7 +337,7 @@ class TestCollectdJmxTransfiguration(TestCase):
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx'
         }
-        transfig = GenericJmxCompleteChainedTransfiguration()
+        transfig = FullChainedTransfiguration()
         transfig.perform(context)
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
@@ -229,49 +357,32 @@ class TestCollectdJmxTransfiguration(TestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_fastjmx.connection.inc.stub')))
 
-    def test_unit_GenericJmxValidateCollection(self):
-        #init context
-        mbean_hierarchy = {
-            "common": [
-                {"name": "JvmMemory"},
-
-            ],
-            "cassandra": [
-                {"name": "TPStats_Request_{{ item }}"},
-            ]
-        }
-        transfig = GenericJmxValidateCollection()
-
-        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'JvmMemory', 'common'))
-        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'common'))
-        self.assertTrue(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'TPStats_Request_{{ item }}', 'cassandra'))
-        self.assertFalse(transfig.is_mbean_exist_in_hierarchy(mbean_hierarchy, 'Undefined', 'cassandra'))
-
-    def test_functional_GenericJmxValidateCollection(self):
+    def test_functional_ValidateCollectionTags_with_fastjmx(self):
         #init context
         context = {
-                "mbean_hierarchy": {
-                    "common": [
-                        {"name": "JvmMemory"},
-                    ],
-                    "app1" : [
-                        {"name": "TP_Stat"},
-                    ]
-                },
-                "collections":[
+            "mbean_hierarchy": {
+                "common": [
                     {"name": "JvmMemory"},
-                    {"name": "TP_Stat"},
-                    {"name": "DoesNotExist"}
                 ],
-                CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
-            }
+                "app1" : [
+                    {"name": "TP_Stat"},
+                ]
+            },
+            "collections":[
+                {"name": "JvmMemory"},
+                {"name": "TP_Stat"},
+                {"name": "DoesNotExist"}
+            ],
+            CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX: 'app1',
+            CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx',
+        }
 
-        transfig = GenericJmxValidateCollection()
+        transfig = ValidateCollectionTags()
         transfig.perform(context)
         self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][0][
-            'validated'])
+                            'validated'])
         self.assertTrue(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][1][
                             'validated'])
         self.assertFalse(context[CTX_KEY_COMMON_COLLECTD_JMX_COLLECTIONS_SET][2][
-                            'validated'])
+                             'validated'])
 

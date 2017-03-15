@@ -4,7 +4,7 @@ from cement.core.controller import CementBaseController, expose
 from cement.core.foundation import CementApp
 from cement.utils.misc import init_defaults
 
-from mkconfig.conf.collectd.genericjmx import GenericJmxCompleteChainedTransfiguration
+from mkconfig.conf.collectd.jmx import FullChainedTransfiguration
 from mkconfig.conf.collectd.context import CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE, \
     CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST, CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT, \
     CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR, CTX_KEY_COMMON_COLLECTD_JMX_TYPE, \
@@ -62,7 +62,7 @@ class CliController(CementBaseController):
                 CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
                 CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
             }
-            chain = GenericJmxCompleteChainedTransfiguration()
+            chain = FullChainedTransfiguration()
             chain.execute(context)
         else :
             raise IllegalStateException('Unknown config type [%d]' % config_template_type.get_supertype())
