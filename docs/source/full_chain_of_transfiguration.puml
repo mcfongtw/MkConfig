@@ -1,0 +1,22 @@
+@startuml
+scale 1200 width
+[*] --> CLI
+
+state CLI {
+  [*] --> Idle
+  Idle --> FullChainedTransfiguration : [0] Pass input to perform configurationtransfiguration
+}
+
+
+state FullChainedTransfiguration {
+
+    [*] --> CommonMBeansChainedTransfiguration: [1]
+    CommonMBeansChainedTransfiguration -> SpliByApplicationTransfiguration:[2]
+    SpliByApplicationTransfiguration ---> ApplicationChainedTransfiguration: [3] foreach app
+    ApplicationChainedTransfiguration -> SpliByApplicationTransfiguration :[4]
+    SpliByApplicationTransfiguration -> ConsolidateToFinalOutput: [5]
+    ConsolidateToFinalOutput -> [*] : [6]
+}
+
+FullChainedTransfiguration --> [*] : Success
+@enduml

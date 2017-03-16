@@ -1,0 +1,42 @@
+@startuml
+scale 1350 width
+
+[*] ---> FullChainedTransfiguration: [1]
+
+state FullChainedTransfiguration {
+    [*] ---> CommonMBeansChainedTransfiguration: [2]
+}
+
+CommonMBeansChainedTransfiguration ---> FullChainedTransfiguration: [3]
+
+state PrepareAppConfTransfiguration {
+}
+
+state ConfReaderToContextTransfiguration {
+}
+
+state GenerateTemplateFileNameViaPyST {
+}
+
+state GenerateTemplateStubViaJinja2 {
+}
+
+state GenerateTemplateOutputViaJinja2 {
+}
+
+
+state CommonMBeansChainedTransfiguration {
+    [*] ---> PrepareAppConfTransfiguration:[2.1]
+    PrepareAppConfTransfiguration -> ConfReaderToContextTransfiguration:[2.2]
+    ConfReaderToContextTransfiguration -> AttributeChainedTransfiguration: common mbean:[2.3]
+    AttributeChainedTransfiguration -> [*]:[2.4]
+}
+
+state AttributeChainedTransfiguration {
+    [*] -> GenerateTemplateFileNameViaPyST:[2.3.1]
+    GenerateTemplateFileNameViaPyST -> GenerateTemplateStubViaJinja2:[2.3.2]
+    GenerateTemplateStubViaJinja2 -> GenerateTemplateOutputViaJinja2:[2.3.3]
+    GenerateTemplateOutputViaJinja2 -> [*]:[2.3.4]
+}
+
+@enduml
