@@ -454,6 +454,8 @@ class SpliByApplicationTransfiguration(ContextAwareTransfiguration):
         logger.info('Spliting the partial configuraiton for [%s]' % app_name)
 
         context[CTX_KEY_COMMON_COLLECTD_JMX_APP_PREFIX] = app_name
+        #initialize contenxt['mbean']
+        context[CTX_KEY_COMMON_COLLECTD_JMX_MBEANS_SET] = {}
         inner_chain = ApplicationChainedTransfiguration()
         inner_chain.execute(context)
 
