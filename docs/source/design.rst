@@ -1,8 +1,14 @@
-Design Concept
-==============
-Overview
---------
-This chapter include design document for current implementation of MkConfig
+Architecture
+============
+
+Concept Overview
+----------------
+Each supported configuration generation comes with a template (defined in mkconfig/templates/); and each
+config is highly configurable since each config type comes with a unique set of meta files. For more high level
+examples, please refer to sample meta file (under mkconfig/examples/). Internally, the tempalte engine support
+templating strategy as of this version include [Jinja2](http://jinja.pocoo.org/docs/2.9/extensions/).
+
+The next section introduce the current implementation of configuration transformation.
 
 
 Transfiguration and Chaining Effect
