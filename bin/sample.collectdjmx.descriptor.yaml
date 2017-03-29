@@ -1,0 +1,16 @@
+# Sample transformation descriptor file for Collectd-Jmx
+#
+
+# Full or relative path to directory which contains meta definition for JmxMBeans
+#
+# Default value : ${PKG_INSTALLED_DIR}/mkconfig/examples/
+app_conf_dir : mkconfig/examples/
+
+# List of application name of which should perform configuration transformation.
+# Each of these application (name) should map to a meta definition file for JmxMBeans
+#
+# Default value : list(cassandra, jenkins, jira)
+app_list :
+  - cassandra
+  - jenkins
+  - jira

@@ -35,14 +35,19 @@ class TestMkConfigApp(test.CementTestCase):
     #########################################################################################
 
     def test_normal_with_default_template(self):
-        app3 = self.make_app(argv=['-scassandra', '-otest.output', '-d' + self.example_dir])
-        app3.setup()
-        app3.run()
+        config_control_string = """
+        app_list :
+            - cassandra
+        app_conf_dir : """ + self.example_dir
 
-        self.assertEqual(app3.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app3.pargs.template, 'collectd_genericjmx')
-        self.assertEqual(app3.pargs.output, 'test.output')
-        self.assertEqual(app3.pargs.apps_list, 'cassandra')
+        app = self.make_app(argv=['-d'+ config_control_string, '-i ',  '-otest.output'])
+        app.setup()
+        app.run()
+
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
+        self.assertEqual(app.pargs.type, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.output, 'test.output')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -53,10 +58,10 @@ class TestMkConfigApp(test.CementTestCase):
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             '_collectd_genericjmx.connection.inc.stub')))
 
-        app3.close()
+        app.close()
 
     def test_file_not_found_1(self):
-        app1 = self.make_app(argv=['-o1', '-t1', '-sunknown', '-d1'])
+        app1 = self.make_app(argv=['-o1', '-t1', '-i1'])
         app1.setup()
         with self.assertRaises(IOError):
             app1.run()
@@ -67,16 +72,20 @@ class TestMkConfigApp(test.CementTestCase):
     #########################################################################################
 
     def test_normal_start_and_stop_on_jenkins_with_genericjmx(self):
+        config_control_string = """
+        app_list :
+            - jenkins
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_genericjmx', '-otest.output', '-sjenkins',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_genericjmx', '-otest.output', '-i ', '-d'+ config_control_string,])
         app.setup()
         app.run()
 
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
+        self.assertEqual(app.pargs.type, 'collectd_genericjmx')
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'jenkins')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'jenkins.mbean.blocks.inc')))
@@ -90,16 +99,20 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_on_cassandra_with_genericjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_genericjmx', '-otest.output', '-i ', '-d'+ config_control_string,])
         app.setup()
         app.run()
 
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_genericjmx')
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
+        self.assertEqual(app.pargs.type, 'collectd_genericjmx')
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -113,14 +126,20 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_with_apps_list_with_genericjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+            - jenkins
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra jenkins',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_genericjmx', '-otest.output', '-i ', '-d'+ config_control_string,])
         app.setup()
         app.run()
 
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -138,14 +157,21 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_with_all_exampl_apps_with_genericjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+            - jenkins
+            - jira
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_genericjmx', '-otest.output', '-scassandra jenkins jira',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_genericjmx', '-otest.output', '-i ', '-d'+ config_control_string])
         app.setup()
         app.run()
 
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -171,16 +197,20 @@ class TestMkConfigApp(test.CementTestCase):
     #########################################################################################
 
     def test_normal_start_and_stop_on_jenkins_with_fastjmx(self):
+        config_control_string = """
+        app_list :
+            - jenkins
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_fastjmx', '-otest.output', '-sjenkins',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_fastjmx', '-otest.output', '-i ', '-d'+ config_control_string])
         app.setup()
         app.run()
 
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_fastjmx')
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
+        self.assertEqual(app.pargs.type, 'collectd_fastjmx')
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'jenkins')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'jenkins.mbean.blocks.inc')))
@@ -194,16 +224,20 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_on_cassandra_with_fastjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_fastjmx', '-otest.output', '-i ', '-d'+ config_control_string])
         app.setup()
         app.run()
 
-        self.assertEqual(app.pargs.app_conf_dir, self.example_dir)
-        self.assertEqual(app.pargs.template, 'collectd_fastjmx')
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
+        self.assertEqual(app.pargs.type, 'collectd_fastjmx')
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -217,14 +251,20 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_with_apps_list_with_fastjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+            - jenkins
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra jenkins',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_fastjmx', '-otest.output', '-i ', '-d'+ config_control_string])
         app.setup()
         app.run()
 
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))
@@ -242,14 +282,21 @@ class TestMkConfigApp(test.CementTestCase):
         app.close()
 
     def test_normal_start_and_stop_with_all_exampl_apps_with_fastjmx(self):
+        config_control_string = """
+        app_list :
+            - cassandra
+            - jenkins
+            - jira
+        app_conf_dir : """ + self.example_dir
+
         app = self.make_app(
-            argv=['-tcollectd_fastjmx', '-otest.output', '-scassandra jenkins jira',
-                  '-d' + self.example_dir])
+            argv=['-tcollectd_fastjmx', '-otest.output', '-i ', '-d'+ config_control_string])
         app.setup()
         app.run()
 
+        self.assertEqual(app.pargs.transf_desc_file, ' ')
+        self.assertEqual(app.pargs.transf_desc_string, config_control_string)
         self.assertEqual(app.pargs.output, 'test.output')
-        self.assertEqual(app.pargs.apps_list, 'cassandra jenkins jira')
 
         self.assertTrue(Utils.is_file_exist(Configurations.getTmpTemplateFile(
             'cassandra.mbean.blocks.inc')))

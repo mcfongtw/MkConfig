@@ -1,4 +1,4 @@
-    # Beginning of JMX definition for {{ progName }} as of version {{ progVer }}
+    # Beginning of MBean definition for {{ progName }} as of version {{ progVer }}
         {% for mbean in mbeans %}
             {%- if mbean.secOrderSubstituion is defined %}
         {% raw %} {% for item in {% endraw %} {{ mbean.secOrderSubstituion }} {% raw %} -%} {% endraw %}
@@ -18,4 +18,4 @@
         {% raw %} {% endfor %} {% endraw %}
             {% endif %}
         {% endfor -%}
-    # End of JMX definition for {{ progName }} as of version {{ progVer }}
+    # End of MBean definition for {{ progName }} as of version {{ progVer }}

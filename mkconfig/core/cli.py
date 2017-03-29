@@ -1,4 +1,5 @@
 import logging
+import yaml
 
 from cement.core.controller import CementBaseController, expose
 from cement.core.foundation import CementApp
@@ -28,13 +29,13 @@ class CliController(CementBaseController):
 
         # add arguments to the parser
         arguments = [
-            (['-s', '--apps_list'],
-                dict(action='store', metavar='STR', help='List of apps name', required=True)),
-            (['-d', '--app_conf_dir'],
-                dict(action='store', metavar='STR', help='Directory for app configuration',
-                     default="./", required=True)),
-            (['-t', '--template'],
-                dict(action='store', metavar='STR', help='Type of configuration template', default="collectd_genericjmx")),
+            (['-i', '--transf_desc_file'],
+             dict(action='store', metavar='File', help='Path to transformation descriptor file', default='',
+                  required=True)),
+            (['-d', '--transf_desc_string'],
+             dict(action='store', metavar='STR', help='(Optional) yaml content of transformation descriptor', default='')),
+            (['-t', '--type'],
+                dict(action='store', metavar='STR', help='(Optional) Type of configuration', default="collectd_genericjmx")),
             (['-o', '--output'],
                 dict(action='store', metavar='File', help='Path to output file', required=True)),
         ]
@@ -47,20 +48,31 @@ class CliController(CementBaseController):
 
         """
 
-        config_template_type = ConfigurationTypeFactory.get_config_type(self.app.pargs.template)
+        config_template_type = ConfigurationTypeFactory.get_config_type(self.app.pargs.type)
 
         if config_template_type.get_supertype() == ConfigurationType.COLLECTD_GENERIC_JMX.get_supertype():
             attr_template_file = config_template_type.get_attribute_template_file()
             full_template_file = config_template_type.get_full_template_file()
             config_template_subtype = config_template_type.get_subtype()
 
+            if self.app.pargs.transf_desc_string == '':
+                logger.info("Read config control from file %s" % self.app.pargs.transf_desc_file)
+                config_control_content = yaml.load(open(self.app.pargs.transf_desc_file, 'r'))
+            else:
+                logger.info("Read config control from string %s" % self.app.pargs.transf_desc_string)
+                config_control_content = yaml.load(self.app.pargs.transf_desc_string)
+
+            logger.info("config control content [%s]" % config_control_content)
+            app_list = config_control_content['app_list']
+            app_conf_dir = config_control_content['app_conf_dir']
+
             context = {
-                CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR: self.app.pargs.app_conf_dir,
+                CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR: app_conf_dir,
                 CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE: attr_template_file,
                 CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE : full_template_file,
                 CTX_KEY_COMMON_COLLECTD_JMX_TYPE: config_template_subtype,
                 CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT: self.app.pargs.output,
-                CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST: self.app.pargs.apps_list,
+                CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST: app_list,
             }
             chain = FullChainedTransfiguration()
             chain.execute(context)
@@ -139,10 +151,10 @@ class MkConfigApp(CementApp):
             """
             logger.debug("post_argument_parsing hook")
 
-            logger.info("Received option: apps_list => %s" % self.pargs.apps_list)
-            logger.info("Received option: app_conf_dir => %s" % self.pargs.app_conf_dir)
-            logger.info("Received option: template => %s" % self.pargs.template)
-            logger.info("Received option: output => %s" % self.pargs.output)
+            logger.info("Received option: (input) transf_desc_file => %s" % self.pargs.transf_desc_file)
+            logger.info("Received option: (input) transf_desc_string => %s" % self.pargs.transf_desc_string)
+            logger.info("Received option: type => %s" % self.pargs.type)
+            logger.info("Received option: (output) config output => %s" % self.pargs.output)
 
 
         #application settings

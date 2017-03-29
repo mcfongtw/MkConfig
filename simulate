@@ -156,7 +156,7 @@ function do_install {
     echo '-----------------------------------------------'
     cd $CURRENT_WORKSPACE_PATH
     rm /tmp/output.out
-    mkconfig -scassandra -o/tmp/output.out -dmkconfig/examples/
+    mkconfig -i./bin/sample.collectdjmx.descriptor.yaml  -o/tmp/output.out
     cat /tmp/output.out
     echo '==============================================='
     echo

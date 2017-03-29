@@ -1,4 +1,4 @@
-    # Beginning of JMX definition for {{ progName }} as of version {{ progVer }}
+    # Beginning of Connection definition for {{ progName }} as of version {{ progVer }}
         <Connection>
             ServiceURL "service:jmx:rmi:///jndi/rmi://{{ hostAddr }}:{{ hostPort }}/jmxrmi"
             Host "{{ fqdn }}"
@@ -18,4 +18,4 @@
             {% endif -%}
             {%- endfor %}
         </Connection>
-    # End of JMX definition for {{ progName }} as of version {{ progVer }}
+    # End of Connection definition for {{ progName }} as of version {{ progVer }}

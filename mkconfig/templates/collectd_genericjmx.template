@@ -5,14 +5,14 @@
 # MBeans Definition #
 #####################
 {% include 'common.mbean.blocks.inc' % appName %}
-{% for appName in _common_collectd_jmx_app_prefix_list.split() %}
+{% for appName in _common_collectd_jmx_app_prefix_list %}
     {% include '%s.mbean.blocks.inc' % appName %}
 {% endfor -%}
 
 ##########################
 # Connections Definition #
 ##########################
-{% for appName in _common_collectd_jmx_app_prefix_list.split() %}
+{% for appName in _common_collectd_jmx_app_prefix_list %}
     {% include '%s.connection.blocks.inc' % appName %}
 {% endfor -%}
 

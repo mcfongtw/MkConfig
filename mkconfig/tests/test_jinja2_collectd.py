@@ -171,7 +171,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
-            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : ['app1', 'app2'],
             CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'genericjmx',
         }
@@ -195,7 +195,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
-            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : ['app1', 'app2', 'app3'],
             CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_genericjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE: 'collectd_genericjmx.template',
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',
@@ -307,7 +307,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
-            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : ['app1', 'app2'],
             CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_fastjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_TYPE : 'fastjmx',
         }
@@ -331,7 +331,7 @@ class TestCollectdJmxTransfiguration(TestCase):
         #init context
         context =  {
             CTX_KEY_COMMON_COLLECTD_JMX_APP_CONF_DIR : self.test_example_dir,
-            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : 'app1 app2 app3',
+            CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST : ['app1', 'app2', 'app3'],
             CTX_KEY_COMMON_COLLECTD_JMX_ATTR_TEMPLATE_FILE : 'collectd_fastjmx.$attribute.inc',
             CTX_KEY_COMMON_COLLECTD_JMX_FULL_TEMPLATE_FILE: 'collectd_fastjmx.template',
             CTX_KEY_COMMON_COLLECTD_JMX_FINAL_OUTPUT : 'test.output',

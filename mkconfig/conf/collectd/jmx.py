@@ -428,12 +428,7 @@ class SpliByApplicationTransfiguration(ContextAwareTransfiguration):
         :param context: A key-value paired map that stores attributes carried throughput the
         whole lifecycle
         """
-        listOfAppNames = context[CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST].split()
-
-        #distinguish between string object and list
-        if Utils.is_string_type(listOfAppNames):
-            logger.info('Processing ONE app [%s]' %listOfAppNames)
-            listOfAppNames = [listOfAppNames]
+        listOfAppNames = context[CTX_KEY_COMMON_COLLECTD_JMX_USER_SELECTED_APP_LIST]
 
         for appName in listOfAppNames:
             self.perform_transfig_for_each_app(context, appName)
