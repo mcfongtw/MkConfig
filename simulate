@@ -78,9 +78,7 @@ function do_init {
     echo '==============================================='
     echo 'Install build required libraries'
     echo '-----------------------------------------------'
-    pip install jinja2
-    pip install pyYAML
-    pip install cement
+    pip install -r requirements.txt
     echo '==============================================='
     echo
     deactivate

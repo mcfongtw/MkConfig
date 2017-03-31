@@ -27,15 +27,15 @@ Please refer to requirements.txt for details
 Usage Guide
 ===========
 
-Setup Required Library
+Install Required Libraries
 ----------------------
-If you have pip installed, run the following to install prerequisit dependencies:
-- `pip install jinja2`
-- `pip install pyYAML`
-- `pip install cement`
+If you have pip installed, run the following to install prerequisite dependencies, which is
+defined in requirements.txt. You may try
+
+`pip install -r requirements.txt`
 
 
-Setup Package
+Install Package
 -----------
 - Install via setup.py
 
@@ -69,9 +69,16 @@ Quality Code
 -------------
 All of the implementation should follow PEP-8 standard. This project is also evaluated with pyLint.
 
+Install Pre-requisite Libraries
+-------------------------------
+Please make sure virtualenv package is installed, if not, try
+
+`pip install virtualenv`
+
 How to Build from Source
 -------------------------
 Execute the following script command
 1. `./simulate clean`
+2. `./simulate init`
 2. `./simulate build`
 3. `./simulate install`

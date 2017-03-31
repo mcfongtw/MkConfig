@@ -5,12 +5,15 @@ from mkconfig.env import setup_logging
 setup_logging()
 from mkconfig.core.cli import MkConfigApp
 import logging
+import sys
 
 
 logger = logging.getLogger(__name__)
 
 
 if __name__ == '__main__':
+    assert sys.version_info >= (3, 4)
+
     logger.info("*************************************")
     logger.info("*****MakeConfig Execution BEGINS*****")
     logger.info("*************************************")
