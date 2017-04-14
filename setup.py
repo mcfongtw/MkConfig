@@ -51,7 +51,7 @@ setup_info = dict(
 
     ###################################################################
 
-    scripts=['bin/mkconfig'],
+    scripts=['bin/mkconfig', 'simulate'],
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -73,7 +73,7 @@ setup_info = dict(
     install_requires = install_requirement(),
 
     # Package info
-    packages = find_packages(exclude=['tests', 'docs', 'output', 'dist', 'build', '.*', 'mkconfig.egg-info']),
+    packages = find_packages(exclude=['tests', 'docs', 'output', 'dist-src', 'build', '.*', 'mkconfig.egg-info']),
 
 
 )
