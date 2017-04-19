@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design Documents Come Here &#8212; MkConfig 0.1-beta documentation</title>
+    <title>Architecture &#8212; MkConfig 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1-beta',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to MkConfig’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1-beta documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -54,8 +54,107 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="design-documents-come-here">
-<h1>Design Documents Come Here<a class="headerlink" href="#design-documents-come-here" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="concept-overview">
+<h2>Concept Overview<a class="headerlink" href="#concept-overview" title="Permalink to this headline">¶</a></h2>
+<p>Each supported configuration generation comes with a template (defined in mkconfig/templates/); and each
+config is highly configurable since each config type comes with a unique set of meta files. For more high level
+examples, please refer to sample meta file (under mkconfig/examples/). Internally, the tempalte engine support
+templating strategy as of this version include [Jinja2](<a class="reference external" href="http://jinja.pocoo.org/docs/2.9/extensions/">http://jinja.pocoo.org/docs/2.9/extensions/</a>).</p>
+<p>The next section introduce the current implementation of configuration transformation.</p>
+</div>
+<div class="section" id="transfiguration-and-chaining-effect">
+<h2>Transfiguration and Chaining Effect<a class="headerlink" href="#transfiguration-and-chaining-effect" title="Permalink to this headline">¶</a></h2>
+<p>Transfiguration by definition is a change in form or appearance. We use this term to refer to configuration
+transformation from an input to an output. As transformation logic becomes more complex, a new
+form of &#8216;series of transfigurations inside a transifguration&#8217; or &#8216;Group transfiguration&#8217; is
+sometimes needed. We refer this type of operaiton as &#8216;Chain of transfiguration&#8217;, also recognized
+as another type of transfiguration, namely, &#8216;ChainedTransfiguration&#8217;</p>
+</div>
+<div class="section" id="configuration-transfiguration">
+<h2>Configuration Transfiguration<a class="headerlink" href="#configuration-transfiguration" title="Permalink to this headline">¶</a></h2>
+<p>We adop the concept of ChainedTransfiguration heavily in the implementation. In addition, the
+core technology to make transfiguration happened is using Jinja2 template engine. For currently
+supported configuration, we could locate a list of Jinja2 template file under mkconfig/templates/</p>
+<blockquote>
+<div>package.</div></blockquote>
+<p>As of this release, we support the following configuration type:</p>
+<ul>
+<li><p class="first">Collectd-Jmx</p>
+<p>There are two types supported or Collectd-Jmx configuration generation:</p>
+<ol class="arabic simple">
+<li>Collectd-GenericJmx : [<a class="reference external" href="https://collectd.org/wiki/index.php/Plugin:GenericJMX">https://collectd.org/wiki/index.php/Plugin:GenericJMX</a>]</li>
+<li>Collectd-FastJmx : [<a class="reference external" href="https://github.com/egineering-llc/collectd-fast-jmx">https://github.com/egineering-llc/collectd-fast-jmx</a>]</li>
+</ol>
+<p>Both of them follow the same transformation flow, but with different template in terms of format.</p>
+<ul class="simple">
+<li>FullChainedTransfiguration
+Each call from cli component would perform a full cycle of FullChainedTransfiguration as shown in figure below:</li>
+</ul>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/full_chain_of_transfiguration.png"><img alt="State Diagram of FullChainedTransfiguration" src="_images/full_chain_of_transfiguration.png" style="width: 1193.0px; height: 630.0px;" /></a>
+</div>
+<ul>
+<li><p class="first">Each FullChainedTransfiguration contain several steps</p>
+<ol class="loweralpha">
+<li><p class="first">CommonMBeansChainedTransfiguration</p>
+<ul class="simple">
+<li>Generate partial configuration for common mbean block</li>
+<li>Each call would perform a cycle of transforming commonly used MBean blocks as shown in figure below</li>
+</ul>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/common_mbean_chain_of_transfiguration.png"><img alt="State Diagram of CommonMBeansChainedTransfiguration" src="_images/common_mbean_chain_of_transfiguration.png" style="width: 1343.0px; height: 588.0px;" /></a>
+</div>
+</li>
+<li><p class="first">SpliByApplicationTransfiguration</p>
+<ul class="simple">
+<li>Inside there is a loop to generate application related partial configuration. Logically, this task would perform ApplicationChainedTransfiguration for each application</li>
+<li>Each call from ApplicationChainedTransfiguration would perform a cycle of transforming MBean or Collection blocks for desginated application as shown in figure below</li>
+</ul>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/application_chain_of_transfiguration.png"><img alt="State Diagram of ApplicationChainedTransfiguratio" src="_images/application_chain_of_transfiguration.png" style="width: 1343.0px; height: 491.0px;" /></a>
+</div>
+<ul>
+<li><p class="first">For each ApplicationChainedTransfiguration, it would perform</p>
+<ol class="loweralpha simple">
+<li>PrepareAppConfTransfiguration</li>
+<li>ConfReaderToContextTransfiguration</li>
+<li>ValidateCollectionTags</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>Validate the user defined collection mbeans. Commented out if the mbean name does not exist from MBean blocks available.</li>
+</ul>
+</div></blockquote>
+<ol class="loweralpha simple" start="4">
+<li>AttributeChainedTransfiguration(&#8216;mbean&#8217;)</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>Generate partial configuration for application related MBean blocks</li>
+</ul>
+</div></blockquote>
+<ol class="loweralpha simple" start="5">
+<li>AttributeChainedTransfiguration(&#8216;connection&#8217;)</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>Generate partial configuration for application related Collection block</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p class="first">ConsolidateToFinalOutput
+* Consolidate all partial configuration into final output file</p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -64,6 +163,16 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Architecture</a><ul>
+<li><a class="reference internal" href="#concept-overview">Concept Overview</a></li>
+<li><a class="reference internal" href="#transfiguration-and-chaining-effect">Transfiguration and Chaining Effect</a></li>
+<li><a class="reference internal" href="#configuration-transfiguration">Configuration Transfiguration</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to MkConfig&#8217;s documentation!</a></p>
@@ -106,12 +215,12 @@
         <li class="right" >
           <a href="index.html" title="Welcome to MkConfig’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1-beta documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Michael Fong.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
     </div>
   </body>
 </html>

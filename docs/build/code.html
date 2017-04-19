@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Auto Generated Source Code Documentation &#8212; MkConfig 0.1-beta documentation</title>
+    <title>Auto Generated Source Code Documentation &#8212; MkConfig 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1-beta',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Design Documents Come Here" href="design.html" /> 
+    <link rel="prev" title="Architecture" href="design.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,9 +39,9 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="design.html" title="Design Documents Come Here"
+          <a href="design.html" title="Architecture"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1-beta documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,52 +59,60 @@
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getOutputDir">
 <em class="property">static </em><code class="descname">getOutputDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getOutputDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getOutputDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the dir path of project/tests/</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getOutputFile">
 <em class="property">static </em><code class="descname">getOutputFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getOutputFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getOutputFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the file path under /project/tests/
+:param fname: name of file under specific dir</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getProjectRootDir">
 <em class="property">static </em><code class="descname">getProjectRootDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getProjectRootDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getProjectRootDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the dir path of this project/</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getProjectRootFile">
 <em class="property">static </em><code class="descname">getProjectRootFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getProjectRootFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getProjectRootFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the file path under project/
+:param fname: name of file under specific dir</p>
+</dd></dl>
 
 <dl class="staticmethod">
-<dt id="mkconfig.env.Configurations.getTempDir">
-<em class="property">static </em><code class="descname">getTempDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTempDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTempDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="mkconfig.env.Configurations.getTempFile">
-<em class="property">static </em><code class="descname">getTempFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTempFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTempFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="mkconfig.env.Configurations.getSystemTmpDir">
+<em class="property">static </em><code class="descname">getSystemTmpDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getSystemTmpDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getSystemTmpDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dir pth of system temp, /tmp/</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getTemplateDir">
 <em class="property">static </em><code class="descname">getTemplateDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTemplateDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTemplateDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the dir path of templates, project/templates/</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="mkconfig.env.Configurations.getTemplateFile">
 <em class="property">static </em><code class="descname">getTemplateFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTemplateFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTemplateFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the file path under project/templates/
+:param fname: name of file under specific dir</p>
+</dd></dl>
 
 <dl class="staticmethod">
-<dt id="mkconfig.env.Configurations.getTestFile">
-<em class="property">static </em><code class="descname">getTestFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTestFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTestFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="mkconfig.env.Configurations.getTmpTemplateDir">
+<em class="property">static </em><code class="descname">getTmpTemplateDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTmpTemplateDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTmpTemplateDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the temporary templates dir path, /tmp/templates/</p>
+</dd></dl>
 
 <dl class="staticmethod">
-<dt id="mkconfig.env.Configurations.getTestsDir">
-<em class="property">static </em><code class="descname">getTestsDir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTestsDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTestsDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="mkconfig.env.Configurations.getTmpTemplateFile">
+<em class="property">static </em><code class="descname">getTmpTemplateFile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/env.html#Configurations.getTmpTemplateFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.env.Configurations.getTmpTemplateFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the file path under /tmp/templates/
+:param fname: name of file under specific dir</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -193,7 +201,7 @@ on previous step with respect to Context</p>
 <dd><p>Meta class that defines arguments.</p>
 <dl class="attribute">
 <dt id="mkconfig.core.cli.CliController.Meta.arguments">
-<code class="descname">arguments</code><em class="property"> = [(['-s', '--apps_list'], {'metavar': 'STR', 'required': True, 'action': 'store', 'help': 'List of apps name'}), (['-d', '--app_conf_dir'], {'metavar': 'STR', 'required': True, 'action': 'store', 'default': './', 'help': 'Directory for app configuration'}), (['-t', '--template'], {'metavar': 'STR', 'default': 'collectd_jmx', 'action': 'store', 'help': 'Type of configuration template'}), (['-o', '--output'], {'metavar': 'File', 'required': True, 'action': 'store', 'help': 'Path to output file'})]</em><a class="headerlink" href="#mkconfig.core.cli.CliController.Meta.arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">arguments</code><em class="property"> = [(['-i', '--transf_desc_file'], {'required': True, 'action': 'store', 'default': '', 'help': 'Path to transformation descriptor file', 'metavar': 'File'}), (['-d', '--transf_desc_string'], {'action': 'store', 'default': '', 'help': '(Optional) yaml content of transformation descriptor', 'metavar': 'STR'}), (['-t', '--type'], {'action': 'store', 'default': 'collectd_genericjmx', 'help': '(Optional) Type of configuration', 'metavar': 'STR'}), (['-o', '--output'], {'required': True, 'action': 'store', 'help': 'Path to output file', 'metavar': 'File'})]</em><a class="headerlink" href="#mkconfig.core.cli.CliController.Meta.arguments" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -210,7 +218,7 @@ on previous step with respect to Context</p>
 
 <dl class="method">
 <dt id="mkconfig.core.cli.CliController.default">
-<code class="descclassname">CliController.</code><code class="descname">default</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/cli.html#CliController.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.cli.CliController.default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">default</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/cli.html#CliController.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.cli.CliController.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>A default command to execute. Internally, it will execute the chain of transfiguration that generates the
 configuration</p>
 </dd></dl>
@@ -315,7 +323,7 @@ configuration</p>
 
 <dl class="method">
 <dt id="mkconfig.core.cli.MkConfigApp.go">
-<code class="descclassname">MkConfigApp.</code><code class="descname">go</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/cli.html#MkConfigApp.go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.cli.MkConfigApp.go" title="Permalink to this definition">¶</a></dt>
+<code class="descname">go</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/cli.html#MkConfigApp.go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.cli.MkConfigApp.go" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the cement application lifecycle.</p>
 </dd></dl>
 
@@ -422,7 +430,7 @@ configuration</p>
 
 <dl class="method">
 <dt id="mkconfig.core.jinja2.Jinja2Engine.apply">
-<code class="descclassname">Jinja2Engine.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>context</em>, <em>template_name</em>, <em>output_file</em>, <em>is_in_memory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/jinja2.html#Jinja2Engine.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.jinja2.Jinja2Engine.apply" title="Permalink to this definition">¶</a></dt>
+<code class="descname">apply</code><span class="sig-paren">(</span><em>context</em>, <em>template_file_name</em>, <em>output_file_path</em>, <em>is_in_memory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/jinja2.html#Jinja2Engine.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.jinja2.Jinja2Engine.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the template with Jinja2 environment.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -430,8 +438,8 @@ configuration</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>context</strong> &#8211; A map of key-value attribute defined variables to be applied with template</li>
-<li><strong>template_name</strong> &#8211; name of template to apply with</li>
-<li><strong>output_file</strong> &#8211; file name to the substitution result.</li>
+<li><strong>template_file_name</strong> &#8211; name of template to apply with</li>
+<li><strong>output_file_path</strong> &#8211; file name to the substitution result.</li>
 <li><strong></strong><strong>(</strong><strong>bool</strong><strong>)</strong><strong></strong> (<em>isInMemory</em>) &#8211; whether to perform templateing in-memory or in-file.</li>
 </ul>
 </td>
@@ -442,7 +450,7 @@ configuration</p>
 
 <dl class="method">
 <dt id="mkconfig.core.jinja2.Jinja2Engine.init">
-<code class="descclassname">Jinja2Engine.</code><code class="descname">init</code><span class="sig-paren">(</span><em>init_loader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/jinja2.html#Jinja2Engine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.jinja2.Jinja2Engine.init" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init</code><span class="sig-paren">(</span><em>init_loader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/jinja2.html#Jinja2Engine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.jinja2.Jinja2Engine.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the Jinja2 environment</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -475,7 +483,7 @@ configuration</p>
 
 <dl class="method">
 <dt id="mkconfig.core.stringtemplate.PySTEngine.apply">
-<code class="descclassname">PySTEngine.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>context</em>, <em>output_file</em>, <em>is_in_memory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/stringtemplate.html#PySTEngine.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.stringtemplate.PySTEngine.apply" title="Permalink to this definition">¶</a></dt>
+<code class="descname">apply</code><span class="sig-paren">(</span><em>context</em>, <em>output_file_path</em>, <em>is_in_memory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/stringtemplate.html#PySTEngine.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.stringtemplate.PySTEngine.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the template with python string template engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -483,7 +491,7 @@ configuration</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>context</strong> &#8211; A map of key-value attribute defined variables to be applied with template</li>
-<li><strong>output_file</strong> &#8211; file name to the substitution result.</li>
+<li><strong>output_file_path</strong> &#8211; file name to the substitution result.</li>
 <li><strong></strong><strong>(</strong><strong>bool</strong><strong>)</strong><strong></strong> (<em>isInMemory</em>) &#8211; whether to perform templateing in-memory or in-file.</li>
 </ul>
 </td>
@@ -494,7 +502,7 @@ configuration</p>
 
 <dl class="method">
 <dt id="mkconfig.core.stringtemplate.PySTEngine.init">
-<code class="descclassname">PySTEngine.</code><code class="descname">init</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/stringtemplate.html#PySTEngine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.stringtemplate.PySTEngine.init" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/core/stringtemplate.html#PySTEngine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.core.stringtemplate.PySTEngine.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>initialize paramters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -508,213 +516,56 @@ configuration</p>
 
 </dd></dl>
 
-<span class="target" id="module-mkconfig.conf.collectd"></span><dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxConfToContextTransfiguration</code><span class="sig-paren">(</span><em>keyName='_collectd_jmx_conf_yaml_file'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxConfToContextTransfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration" title="Permalink to this definition">¶</a></dt>
-<dd><p>A YamlToContextTransfiguration that reads yaml file with respect to attr : _collectd_jmx_conf_yaml_file</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration.patch_mbean_table_value">
-<code class="descname">patch_mbean_table_value</code><span class="sig-paren">(</span><em>mbean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxConfToContextTransfiguration.patch_mbean_table_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration.patch_mbean_table_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Patch the specific mbean attribute</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbean</strong> &#8211; mbean attribute to be patched</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration.read_content">
-<code class="descname">read_content</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxConfToContextTransfiguration.read_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxConfToContextTransfiguration.read_content" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read content of a Yaml file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxConsolidatePartialConfigurations">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxConsolidatePartialConfigurations</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxConsolidatePartialConfigurations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxConsolidatePartialConfigurations" title="Permalink to this definition">¶</a></dt>
-<dd><p>The final phase of CollectdJmxTransfiguration to consolidated a complete Collectd-Jmx configuration.</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxConsolidatePartialConfigurations.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxConsolidatePartialConfigurations.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxConsolidatePartialConfigurations.perform" title="Permalink to this definition">¶</a></dt>
-<dd><p>To transfigurate while consolidates multiple application-specific configuration into a final output</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxPartialTransifgurationChain">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxPartialTransifgurationChain</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxPartialTransifgurationChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxPartialTransifgurationChain" title="Permalink to this definition">¶</a></dt>
-<dd><p>An (inner) chain of transfiguration that transform input to a partial collectd jmx configuration</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxPartialTransifgurationChain.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxPartialTransifgurationChain.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxPartialTransifgurationChain.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>To execute the whole series of transfiguration execution</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransStubToConfiguration">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxTransStubToConfiguration</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransStubToConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransStubToConfiguration" title="Permalink to this definition">¶</a></dt>
-<dd><p>The second phase of CollectdJmxTransfiguration to transform from the stub file to a partial configuration for a specific appliation</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransStubToConfiguration.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransStubToConfiguration.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransStubToConfiguration.perform" title="Permalink to this definition">¶</a></dt>
-<dd><p>To transfigurate while converting stub configuration to partial configuration for an application</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransTemplateToStubJinja2">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxTransTemplateToStubJinja2</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransTemplateToStubJinja2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransTemplateToStubJinja2" title="Permalink to this definition">¶</a></dt>
-<dd><p>The first phase of  CollectdJmxTransfiguration to transform from input yaml files to stub configuration file (half-product)</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransTemplateToStubJinja2.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransTemplateToStubJinja2.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransTemplateToStubJinja2.perform" title="Permalink to this definition">¶</a></dt>
-<dd><p>To transfigurate while converting template to stub configuration</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransfigurationChain">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">CollectdJmxTransfigurationChain</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransfigurationChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransfigurationChain" title="Permalink to this definition">¶</a></dt>
-<dd><p>An (outer) chain of transfiguration that consolidate all partial pieces to a complete collectd jmx configuration</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.CollectdJmxTransfigurationChain.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#CollectdJmxTransfigurationChain.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.CollectdJmxTransfigurationChain.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>To execute the whole series of transfiguration execution</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="mkconfig.conf.collectd.PrepareAppConfTransfiguration">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">PrepareAppConfTransfiguration</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#PrepareAppConfTransfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.PrepareAppConfTransfiguration" title="Permalink to this definition">¶</a></dt>
-<dd><p>A context-enabled Transifguration that prepares the associated configuration file path for given a app name</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.PrepareAppConfTransfiguration.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#PrepareAppConfTransfiguration.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.PrepareAppConfTransfiguration.perform" title="Permalink to this definition">¶</a></dt>
-<dd><p>To transfigurate while preparing configuration meta</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mkconfig.conf.collectd.PrepareAppConfTransfiguration.validate_file_exist">
-<code class="descname">validate_file_exist</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#PrepareAppConfTransfiguration.validate_file_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.PrepareAppConfTransfiguration.validate_file_exist" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-mkconfig.conf.collectd"></span><span class="target" id="module-mkconfig.conf.factory"></span><dl class="class">
+<dt id="mkconfig.conf.factory.ConfigurationType">
+<em class="property">class </em><code class="descclassname">mkconfig.conf.factory.</code><code class="descname">ConfigurationType</code><span class="sig-paren">(</span><em>attribute_template_file</em>, <em>supertype</em>, <em>subtype</em>, <em>full_template_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration for configuration type</p>
+<dl class="attribute">
+<dt id="mkconfig.conf.factory.ConfigurationType.COLLECTD_FAST_JMX">
+<code class="descname">COLLECTD_FAST_JMX</code><em class="property"> = ('collectd_fastjmx.$attribute.inc', 'collectd', 'fastjmx', 'collectd_fastjmx.template')</em><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.COLLECTD_FAST_JMX" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="mkconfig.conf.factory.ConfigurationType.COLLECTD_GENERIC_JMX">
+<code class="descname">COLLECTD_GENERIC_JMX</code><em class="property"> = ('collectd_genericjmx.$attribute.inc', 'collectd', 'genericjmx', 'collectd_genericjmx.template')</em><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.COLLECTD_GENERIC_JMX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="mkconfig.conf.factory.ConfigurationType.get_attribute_template_file">
+<code class="descname">get_attribute_template_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationType.get_attribute_template_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.get_attribute_template_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the attribute template file name associated with this configuration type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mkconfig.conf.factory.ConfigurationType.get_full_template_file">
+<code class="descname">get_full_template_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationType.get_full_template_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.get_full_template_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the attribute template file name associated with this configuration type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mkconfig.conf.factory.ConfigurationType.get_subtype">
+<code class="descname">get_subtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationType.get_subtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.get_subtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the subtype name associated with this configuration type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mkconfig.conf.factory.ConfigurationType.get_supertype">
+<code class="descname">get_supertype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationType.get_supertype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationType.get_supertype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the super-type name associated with this configuration type</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
-<dt id="mkconfig.conf.collectd.SplitAppConfTransfiguration">
-<em class="property">class </em><code class="descclassname">mkconfig.conf.collectd.</code><code class="descname">SplitAppConfTransfiguration</code><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#SplitAppConfTransfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.SplitAppConfTransfiguration" title="Permalink to this definition">¶</a></dt>
-<dd><p>A outer chain that controls the whole process of performing config generation for each applicaiton and merge the partial results into a final output</p>
-<dl class="method">
-<dt id="mkconfig.conf.collectd.SplitAppConfTransfiguration.generateAppPartialConfiguration">
-<code class="descname">generateAppPartialConfiguration</code><span class="sig-paren">(</span><em>context</em>, <em>app_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#SplitAppConfTransfiguration.generateAppPartialConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.SplitAppConfTransfiguration.generateAppPartialConfiguration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a CollectdJmxPartialTransifgurationChain to perform config generation with a specific application</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</li>
-<li><strong>app_name</strong> &#8211; the name of application to generate configuration with</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mkconfig.conf.collectd.SplitAppConfTransfiguration.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/collectd.html#SplitAppConfTransfiguration.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.collectd.SplitAppConfTransfiguration.perform" title="Permalink to this definition">¶</a></dt>
-<dd><p>To transfigurate while parsing the list of applications to be processed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> &#8211; A key-value paired map that stores attributes carried throughput the whole lifecycle</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<span class="target" id="module-mkconfig.conf.factory"></span><dl class="class">
 <dt id="mkconfig.conf.factory.ConfigurationTypeFactory">
 <em class="property">class </em><code class="descclassname">mkconfig.conf.factory.</code><code class="descname">ConfigurationTypeFactory</code><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationTypeFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationTypeFactory" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Factory method that returns type of Configuration. Internal logics would retrive the associated template given a
 known type</p>
 <dl class="staticmethod">
-<dt id="mkconfig.conf.factory.ConfigurationTypeFactory.get_config_tempalte">
-<em class="property">static </em><code class="descname">get_config_tempalte</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationTypeFactory.get_config_tempalte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationTypeFactory.get_config_tempalte" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve the template file name, given a tempalte type
-:param type: type of template to perform with</p>
+<dt id="mkconfig.conf.factory.ConfigurationTypeFactory.get_config_type">
+<em class="property">static </em><code class="descname">get_config_type</code><span class="sig-paren">(</span><em>cli_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkconfig/conf/factory.html#ConfigurationTypeFactory.get_config_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkconfig.conf.factory.ConfigurationTypeFactory.get_config_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the template type, given a cli input
+:param cli_attr: type of template to perform with</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -737,7 +588,7 @@ known type</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="design.html"
-                        title="previous chapter">Design Documents Come Here</a></p>
+                        title="previous chapter">Architecture</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -769,14 +620,14 @@ known type</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="design.html" title="Design Documents Come Here"
+          <a href="design.html" title="Architecture"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1-beta documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MkConfig 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Michael Fong.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
     </div>
   </body>
 </html>
