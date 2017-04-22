@@ -1,3 +1,15 @@
+##0.1
+- New Features
+    * Initial support to FastJmx (MKCONFIG-38)
+- Improvements
+    * Support inheritance for MBean definitions (MKCONFIG-42)
+    * Centralize common MBean definition as independent step (MKCONFIG-86)
+    * Centralize <MBean/> and <Connection/> blocks in a global <Plugin/> block to reduce Collectd
+     thread usage. (MKCONFIG-92)
+    * Better documentation (MKCONFIG-22)
+- Critical Bug Fixes
+    * None
+
 ##0.1-beta
 - New Features
     * Define setup procedure (MKCONFIG-12)
