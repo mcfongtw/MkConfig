@@ -4,7 +4,7 @@ Release History
 - Released on Apr. 2017
 - This release focuses on finalizing the implementation of generating Collectd-GenericJMX 
 configuration. Some optimizations are also implemented to its internal transformative operations,
- including
+ including:
     * Redundant *MBean* definitions are removed, since the common *MBean* definitions is 
     processed as a independent step as well as the *MBean* definition is generally overridable due to 
     new hierarchical model.
@@ -12,7 +12,7 @@ configuration. Some optimizations are also implemented to its internal transform
     block. 
 - In addition, a initial support to [FastJmx][2] and is considered as a variant to Collectd config 
 type; Collectd-FastJmx. 
-- More design documents is provided via Sphinx Document Generator.
+- Initial version of design document is provided via Sphinx Document Generator.
 
 
 **0.1-beta**
